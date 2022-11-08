@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class stone : MonoBehaviour
 {
     public Yut_Field currentRoute;
     int routePosition;
@@ -13,10 +13,29 @@ public class player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isMoving)
         {
-            steps = Random.Range(1, 5);
-            Debug.Log("Yut threwed" + steps);
+            steps = Random.Range(1, 6);
+            switch (steps)
+            {
+                case 1:
+                    Debug.Log("µµ! ");
+                    break;
+                case 2:
+                    Debug.Log("°³! ");
+                    break;
+                case 3:
+                    Debug.Log("°É! ");
+                    break;
+                case 4:
+                    Debug.Log("À·! ");
+                    break;
+                case 5:
+                    Debug.Log("¸ð! ");
+                    break;
+            }
+            
 
-            if (routePosition + steps < currentRoute.childNodeList.Count){
+            if (routePosition + steps < currentRoute.childNodeList.Count)
+            {
                 StartCoroutine(Move());
             }
             else

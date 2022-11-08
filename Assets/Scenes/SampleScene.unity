@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 136856142}
   - component: {fileID: 136856141}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: Foothold2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 196885770}
   - component: {fileID: 196885769}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,7 +729,7 @@ GameObject:
   - component: {fileID: 358225545}
   - component: {fileID: 358225544}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: Foothold1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1217,7 +1217,7 @@ GameObject:
   - component: {fileID: 658787158}
   - component: {fileID: 658787159}
   m_Layer: 0
-  m_Name: start_position
+  m_Name: stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1251,7 +1251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7acb6c0cd0a79468aebbe4a3cb7036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentRoute: {fileID: 0}
+  currentRoute: {fileID: 196885769}
   steps: 0
 --- !u!1 &705507993
 GameObject:
@@ -1913,8 +1913,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.44212466, y: 0.4328097, z: -0.25786224, w: 0.74209744}
-  m_LocalPosition: {x: -1.6572021, y: 6.800572, z: 0.07701018}
+  m_LocalRotation: {x: 0.5114912, y: 0.33362594, z: -0.22475578, w: 0.75931245}
+  m_LocalPosition: {x: 0.70871556, y: 8.345476, z: -0.8883103}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2732,7 +2732,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841504843}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.65, z: 0}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3306,7 +3306,7 @@ GameObject:
   - component: {fileID: 2078714157}
   - component: {fileID: 2078714156}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: Foothold3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
