@@ -6,7 +6,8 @@ public class stone : MonoBehaviour
 {
     public Yut_Field currentRoute;
     int routePosition;
-    int lastPosition=0;
+    int nowPosition = 0;
+    int lastPosition = 0;
     public int steps;
     bool isMoving;
 
@@ -14,7 +15,7 @@ public class stone : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isMoving)
         {
-            steps = Random.Range(2, 4);
+            steps = Random.Range(3, 5);
             switch (steps)
             {
                 case 1:
@@ -27,7 +28,8 @@ public class stone : MonoBehaviour
                     Debug.Log("°É!");
                     break;
                 case 4:
-                    Debug.Log("À·!");
+                    steps++;
+                    Debug.Log("¸ð!");
                     break;
                 case 5:
                     Debug.Log("¸ð!");
@@ -44,52 +46,38 @@ public class stone : MonoBehaviour
         {
             yield break;
         }
-        
         isMoving = true;
 
+        lastPosition = routePosition;
+        if (lastPosition == 5)
+        {
+            routePosition = 20;
+            steps--;
+        }
+        else if (lastPosition == 10)
+        {
+            routePosition = 25;
+            steps--;
+        }
+        else if (lastPosition == 22)
+        {
+            routePosition = 27;
+            steps--;
+        }
         while (steps > 0)
         {
+            Debug.Log(lastPosition);
             routePosition++;
-            if (lastPosition == 5) //first corner
-            {
-                routePosition = 21;
-                lastPosition = 21;
-                steps--;
-            }
-            else if (lastPosition == 22) //center
-            {
-                routePosition = 27;
-                lastPosition = 27;
-                steps--;
-            }
-            else if (lastPosition == 10) //second corner
-            {
-                routePosition = 25;
-                lastPosition = 25;
-                steps--;
-            }
-            else if (lastPosition == 24) //passed center
-            {
-                routePosition = 15;
-                lastPosition = 15;
-                steps--;
-            }
-            else if (lastPosition == 28 | lastPosition == 19) //long route goal
-            {
-                routePosition = 0;
-                lastPosition = 0;
-                steps--;
-            }
-
             routePosition %= currentRoute.childNodeList.Count;
-
+           
             Vector3 nextPos = currentRoute.childNodeList[routePosition].position;
             while (MoveToNextNode(nextPos)) { yield return null; }
 
             yield return new WaitForSeconds(0.1f);
             steps--;
         }
-        lastPosition = routePosition;
+        nowPosition = routePosition;
+        Debug.Log(nowPosition);
         isMoving = false;
     }
 
