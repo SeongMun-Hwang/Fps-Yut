@@ -467,15 +467,15 @@ MonoBehaviour:
   - {fileID: 119658178}
   - {fileID: 469091064}
   - {fileID: 1841503062}
+  - {fileID: 579414074}
+  - {fileID: 790433616}
   - {fileID: 445801722}
   - {fileID: 1008608001}
   - {fileID: 2076064848}
-  - {fileID: 278726278}
   - {fileID: 1979349505}
-  - {fileID: 790433616}
+  - {fileID: 278726278}
   - {fileID: 1082433742}
   - {fileID: 1821820261}
-  - {fileID: 579414074}
 --- !u!4 &196885770
 Transform:
   m_ObjectHideFlags: 0
@@ -508,15 +508,15 @@ Transform:
   - {fileID: 119658178}
   - {fileID: 469091064}
   - {fileID: 1841503062}
+  - {fileID: 579414074}
+  - {fileID: 790433616}
   - {fileID: 445801722}
   - {fileID: 1008608001}
   - {fileID: 2076064848}
-  - {fileID: 278726278}
   - {fileID: 1979349505}
-  - {fileID: 790433616}
+  - {fileID: 278726278}
   - {fileID: 1082433742}
   - {fileID: 1821820261}
-  - {fileID: 579414074}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 212548179}
   - component: {fileID: 212548178}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: SecondCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -644,13 +644,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 278726277}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 6.5, y: 0, z: 6.5}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 23
+  m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!136 &278726279
 CapsuleCollider:
@@ -729,7 +729,7 @@ GameObject:
   - component: {fileID: 358225545}
   - component: {fileID: 358225544}
   m_Layer: 0
-  m_Name: Foothold1
+  m_Name: start_Foothold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -827,7 +827,7 @@ GameObject:
   - component: {fileID: 445801724}
   - component: {fileID: 445801723}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -842,11 +842,11 @@ Transform:
   m_GameObject: {fileID: 445801721}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 5, y: 0, z: 5}
-  m_LocalScale: {x: 1.5, y: 0.3, z: 1.5}
+  m_LocalScale: {x: 1.5, y: 0.29999992, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 20
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &445801723
 CapsuleCollider:
@@ -1023,7 +1023,7 @@ GameObject:
   - component: {fileID: 579414076}
   - component: {fileID: 579414075}
   m_Layer: 0
-  m_Name: Foothold1
+  m_Name: route1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1038,11 +1038,11 @@ Transform:
   m_GameObject: {fileID: 579414073}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 8, y: 0, z: 2}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 28
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!136 &579414075
 CapsuleCollider:
@@ -1471,13 +1471,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 790433615}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 6.5, y: 0, z: 3.5}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 25
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!136 &790433617
 CapsuleCollider:
@@ -1913,14 +1913,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.5114912, y: 0.33362594, z: -0.22475578, w: 0.75931245}
-  m_LocalPosition: {x: 0.70871556, y: 8.345476, z: -0.8883103}
+  m_LocalRotation: {x: 0.46012464, y: 0.34776735, z: -0.20218636, w: 0.7914948}
+  m_LocalPosition: {x: -0.584, y: 10.012, z: -0.884}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 47.032, y: 47.013, z: 0}
+  m_LocalEulerAnglesHint: {x: 60.343, y: 47.438, z: -0.003}
 --- !u!1 &1008608000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1934,7 +1934,7 @@ GameObject:
   - component: {fileID: 1008608003}
   - component: {fileID: 1008608002}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: route3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1949,11 +1949,11 @@ Transform:
   m_GameObject: {fileID: 1008608000}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 3.5, y: 0, z: 6.5}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 21
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!136 &1008608002
 CapsuleCollider:
@@ -2032,7 +2032,7 @@ GameObject:
   - component: {fileID: 1082433740}
   - component: {fileID: 1082433739}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: route2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2109,13 +2109,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082433738}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 3.5, y: 0, z: 3.5}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 26
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
 --- !u!1 &1085179124
 GameObject:
@@ -2599,13 +2599,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821820257}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
   m_LocalPosition: {x: 2, y: 0, z: 2}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 27
+  m_RootOrder: 28
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
 --- !u!1 &1841503061
 GameObject:
@@ -2635,7 +2635,7 @@ Transform:
   m_GameObject: {fileID: 1841503061}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 2}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999995, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
@@ -2914,7 +2914,7 @@ GameObject:
   - component: {fileID: 1950330981}
   - component: {fileID: 1950330980}
   m_Layer: 0
-  m_Name: Foothold1
+  m_Name: FirstCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3012,7 +3012,7 @@ GameObject:
   - component: {fileID: 1979349507}
   - component: {fileID: 1979349506}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: route4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3025,13 +3025,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979349504}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 8, y: 0, z: 8}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 24
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!136 &1979349506
 CapsuleCollider:
@@ -3110,7 +3110,7 @@ GameObject:
   - component: {fileID: 2060003955}
   - component: {fileID: 2060003954}
   m_Layer: 0
-  m_Name: Foothold
+  m_Name: ThirdCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3223,11 +3223,11 @@ Transform:
   m_GameObject: {fileID: 2076064847}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 2, y: 0, z: 8}
-  m_LocalScale: {x: 1, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.29999992, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 196885770}
-  m_RootOrder: 22
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!136 &2076064849
 CapsuleCollider:
