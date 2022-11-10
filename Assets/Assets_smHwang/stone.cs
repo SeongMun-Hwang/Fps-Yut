@@ -15,7 +15,7 @@ public class stone : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isMoving)
         {
-            steps = Random.Range(3, 5);
+            steps = Random.Range(1, 6);
             switch (steps)
             {
                 case 1:
@@ -28,8 +28,7 @@ public class stone : MonoBehaviour
                     Debug.Log("걸!");
                     break;
                 case 4:
-                    steps++;
-                    Debug.Log("모!");
+                    Debug.Log("윷!");
                     break;
                 case 5:
                     Debug.Log("모!");
@@ -49,60 +48,74 @@ public class stone : MonoBehaviour
         isMoving = true;
 
         lastPosition = routePosition;
-        if (lastPosition == 5)
-        {
-            routePosition = 20;
-            steps--;
-        }
-        else if (lastPosition == 10)
-        {
-            routePosition = 25;
-            steps--;
-        }
-        else if (lastPosition == 22)
-        {
-            routePosition = 27;
-            steps--;
-        }
-        else if (lastPosition == 23)
-        {
-            routePosition = 15;
-            steps -= 2;
-        }
-        else if (lastPosition == 24)
-        {
-            routePosition = 15;
-            steps--;
-        }
+        
+
         while (steps > 0)
         {
+            if (routePosition == 30 && steps > 0)
+            {
+                Debug.Log("Goal");
+                Destroy(gameObject);
+                break;
+            }
+            //지름길->3번째 코너
+
+            nowPosition = routePosition;
             routePosition++;
-            routePosition %= currentRoute.childNodeList.Count;
-           
+            //routePosition %= currentRoute.childNodeList.Count;
+
+            //Debug.Log("nowposition: " + nowPosition);
+            //Debug.Log("routeposition: " + routePosition);
+            //Debug.Log("lastposition: " + lastPosition);
+
+            if (lastPosition == 5 && nowPosition==5)
+            {
+                routePosition = 20;
+            }
+            else if (lastPosition == 10 && nowPosition == 10)
+            {
+                routePosition = 25;
+            }
+            else if (lastPosition == 22 && nowPosition == 22) //center
+            {
+                routePosition = 28;
+            }
+            else if (lastPosition == 24 && nowPosition == 24)
+            {
+                routePosition = 15;
+            }
+            if (nowPosition == 24 && steps >= 1)
+            {
+                routePosition = 15;
+
+            }
+            if ((lastPosition >= 15 && lastPosition <= 19) || (lastPosition >= 28 && lastPosition <= 29))
+            {
+                if ((nowPosition==19||nowPosition==29)&&steps>=1)
+                {
+                    routePosition = 30;
+                }
+            }
+                
+
             Vector3 nextPos = currentRoute.childNodeList[routePosition].position;
             while (MoveToNextNode(nextPos)) { yield return null; }
 
+
+            
             yield return new WaitForSeconds(0.1f);
             steps--;
-            
-            if (routePosition == 0 && lastPosition != 0)
+
+            if (routePosition == 30 && steps>1)
             {
                 Debug.Log("break");
+                Debug.Log("Goal");
+                Destroy(gameObject);
                 break;
             }
         }
 
-        nowPosition = routePosition;
-        Debug.Log("nowposition: "+nowPosition);
-        Debug.Log("routeposition: "+routePosition);
-        Debug.Log("lastposition: "+lastPosition);
-
-       
-        if (routePosition == 0 && lastPosition != 0)
-        {
-            Debug.Log("Goal");
-            Destroy(gameObject);
-        }
+        
         isMoving = false;
     }
 
