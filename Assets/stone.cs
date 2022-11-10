@@ -64,9 +64,18 @@ public class stone : MonoBehaviour
             routePosition = 27;
             steps--;
         }
+        else if (lastPosition == 23)
+        {
+            routePosition = 15;
+            steps -= 2;
+        }
+        else if (lastPosition == 24)
+        {
+            routePosition = 15;
+            steps--;
+        }
         while (steps > 0)
         {
-            Debug.Log(lastPosition);
             routePosition++;
             routePosition %= currentRoute.childNodeList.Count;
            
@@ -75,9 +84,25 @@ public class stone : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
             steps--;
+            
+            if (routePosition == 0 && lastPosition != 0)
+            {
+                Debug.Log("break");
+                break;
+            }
         }
+
         nowPosition = routePosition;
-        Debug.Log(nowPosition);
+        Debug.Log("nowposition: "+nowPosition);
+        Debug.Log("routeposition: "+routePosition);
+        Debug.Log("lastposition: "+lastPosition);
+
+       
+        if (routePosition == 0 && lastPosition != 0)
+        {
+            Debug.Log("Goal");
+            Destroy(gameObject);
+        }
         isMoving = false;
     }
 
