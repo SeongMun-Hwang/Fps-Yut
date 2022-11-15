@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class stone : MonoBehaviour
 {
-    public Yut_Field currentRoute;
-    int routePosition;
-    int nowPosition = 0;
-    int lastPosition = 0;
-    public int steps;
+    public GameObject[] player;
+    public Yut_Field[] currentRoute = new Yut_Field[2];
+    int[] routePosition = new int[2];
+    int[] nowPosition = new int[2];
+    int[] lastPosition = new int[2];
+    int[] steps = new int[2];
     bool isMoving;
+    int turn = 0;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isMoving)
         {
-            steps = Random.Range(1, 6);
-            switch (steps)
+            steps[turn] = Random.Range(1, 6);
+            switch (steps[turn])
             {
                 case 1:
                     Debug.Log("도!");
@@ -34,7 +36,6 @@ public class stone : MonoBehaviour
                     Debug.Log("모!");
                     break;
             }
-
             StartCoroutine(Move());
         }
     }
@@ -47,80 +48,76 @@ public class stone : MonoBehaviour
         }
         isMoving = true;
 
-        lastPosition = routePosition;
-        
+        lastPosition[turn] = routePosition[turn];
 
-        while (steps > 0)
+
+        while (steps[turn] > 0)
         {
-            if (routePosition == 30 && steps > 0)
+            if (routePosition[turn] == 30 && steps[turn] > 0)
             {
                 Debug.Log("Goal");
-                Destroy(gameObject);
+                Destroy(player[turn]);
                 break;
             }
             //지름길->3번째 코너
 
-            nowPosition = routePosition;
-            routePosition++;
-            //routePosition %= currentRoute.childNodeList.Count;
-
-            //Debug.Log("nowposition: " + nowPosition);
-            //Debug.Log("routeposition: " + routePosition);
-            //Debug.Log("lastposition: " + lastPosition);
-
-            if (lastPosition == 5 && nowPosition==5)
+            nowPosition[turn] = routePosition[turn];
+            routePosition[turn]++;
+            if (lastPosition[turn] == 5 && nowPosition[turn] == 5)
             {
-                routePosition = 20;
+                routePosition[turn] = 20;
             }
-            else if (lastPosition == 10 && nowPosition == 10)
+            else if (lastPosition[turn] == 10 && nowPosition[turn] == 10)
             {
-                routePosition = 25;
+                routePosition[turn] = 25;
             }
-            else if (lastPosition == 22 && nowPosition == 22) //center
+            else if (lastPosition[turn] == 22 && nowPosition[turn] == 22) //center
             {
-                routePosition = 28;
+                routePosition[turn] = 28;
             }
-            else if (lastPosition == 24 && nowPosition == 24)
+            else if (lastPosition[turn] == 24 && nowPosition[turn] == 24)
             {
-                routePosition = 15;
+                routePosition[turn] = 15;
             }
-            if (nowPosition == 24 && steps >= 1)
+            if (nowPosition[turn] == 24 && steps[turn] >= 1)
             {
-                routePosition = 15;
+                routePosition[turn] = 15;
 
             }
-            if ((lastPosition >= 15 && lastPosition <= 19) || (lastPosition >= 28 && lastPosition <= 29))
+            if ((lastPosition[turn] >= 15 && lastPosition[turn] <= 19) || (lastPosition[turn] >= 28 && lastPosition[turn] <= 29))
             {
-                if ((nowPosition==19||nowPosition==29)&&steps>=1)
+                if ((nowPosition[turn] == 19 || nowPosition[turn] == 29) && steps[turn] >= 1)
                 {
-                    routePosition = 30;
+                    routePosition[turn] = 30;
                 }
             }
-                
 
-            Vector3 nextPos = currentRoute.childNodeList[routePosition].position;
-            while (MoveToNextNode(nextPos)) { yield return null; }
+            Vector3[] nextPos = new Vector3[2];
+            nextPos[turn] = currentRoute[turn].childNodeList[routePosition[turn]].position;
+            while (MoveToNextNode(nextPos[turn])) { yield return null; }
 
 
-            
+
             yield return new WaitForSeconds(0.1f);
-            steps--;
+            steps[turn]--;
 
-            if (routePosition == 30 && steps>1)
+            if (routePosition[turn] == 30 && steps[turn] > 1)
             {
                 Debug.Log("break");
                 Debug.Log("Goal");
-                Destroy(gameObject);
+                Destroy(player[turn]);
                 break;
             }
         }
 
-        
+
         isMoving = false;
+        if (turn == 0) { turn = 1; }
+        else if (turn == 1) { turn = 0; }
     }
 
     bool MoveToNextNode(Vector3 goal)
     {
-        return goal != (transform.position = Vector3.MoveTowards(transform.position, goal, 8f * Time.deltaTime));
-    } 
+        return goal != (player[turn].transform.position = Vector3.MoveTowards(player[turn].transform.position, goal, 8f * Time.deltaTime));
+    }
 }
