@@ -12,27 +12,41 @@ public class stone : MonoBehaviour
     int[] steps = new int[2];
     bool isMoving;
     int turn = 0;
+    int sum = 0;
+    int chance = 0;
 
     public void throwYut()
     {
-        steps[turn] = Random.Range(1, 6);
-        switch (steps[turn])
+        int[] yut = new int[4];
+        for(int i = 0; i < 4; i++)
         {
+            yut[i] = Random.Range(0, 2);
+            sum += yut[i];
+        }
+        switch (sum)
+        {
+            case 0:
+                steps[turn] = 5;
+                chance = 1;
+                Debug.Log("모!");
+                break;
             case 1:
+                steps[turn] = 1;
                 Debug.Log("도!");
                 break;
             case 2:
+                steps[turn] = 2;
                 Debug.Log("개!");
                 break;
             case 3:
+                steps[turn] = 3;
                 Debug.Log("걸!");
                 break;
             case 4:
+                steps[turn] = 4;
+                chance = 1;
                 Debug.Log("윷!");
-                break;
-            case 5:
-                Debug.Log("모!");
-                break;
+                break;  
         }
         StartCoroutine(Move());
     }
@@ -56,10 +70,10 @@ public class stone : MonoBehaviour
                 Destroy(player[turn]);
                 break;
             }
-            //지름길->3번째 코너
 
             nowPosition[turn] = routePosition[turn];
             routePosition[turn]++;
+
             if (lastPosition[turn] == 5 && nowPosition[turn] == 5)
             {
                 routePosition[turn] = 20;
@@ -97,20 +111,19 @@ public class stone : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
             steps[turn]--;
-
-            if (routePosition[turn] == 30 && steps[turn] > 1)
-            {
-                Debug.Log("break");
-                Debug.Log("Goal");
-                Destroy(player[turn]);
-                break;
-            }
         }
 
-
         isMoving = false;
-        if (turn == 0) { turn = 1; }
-        else if (turn == 1) { turn = 0; }
+        sum = 0;
+        //윷, 모 나왔을 시 턴 유지, 아니면 변경
+        if (chance == 1)
+        {
+            chance--;
+        }
+        else {
+            if (turn == 0) { turn = 1; }
+            else if (turn == 1) { turn = 0; }
+        }        
     }
 
     bool MoveToNextNode(Vector3 goal)
