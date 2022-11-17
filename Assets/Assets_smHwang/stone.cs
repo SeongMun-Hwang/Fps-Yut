@@ -5,7 +5,7 @@ using UnityEngine;
 public class stone : MonoBehaviour
 {
     public GameObject[] player;
-    public Yut_Field[] currentRoute = new Yut_Field[2];
+    public Yut_Field currentRoute;
     int[] routePosition = new int[2];
     int[] nowPosition = new int[2];
     int[] lastPosition = new int[2];
@@ -13,31 +13,28 @@ public class stone : MonoBehaviour
     bool isMoving;
     int turn = 0;
 
-    void Update()
+    public void throwYut()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isMoving)
+        steps[turn] = Random.Range(1, 6);
+        switch (steps[turn])
         {
-            steps[turn] = Random.Range(1, 6);
-            switch (steps[turn])
-            {
-                case 1:
-                    Debug.Log("µµ!");
-                    break;
-                case 2:
-                    Debug.Log("°³!");
-                    break;
-                case 3:
-                    Debug.Log("°É!");
-                    break;
-                case 4:
-                    Debug.Log("À·!");
-                    break;
-                case 5:
-                    Debug.Log("¸ð!");
-                    break;
-            }
-            StartCoroutine(Move());
+            case 1:
+                Debug.Log("µµ!");
+                break;
+            case 2:
+                Debug.Log("°³!");
+                break;
+            case 3:
+                Debug.Log("°É!");
+                break;
+            case 4:
+                Debug.Log("À·!");
+                break;
+            case 5:
+                Debug.Log("¸ð!");
+                break;
         }
+        StartCoroutine(Move());
     }
 
     IEnumerator Move()
@@ -93,7 +90,7 @@ public class stone : MonoBehaviour
             }
 
             Vector3[] nextPos = new Vector3[2];
-            nextPos[turn] = currentRoute[turn].childNodeList[routePosition[turn]].position;
+            nextPos[turn] = currentRoute.childNodeList[routePosition[turn]].position;
             while (MoveToNextNode(nextPos[turn])) { yield return null; }
 
 
