@@ -7,15 +7,29 @@ public class stone : MonoBehaviour
 {
     public GameObject[] player;
     public Yut_Field currentRoute;
-    int[] routePosition = new int[2];
-    int[] nowPosition = new int[2];
-    int[] lastPosition = new int[2];
+
+    public struct user
+    {
+        public GameObject player;
+        public int routePosition;
+        public int nowPosition;
+        public int lastPosition;      
+        public int steps;
+    };
+
     bool isMoving;
-    public int turn = 0;
-    public int[] steps = new int[2];
+    int turn = 0;
     int sum = 0;
     int chance = 0;
     public Text Yut;
+
+    user[] users = new user[2];
+
+    void Start()
+    {
+        users[0].player = player[0];
+        users[1].player = player[1];
+    }
 
     public void throwYut()
     {
@@ -28,24 +42,24 @@ public class stone : MonoBehaviour
         switch (sum)
         {
             case 0:
-                steps[turn] = 5;
+                users[turn].steps = 5;
                 chance = 1;
                 Yut.text = "¸ð";
                 break;
             case 1:
-                steps[turn] = 1;
+                users[turn].steps = 1;
                 Yut.text = "µµ";
                 break;
             case 2:
-                steps[turn] = 2;
+                users[turn].steps = 2;
                 Yut.text = "°³";
                 break;
             case 3:
-                steps[turn] = 3;
+                users[turn].steps = 3;
                 Yut.text = "°É";
                 break;
             case 4:
-                steps[turn] = 4;
+                users[turn].steps = 4;
                 chance = 1;
                 Yut.text = "À·";
                 break;  
@@ -61,56 +75,56 @@ public class stone : MonoBehaviour
         }
         isMoving = true;
 
-        lastPosition[turn] = routePosition[turn];
+        users[turn].lastPosition = users[turn].routePosition;
 
 
-        while (steps[turn] > 0)
+        while (users[turn].steps > 0)
         {
-            if (routePosition[turn] == 30 && steps[turn] > 0)
+            if (users[turn].routePosition == 30 && users[turn].steps > 0)
             {
                 Debug.Log("Goal");
                 Destroy(player[turn]);
                 break;
             }
 
-            nowPosition[turn] = routePosition[turn];
-            routePosition[turn]++;
+            users[turn].nowPosition = users[turn].routePosition;
+            users[turn].routePosition++;
 
-            if (lastPosition[turn] == 5 && nowPosition[turn] == 5)
+            if (users[turn].lastPosition == 5 && users[turn].nowPosition == 5)
             {
-                routePosition[turn] = 20;
+                users[turn].routePosition = 20;
             }
-            else if (lastPosition[turn] == 10 && nowPosition[turn] == 10)
+            else if (users[turn].lastPosition == 10 && users[turn].nowPosition == 10)
             {
-                routePosition[turn] = 25;
+                users[turn].routePosition = 25;
             }
-            else if (lastPosition[turn] == 22 && nowPosition[turn] == 22) //center
+            else if (users[turn].lastPosition == 22 && users[turn].nowPosition == 22) //center
             {
-                routePosition[turn] = 28;
+                users[turn].routePosition = 28;
             }
-            else if (lastPosition[turn] == 24 && nowPosition[turn] == 24)
+            else if (users[turn].lastPosition == 24 && users[turn].nowPosition == 24)
             {
-                routePosition[turn] = 15;
+                users[turn].routePosition = 15;
             }
-            if (nowPosition[turn] == 24 && steps[turn] >= 1)
+            if (users[turn].nowPosition == 24 && users[turn].steps >= 1)
             {
-                routePosition[turn] = 15;
+                users[turn].routePosition = 15;
 
             }
-            if ((lastPosition[turn] >= 15 && lastPosition[turn] <= 19) || (lastPosition[turn] >= 28 && lastPosition[turn] <= 29))
+            if ((users[turn].lastPosition >= 15 && users[turn].lastPosition <= 19) || (users[turn].lastPosition >= 28 && users[turn].lastPosition <= 29))
             {
-                if ((nowPosition[turn] == 19 || nowPosition[turn] == 29) && steps[turn] >= 1)
+                if ((users[turn].nowPosition == 19 || users[turn].nowPosition == 29) && users[turn].steps >= 1)
                 {
-                    routePosition[turn] = 30;
+                    users[turn].routePosition = 30;
                 }
             }
 
             Vector3[] nextPos = new Vector3[2];
-            nextPos[turn] = currentRoute.childNodeList[routePosition[turn]].position;
+            nextPos[turn] = currentRoute.childNodeList[users[turn].routePosition].position;
             while (MoveToNextNode(nextPos[turn])) { yield return null; }
 
             yield return new WaitForSeconds(0.1f);
-            steps[turn]--;
+            users[turn].steps--;
         }
 
         isMoving = false;

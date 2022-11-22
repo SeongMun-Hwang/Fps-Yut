@@ -1556,8 +1556,7 @@ MonoBehaviour:
   - {fileID: 1841504843}
   - {fileID: 1525493212}
   currentRoute: {fileID: 196885769}
-  turn: 0
-  steps: 0000000000000000
+  Yut: {fileID: 1791933598}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -3266,7 +3265,6 @@ GameObject:
   - component: {fileID: 1791933596}
   - component: {fileID: 1791933599}
   - component: {fileID: 1791933598}
-  - component: {fileID: 1791933600}
   m_Layer: 5
   m_Name: Text (Legacy)
   m_TagString: Untagged
@@ -3336,19 +3334,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1791933595}
   m_CullTransparentMesh: 1
---- !u!114 &1791933600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1791933595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a373cc6f5e579547b5c93639968f38e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Yut: {fileID: 1791933598}
 --- !u!1 &1821820257
 GameObject:
   m_ObjectHideFlags: 0
