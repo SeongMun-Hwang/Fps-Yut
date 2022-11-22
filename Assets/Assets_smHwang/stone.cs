@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class stone : MonoBehaviour
 {
@@ -9,11 +10,12 @@ public class stone : MonoBehaviour
     int[] routePosition = new int[2];
     int[] nowPosition = new int[2];
     int[] lastPosition = new int[2];
-    int[] steps = new int[2];
     bool isMoving;
-    int turn = 0;
+    public int turn = 0;
+    public int[] steps = new int[2];
     int sum = 0;
     int chance = 0;
+    public Text Yut;
 
     public void throwYut()
     {
@@ -28,24 +30,24 @@ public class stone : MonoBehaviour
             case 0:
                 steps[turn] = 5;
                 chance = 1;
-                Debug.Log("¸ð!");
+                Yut.text = "¸ð";
                 break;
             case 1:
                 steps[turn] = 1;
-                Debug.Log("µµ!");
+                Yut.text = "µµ";
                 break;
             case 2:
                 steps[turn] = 2;
-                Debug.Log("°³!");
+                Yut.text = "°³";
                 break;
             case 3:
                 steps[turn] = 3;
-                Debug.Log("°É!");
+                Yut.text = "°É";
                 break;
             case 4:
                 steps[turn] = 4;
                 chance = 1;
-                Debug.Log("À·!");
+                Yut.text = "À·";
                 break;  
         }
         StartCoroutine(Move());
@@ -106,8 +108,6 @@ public class stone : MonoBehaviour
             Vector3[] nextPos = new Vector3[2];
             nextPos[turn] = currentRoute.childNodeList[routePosition[turn]].position;
             while (MoveToNextNode(nextPos[turn])) { yield return null; }
-
-
 
             yield return new WaitForSeconds(0.1f);
             steps[turn]--;
