@@ -1,37 +1,37 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    // ¹«±â Áßº¹ ±³Ã¼ ½ÇÇà ¹æÁö
-    public static bool isChangeWeapon = false; // true µÇ¸é ¹«±â ±³Ã¼ ¾ÈµÇ°Ô ¸·À»°ÅÀÓ
+    // ë¬´ê¸° ì¤‘ë³µ êµì²´ ì‹¤í–‰ ë°©ì§€
+    public static bool isChangeWeapon = false; // true ë˜ë©´ ë¬´ê¸° êµì²´ ì•ˆë˜ê²Œ ë§‰ì„ê±°ì„
 
-    // ÇöÀç ¹«±â¿Í ÇöÀç ¹«±â ¾Ö´Ï¸ŞÀÌ¼Ç
+    // í˜„ì¬ ë¬´ê¸°ì™€ í˜„ì¬ ë¬´ê¸° ì• ë‹ˆë©”ì´ì…˜
     public static Transform currentWeapon;
     // public static Animator currentWeaponAnim;
 
-    // ÇöÀç ¹«±â Å¸ÀÔ
+    // í˜„ì¬ ë¬´ê¸° íƒ€ì…
     [SerializeField]
     private string currentWeaponType;
 
-    // ¹«±â ±³Ã¼ µô·¹ÀÌ ¹«±â ±³Ã¼ ¿ÏÀü ³¡³­ ½ÃÁ¡
+    // ë¬´ê¸° êµì²´ ë”œë ˆì´ ë¬´ê¸° êµì²´ ì™„ì „ ëë‚œ ì‹œì 
     [SerializeField]
     private float changeWeaponDelayTime;
     [SerializeField]
     private float changeWeaponEndDelayTime;
 
-    // ¹«±â Á¾·ùµé ÀüºÎ °ü¸®
+    // ë¬´ê¸° ì¢…ë¥˜ë“¤ ì „ë¶€ ê´€ë¦¬
     [SerializeField]
     private Gun[] guns;
     [SerializeField]
     private Hand[] hands;
 
-    // °ü¸® Â÷¿ø¿¡¼­ ¹«±â ½±°Ô Á¢±Ù °¡´ÉÇÏµµ·Ï
+    // ê´€ë¦¬ ì°¨ì›ì—ì„œ ë¬´ê¸° ì‰½ê²Œ ì ‘ê·¼ ê°€ëŠ¥í•˜ë„ë¡
     private Dictionary<string, Gun> gunDictionary = new Dictionary<string, Gun>();
     private Dictionary<string, Hand> handDictionary = new Dictionary<string, Hand>();
 
-    // ÇÊ¿äÇÑ ÄÄÆ÷³ÍÆ®.
+    // í•„ìš”í•œ ì»´í¬ë„ŒíŠ¸.
     [SerializeField]
     private GunController theGunController;
     [SerializeField]
@@ -59,7 +59,7 @@ public class WeaponManager : MonoBehaviour
         if (!isChangeWeapon)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
-                StartCoroutine(ChangeWeaponCoroutine("HAND", "¸Ç¼Õ"));
+                StartCoroutine(ChangeWeaponCoroutine("HAND", "ë§¨ì†"));
             else if (Input.GetKeyDown(KeyCode.Alpha2))
                 StartCoroutine(ChangeWeaponCoroutine("GUN", "Yut"));
         }

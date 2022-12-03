@@ -1,27 +1,27 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    // È°¼ºÈ­ ¿©ºÎ
+    // í™œì„±í™” ì—¬ë¶€
     public static bool isActivate = true;
 
     [SerializeField]
-    private Gun currentGun; // ÇöÀç ÃÑ
+    private Gun currentGun; // í˜„ì¬ ì´
 
-    private float currentFireRate; // ¿¬»ç ¼Óµµ °è»ê
+    private float currentFireRate; // ì—°ì‚¬ ì†ë„ ê³„ì‚°
 
-    private AudioSource audioSource; // È¿°úÀ½
+    private AudioSource audioSource; // íš¨ê³¼ìŒ
 
-    public Transform bulletPos; // ÃÑ¾ËÀÌ »ı¼ºµÉ À§Ä¡
+    public Transform bulletPos; // ì´ì•Œì´ ìƒì„±ë  ìœ„ì¹˜
     public GameObject bullet;
     public int bulletSpeed;
 
-    //Ãæµ¹ Á¤º¸ ¹Ş¾Æ¿È
+    //ì¶©ëŒ ì •ë³´ ë°›ì•„ì˜´
     private RaycastHit hitInfo;
 
-    // ÇÊ¿äÇÑ ÄÄÆ÷³ÍÆ®
+    // í•„ìš”í•œ ì»´í¬ë„ŒíŠ¸
     [SerializeField]
     private Camera theCam;
 
@@ -42,14 +42,14 @@ public class GunController : MonoBehaviour
         }
     }
 
-    // ¿¬»ç¼Óµµ Àç°è»ê
+    // ì—°ì‚¬ì†ë„ ì¬ê³„ì‚°
     private void GunFireRateCalc()
     {
         if (currentFireRate > 0)
-            currentFireRate -= Time.deltaTime; // 1ÃÊ¿¡ 1 °¨¼Ò
+            currentFireRate -= Time.deltaTime; // 1ì´ˆì— 1 ê°ì†Œ
     }
 
-    // ¹ß»ç ½Ãµµ
+    // ë°œì‚¬ ì‹œë„
     private void TryFire()
     {
         if (Input.GetButton("Fire1") && currentFireRate <=0)
@@ -58,14 +58,14 @@ public class GunController : MonoBehaviour
         }
     }
 
-    // ¹ß»ç Àü
+    // ë°œì‚¬ ì „
     private void Fire()
     {
         currentFireRate = currentGun.fireRate;
         Shoot();
     }
 
-    // ¹ß»ç ÈÄ
+    // ë°œì‚¬ í›„
     private void Shoot()
     {
         PlaySE(currentGun.fire_Sound);
@@ -91,7 +91,7 @@ public class GunController : MonoBehaviour
         }
     }
 
-    // »ç¿îµå ÀÌÆåÆ®
+    // ì‚¬ìš´ë“œ ì´í™íŠ¸
     private void PlaySE(AudioClip _clip)
     {
         audioSource.clip = _clip;
@@ -100,7 +100,7 @@ public class GunController : MonoBehaviour
 
     public void GunChange(Gun _gun)
     {
-        if(WeaponManager.currentWeapon != null) // ¹º°¡¸¦ µé°íÀÖ´Â °æ¿ì
+        if(WeaponManager.currentWeapon != null) // ë­”ê°€ë¥¼ ë“¤ê³ ìˆëŠ” ê²½ìš°
         {
             WeaponManager.currentWeapon.gameObject.SetActive(false);
         }
