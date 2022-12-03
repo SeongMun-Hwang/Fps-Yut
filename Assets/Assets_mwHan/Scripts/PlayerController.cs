@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     // 땅 착지 여부
     private CapsuleCollider capsuleCollider;
 
+    private Vector3 _velocity;
+
     [SerializeField]
     private float lookSensitivity; // 카메라 민감도
 
@@ -36,6 +38,10 @@ public class PlayerController : MonoBehaviour
     private int curHealth;
 
     bool isDamage = false;
+
+    public float force = 1;
+
+    public bool isdead = false;
 
     private Rigidbody myRigid; // 플레이어 실제 몸. 물리학 입히는거
     MeshRenderer[] meshs;
@@ -55,17 +61,18 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update() // 프레임마다 실행
     {
+        GetKey();
+        Move();
+        TryRun();
         IsGround();
         TryJump();
-        TryRun();
-        Move();
         CameraRotation();
         CharactorRotation();
     }
 
     private void TryJump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGround)
+        if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             Jump();
         }
@@ -87,7 +94,7 @@ public class PlayerController : MonoBehaviour
         {
             Running();
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift)) 
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             RunningCancle();
         }
@@ -105,7 +112,7 @@ public class PlayerController : MonoBehaviour
         applySpeed = walkSpeed;
     }
 
-    private void Move()
+    private void GetKey()
     {
         float _moveDirX = Input.GetAxisRaw("Horizontal"); // 좌우 오른쪽 방향키 1, 왼쪽 -1, 안누르면 0
         float _moveDirZ = Input.GetAxisRaw("Vertical"); // 정면, 뒤
@@ -113,8 +120,10 @@ public class PlayerController : MonoBehaviour
         Vector3 _moveHorizontal = transform.right * _moveDirX; // transform은 유니티 창 기본 컴퍼넌트.  기본 (1,0,0)
         Vector3 _moveVertical = transform.forward * _moveDirZ; // 기본 (0,0,1) 위, 아래 구분
 
-        Vector3 _velocity = (_moveHorizontal + _moveVertical).normalized * applySpeed; // normalized는 방향 유지되면서 합 1 나오도록 정규화
-
+        _velocity = (_moveHorizontal + _moveVertical).normalized * applySpeed; // normalized는 방향 유지되면서 합 1 나오도록 정규화
+    }
+    private void Move()
+    {
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
         // Time.deltaTime : 그냥 움직이게 하면 텔포하는것처럼 보이니까 시간 쪼개기?
     }
@@ -140,21 +149,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("EnemyWeapon"))
+        if (other.CompareTag("EnemyWeapon"))
         {
             if (!isDamage)
             {
+                Vector3 hitDirection = other.transform.position - transform.position;
+                hitDirection = -hitDirection.normalized;
+                GetComponent<Rigidbody>().AddForce(hitDirection * force * 100);
                 curHealth -= 1;
+                if (curHealth <= 0) isdead = true;
                 StartCoroutine(OnDamage());
                 Debug.Log("피격됨");
             }
         }
+        if (other.CompareTag("OutBottom")) isdead = true;
     }
 
     IEnumerator OnDamage()
     {
         isDamage = true;
-        foreach(MeshRenderer mesh in meshs)
+        foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.gray;
         }
