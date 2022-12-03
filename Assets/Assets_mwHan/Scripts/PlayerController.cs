@@ -32,7 +32,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Camera theCamera;
 
+    [SerializeField]
+    private int curHealth;
+
+    bool isDamage = false;
+
     private Rigidbody myRigid; // 플레이어 실제 몸. 물리학 입히는거
+    MeshRenderer[] meshs;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +46,7 @@ public class PlayerController : MonoBehaviour
         // theCamera = FindObjectOfType<Camera>(); // 카메라는 플레이어에 들어있는게 아니라 자식개체인 카메라에 들어있는거. 그래서 Camera 가져옴
         capsuleCollider = GetComponent<CapsuleCollider>();
         myRigid = GetComponent<Rigidbody>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
 
         // 초기화
         applySpeed = walkSpeed;
@@ -129,5 +136,33 @@ public class PlayerController : MonoBehaviour
         Vector3 _characterRotationY = new Vector3(0f, _yRotation, 0f) * lookSensitivity;
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
         // 실제 유니티 내부에 회전은 quaternion 사용함. 우리가 구한 vector(euler)를 quaternion으로 바꿔주는 과정
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("EnemyWeapon"))
+        {
+            if (!isDamage)
+            {
+                curHealth -= 1;
+                StartCoroutine(OnDamage());
+                Debug.Log("피격됨");
+            }
+        }
+    }
+
+    IEnumerator OnDamage()
+    {
+        isDamage = true;
+        foreach(MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.gray;
+        }
+        yield return new WaitForSeconds(1f);
+        isDamage = false;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.green;
+        }
     }
 }

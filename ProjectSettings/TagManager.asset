@@ -4,17 +4,18 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Wall
-  - Floor
+  - Weapon
+  - Field
+  - EnemyWeapon
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Weapon
   - Water
   - UI
-  - 
-  - 
+  - Field
+  - EnemyWeapon
   - 
   - 
   - 
