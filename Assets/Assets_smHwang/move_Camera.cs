@@ -23,11 +23,11 @@ public class move_Camera : MonoBehaviour
 
     void Update()
     {
-        lastMouse = Input.mousePosition - lastMouse;
-        lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
-        lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
-        transform.eulerAngles = lastMouse;
-        lastMouse = Input.mousePosition;
+        lastMouse = new Vector3(5,0,5);//Input.mousePosition - lastMouse;
+        //lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
+        //lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
+        //transform.eulerAngles = lastMouse;
+        //lastMouse = Input.mousePosition;
         //Mouse  camera angle done.  
 
         //Keyboard commands
@@ -51,23 +51,26 @@ public class move_Camera : MonoBehaviour
 
             p = p * Time.deltaTime;
             Vector3 newPosition = transform.position;
-            if (Input.GetKey(KeyCode.Space))
-            { //If player wants to move on X and Z axis only
+            //if (Input.GetKey(KeyCode.Space))
+            //{ //If player wants to move on X and Z axis only
                 transform.Translate(p);
                 newPosition.x = transform.position.x;
                 newPosition.z = transform.position.z;
                 transform.position = newPosition;
-            }
-            else
-            {
-                transform.Translate(p);
-            }
+            //}
+            //else
+            //{
+            //    transform.Translate(p);
+            //}
         }
     }
 
     private Vector3 GetBaseInput()
     { //returns the basic values, if it's 0 than it's not active.
         Vector3 p_Velocity = new Vector3();
+        transform.rotation = Quaternion.Euler(p_Velocity);
+        transform.LookAt(lastMouse);
+        
         if (Input.GetKey(KeyCode.W))
         {
             p_Velocity += new Vector3(0, 0, 1);

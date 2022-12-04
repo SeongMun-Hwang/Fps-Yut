@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class stone : MonoBehaviour
 {
     public GameObject[] player;
     public Yut_Field currentRoute;
+    public AudioSource[] yutSound;
 
     public struct user
     {
@@ -19,9 +21,10 @@ public class stone : MonoBehaviour
 
     bool isMoving;
     int turn = 0;
-    int sum = 0;
+    int sum;
     int chance = 0;
     public Text Yut;
+    float time;
 
     user[] users = new user[2];
 
@@ -29,46 +32,58 @@ public class stone : MonoBehaviour
     {
         users[0].player = player[0];
         users[1].player = player[1];
+        for(int i = 0; i < 5; i++)
+        {
+            yutSound[i].mute = true;
+        }
     }
 
-    public void throwYut()
+    public void Update()
     {
-        int[] yut = new int[4];
-        for(int i = 0; i < 4; i++)
+        if (Input.GetKey("space"))
         {
-            yut[i] = Random.Range(0, 2);
-            sum += yut[i];
-        }
-        switch (sum)
-        {
-            case 0:
-                users[turn].steps = 5;
-                chance = 1;
-                Yut.text = "모";
-                break;
-            case 1:
-                users[turn].steps = 1;
-                Yut.text = "도";
-                break;
-            case 2:
-                users[turn].steps = 2;
-                Yut.text = "개";
-                break;
-            case 3:
-                users[turn].steps = 3;
-                Yut.text = "걸";
-                break;
-            case 4:
-                users[turn].steps = 4;
-                chance = 1;
-                Yut.text = "윷";
-                break;  
-        }
-        StartCoroutine(Move());
+            int[] yut = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                yut[i] = Random.Range(0, 2);
+                sum += yut[i];
+            }           
+            switch (sum)
+            {
+                case 0:
+                    users[turn].steps = 5;
+                    chance = 1;
+                    Yut.text = "모!";
+                    break;
+                case 1:
+                    users[turn].steps = 1;
+                    Yut.text = "도!";
+                    break;
+                case 2:
+                    users[turn].steps = 2;
+                    Yut.text = "개!";
+                    break;
+                case 3:
+                    users[turn].steps = 3;
+                    Yut.text = "걸!";
+                    break;
+                case 4:
+                    users[turn].steps = 4;
+                    chance = 1;
+                    Yut.text = "윷!";
+                    break;
+            }
+            int sound = Random.Range(0, 5);
+            yutSound[sound].mute = false;
+            yutSound[sound].Play();
+            StartCoroutine(Move());
+        }   
     }
 
     IEnumerator Move()
     {
+        yield return new WaitForSeconds(1f);
+        Yut.text = "";
         if (isMoving)
         {
             yield break;
@@ -80,6 +95,13 @@ public class stone : MonoBehaviour
 
         while (users[turn].steps > 0)
         {
+            //포지션이 같으면 fps 전투로 이동
+            //if ((users[0].nowPosition == users[1].nowPosition)&& users[0].nowPosition!=0)
+            //{
+            //    Yut.text = "Encounter!!";
+            //    yield return new WaitForSeconds(1f);
+            //    SceneManager.LoadScene("Fpsfight");
+            //}
             if (users[turn].routePosition == 30 && users[turn].steps > 0)
             {
                 Debug.Log("Goal");
@@ -137,6 +159,7 @@ public class stone : MonoBehaviour
         else {
             if (turn == 0) { turn = 1; }
             else if (turn == 1) { turn = 0; }
+            Yut.text = "player " + (turn+1) + " turn!";
         }        
     }
 
