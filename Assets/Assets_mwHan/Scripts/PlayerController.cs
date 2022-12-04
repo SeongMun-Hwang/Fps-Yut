@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public float Health { get { return health; } }
     public float MaxHealth { get { return maxHealth; } }
 
+    public GameManager manager;
+
     [SerializeField] // 쓰면 인스펙터 창에 뜬대. 근데 권장은 안한대. 예외도 있음
     private float walkSpeed; // 걷기 속도
     [SerializeField]
@@ -237,5 +239,13 @@ public class PlayerController : MonoBehaviour
     {
         isdead = true;
         Debug.Log("죽음");
+        manager.GameOver();
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.red;
+        }
+        myRigid.constraints = ~RigidbodyConstraints.FreezeAll;
+        myRigid.AddForce(10, 0, 0);
+
     }
 }
