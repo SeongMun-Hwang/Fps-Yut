@@ -14,7 +14,8 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        
+        if (Input.GetMouseButtonDown(0) && !PlayerController.Instance.isdead)
         {
             if (canAttack)
             {

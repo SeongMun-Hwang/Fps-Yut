@@ -1,73 +1,96 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] // ¾²¸é ÀÎ½ºÆåÅÍ Ã¢¿¡ ¶á´ë. ±Ùµ¥ ±ÇÀåÀº ¾ÈÇÑ´ë. ¿¹¿Üµµ ÀÖÀ½
-    private float walkSpeed; // °È±â ¼Óµµ
+    // í”Œë ˆì´ì–´ ì²´ë ¥ì— ê´€í•œ ë¶€ë¶„
+    public delegate void OnHealthChangedDelegate();
+    public OnHealthChangedDelegate onHealthChangedCallback;
+
+    #region Sigleton
+    private static PlayerController instance;
+    public static PlayerController Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType<PlayerController>();
+            return instance;
+        }
+    }
+    #endregion
     [SerializeField]
-    private float runSpeed; // ´Ş¸®±â ¼Óµµ
-    private float applySpeed; // Áö±İ ¼Óµµ
+    private float health;
+    [SerializeField]
+    private float maxHealth;
+    public float Health { get { return health; } }
+    public float MaxHealth { get { return maxHealth; } }
+
+    [SerializeField] // ì“°ë©´ ì¸ìŠ¤í™í„° ì°½ì— ëœ¬ëŒ€. ê·¼ë° ê¶Œì¥ì€ ì•ˆí•œëŒ€. ì˜ˆì™¸ë„ ìˆìŒ
+    private float walkSpeed; // ê±·ê¸° ì†ë„
+    [SerializeField]
+    private float runSpeed; // ë‹¬ë¦¬ê¸° ì†ë„
+    private float applySpeed; // ì§€ê¸ˆ ì†ë„
 
     [SerializeField]
-    private float jumpForce; // Á¡ÇÁ ¶Ù´Â Èû
+    private float jumpForce; // ì í”„ ë›°ëŠ” í˜
 
-    // »óÅÂ º¯¼ö
-    private bool isRun = false; // Áö±İ ´Ş¸®°í ÀÖ³ª?
-    private bool isGround = true; // Áö±İ ¶¥¿¡ ºÙ¾îÀÖ³ª?
+    // ìƒíƒœ ë³€ìˆ˜
+    private bool isRun = false; // ì§€ê¸ˆ ë‹¬ë¦¬ê³  ìˆë‚˜?
+    private bool isGround = true; // ì§€ê¸ˆ ë•…ì— ë¶™ì–´ìˆë‚˜?
 
-    // ¶¥ ÂøÁö ¿©ºÎ
+    // ë•… ì°©ì§€ ì—¬ë¶€
     private CapsuleCollider capsuleCollider;
 
     private Vector3 _velocity;
 
     [SerializeField]
-    private float lookSensitivity; // Ä«¸Ş¶ó ¹Î°¨µµ
+    private float lookSensitivity; // ì¹´ë©”ë¼ ë¯¼ê°ë„
 
-    // Ä«¸Ş¶ó ÇÑ°è
+    // ì¹´ë©”ë¼ í•œê³„
     [SerializeField]
-    private float cameraRotationLimit; // ¸¶¿ì½º ¿Ã¸®¸é 360µµ µ¹¾Æ°¡¸é ÀÌ»óÇÏ´Ï±î. µ¹¾Æ°¥ ¼ö ÀÖ´Â °¢µµ Á¦ÇÑ
-    private float currentCameraRotationX = 0; // ÃÊ±â¿£ Á¤¸é
+    private float cameraRotationLimit; // ë§ˆìš°ìŠ¤ ì˜¬ë¦¬ë©´ 360ë„ ëŒì•„ê°€ë©´ ì´ìƒí•˜ë‹ˆê¹Œ. ëŒì•„ê°ˆ ìˆ˜ ìˆëŠ” ê°ë„ ì œí•œ
+    private float currentCameraRotationX = 0; // ì´ˆê¸°ì—” ì •ë©´
 
-    //ÇÊ¿äÇÑ ÄÄÆ÷³ÍÆ®
+    //í•„ìš”í•œ ì»´í¬ë„ŒíŠ¸
     [SerializeField]
     private Camera theCamera;
 
-    [SerializeField]
-    private int curHealth;
+    bool isDamage = false; // ë°ë¯¸ì§€ë¥¼ ë°›ê³  ìˆëŠ” ìƒíƒœì¸ê°€?
 
-    bool isDamage = false;
+    public float force = 1; // ë°€ì³ì§€ëŠ” í˜
 
-    public float force = 1;
+    public bool isdead = false; // ì£½ì—ˆë‚˜ í™•ì¸
 
-    public bool isdead = false;
-
-    private Rigidbody myRigid; // ÇÃ·¹ÀÌ¾î ½ÇÁ¦ ¸ö. ¹°¸®ÇĞ ÀÔÈ÷´Â°Å
+    private Rigidbody myRigid; // í”Œë ˆì´ì–´ ì‹¤ì œ ëª¸. ë¬¼ë¦¬í•™ ì…íˆëŠ”ê±°
     MeshRenderer[] meshs;
 
     // Start is called before the first frame update
     void Start()
     {
-        // theCamera = FindObjectOfType<Camera>(); // Ä«¸Ş¶ó´Â ÇÃ·¹ÀÌ¾î¿¡ µé¾îÀÖ´Â°Ô ¾Æ´Ï¶ó ÀÚ½Ä°³Ã¼ÀÎ Ä«¸Ş¶ó¿¡ µé¾îÀÖ´Â°Å. ±×·¡¼­ Camera °¡Á®¿È
+        // theCamera = FindObjectOfType<Camera>(); // ì¹´ë©”ë¼ëŠ” í”Œë ˆì´ì–´ì— ë“¤ì–´ìˆëŠ”ê²Œ ì•„ë‹ˆë¼ ìì‹ê°œì²´ì¸ ì¹´ë©”ë¼ì— ë“¤ì–´ìˆëŠ”ê±°. ê·¸ë˜ì„œ Camera ê°€ì ¸ì˜´
         capsuleCollider = GetComponent<CapsuleCollider>();
         myRigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
 
-        // ÃÊ±âÈ­
+        // ì´ˆê¸°í™”
         applySpeed = walkSpeed;
     }
 
     // Update is called once per frame
-    void Update() // ÇÁ·¹ÀÓ¸¶´Ù ½ÇÇà
+    void Update() // í”„ë ˆì„ë§ˆë‹¤ ì‹¤í–‰
     {
-        GetKey();
-        Move();
-        TryRun();
-        IsGround();
-        TryJump();
-        CameraRotation();
-        CharactorRotation();
+        if (!isdead)
+        {
+            GetKey();
+            Move();
+            TryRun();
+            IsGround();
+            TryJump();
+            CameraRotation();
+            CharactorRotation();
+        }
     }
 
     private void TryJump()
@@ -80,17 +103,17 @@ public class PlayerController : MonoBehaviour
 
     private void IsGround()
     {
-        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f); // ¶¥¿¡ ºÙ¾îÀÖ´ÂÁö È®ÀÎ. ´ë°¢¼±, °è´Ü °í·Á ¾à°£ÀÇ ¿©À¯
-        // ¹«Á¶°Ç ¾Æ·¡·Î ·¹ÀÌÁ® ½÷¾ßÇØ¼­ Vector3.down, °¡¿î´ëºÎÅÍ Ä¸½¶ Å©±â ¹İ¸¸Å­ ¾Æ·¡·Î ·¹ÀÌÁ®,
+        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f); // ë•…ì— ë¶™ì–´ìˆëŠ”ì§€ í™•ì¸. ëŒ€ê°ì„ , ê³„ë‹¨ ê³ ë ¤ ì•½ê°„ì˜ ì—¬ìœ 
+        // ë¬´ì¡°ê±´ ì•„ë˜ë¡œ ë ˆì´ì ¸ ì´ì•¼í•´ì„œ Vector3.down, ê°€ìš´ëŒ€ë¶€í„° ìº¡ìŠ í¬ê¸° ë°˜ë§Œí¼ ì•„ë˜ë¡œ ë ˆì´ì ¸,
     }
     private void Jump()
     {
-        myRigid.velocity = transform.up * jumpForce; // velocity´Â ³»°¡ ´Ş¸®´Â ¼Óµµ. ¼ø°£ÀûÀ¸·Î À§·Î °¡´Â Èû °¡ÇØ¼­ °øÁßÀ¸·Î
+        myRigid.velocity = transform.up * jumpForce; // velocityëŠ” ë‚´ê°€ ë‹¬ë¦¬ëŠ” ì†ë„. ìˆœê°„ì ìœ¼ë¡œ ìœ„ë¡œ ê°€ëŠ” í˜ ê°€í•´ì„œ ê³µì¤‘ìœ¼ë¡œ
     }
 
-    private void TryRun() // ½¬ÇÁÆ® Å° ´©¸£¸é ´Ş¸± ¼ö ÀÖ°Ô
+    private void TryRun() // ì‰¬í”„íŠ¸ í‚¤ ëˆ„ë¥´ë©´ ë‹¬ë¦´ ìˆ˜ ìˆê²Œ
     {
-        if (Input.GetKey(KeyCode.LeftShift)) // ½¬ÇÁÆ® ´©¸£¸é ´Ş¸²
+        if (Input.GetKey(KeyCode.LeftShift)) // ì‰¬í”„íŠ¸ ëˆ„ë¥´ë©´ ë‹¬ë¦¼
         {
             Running();
         }
@@ -100,13 +123,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Running() // ´Ş¸®±â
+    private void Running() // ë‹¬ë¦¬ê¸°
     {
         isRun = true;
         applySpeed = runSpeed;
     }
 
-    private void RunningCancle() // ´Ş¸®±â ³¡
+    private void RunningCancle() // ë‹¬ë¦¬ê¸° ë
     {
         isRun = false;
         applySpeed = walkSpeed;
@@ -114,57 +137,66 @@ public class PlayerController : MonoBehaviour
 
     private void GetKey()
     {
-        float _moveDirX = Input.GetAxisRaw("Horizontal"); // ÁÂ¿ì ¿À¸¥ÂÊ ¹æÇâÅ° 1, ¿ŞÂÊ -1, ¾È´©¸£¸é 0
-        float _moveDirZ = Input.GetAxisRaw("Vertical"); // Á¤¸é, µÚ
+        float _moveDirX = Input.GetAxisRaw("Horizontal"); // ì¢Œìš° ì˜¤ë¥¸ìª½ ë°©í–¥í‚¤ 1, ì™¼ìª½ -1, ì•ˆëˆ„ë¥´ë©´ 0
+        float _moveDirZ = Input.GetAxisRaw("Vertical"); // ì •ë©´, ë’¤
 
-        Vector3 _moveHorizontal = transform.right * _moveDirX; // transformÀº À¯´ÏÆ¼ Ã¢ ±âº» ÄÄÆÛ³ÍÆ®.  ±âº» (1,0,0)
-        Vector3 _moveVertical = transform.forward * _moveDirZ; // ±âº» (0,0,1) À§, ¾Æ·¡ ±¸ºĞ
+        Vector3 _moveHorizontal = transform.right * _moveDirX; // transformì€ ìœ ë‹ˆí‹° ì°½ ê¸°ë³¸ ì»´í¼ë„ŒíŠ¸.  ê¸°ë³¸ (1,0,0)
+        Vector3 _moveVertical = transform.forward * _moveDirZ; // ê¸°ë³¸ (0,0,1) ìœ„, ì•„ë˜ êµ¬ë¶„
 
-        _velocity = (_moveHorizontal + _moveVertical).normalized * applySpeed; // normalized´Â ¹æÇâ À¯ÁöµÇ¸é¼­ ÇÕ 1 ³ª¿Àµµ·Ï Á¤±ÔÈ­
+        _velocity = (_moveHorizontal + _moveVertical).normalized * applySpeed; // normalizedëŠ” ë°©í–¥ ìœ ì§€ë˜ë©´ì„œ í•© 1 ë‚˜ì˜¤ë„ë¡ ì •ê·œí™”
     }
     private void Move()
     {
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
-        // Time.deltaTime : ±×³É ¿òÁ÷ÀÌ°Ô ÇÏ¸é ÅÚÆ÷ÇÏ´Â°ÍÃ³·³ º¸ÀÌ´Ï±î ½Ã°£ ÂÉ°³±â?
+        // Time.deltaTime : ê·¸ëƒ¥ ì›€ì§ì´ê²Œ í•˜ë©´ í…”í¬í•˜ëŠ”ê²ƒì²˜ëŸ¼ ë³´ì´ë‹ˆê¹Œ ì‹œê°„ ìª¼ê°œê¸°?
     }
 
-    private void CameraRotation() // »óÇÏ Ä«¸Ş¶ó È¸Àü
+    private void CameraRotation() // ìƒí•˜ ì¹´ë©”ë¼ íšŒì „
     {
         float _xRotation = Input.GetAxisRaw("Mouse Y");
-        float _cameraRotationX = _xRotation * lookSensitivity; // ¸¶¿ì½º ¿òÁ÷¿´À» ¶§ Ä«¸Ş¶ó ÃµÃµÈ÷ ¿òÁ÷ÀÌ°Ô ÇØÁÜ
+        float _cameraRotationX = _xRotation * lookSensitivity; // ë§ˆìš°ìŠ¤ ì›€ì§ì˜€ì„ ë•Œ ì¹´ë©”ë¼ ì²œì²œíˆ ì›€ì§ì´ê²Œ í•´ì¤Œ
         currentCameraRotationX -= _cameraRotationX;
-        currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit); // Ä«¸Ş¶ó °¢µµ ÃÖ´ë°ª °íÁ¤
+        currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit); // ì¹´ë©”ë¼ ê°ë„ ìµœëŒ€ê°’ ê³ ì •
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f); //localEulerAngles : Rotation x,y,z
 
     }
 
-    private void CharactorRotation() // ÁÂ¿ì Ä«¸Ş¶ó È¸Àü. (Ä³¸¯ÅÍµµ °°ÀÌ È¸ÀüµÊ)
+    private void CharactorRotation() // ì¢Œìš° ì¹´ë©”ë¼ íšŒì „. (ìºë¦­í„°ë„ ê°™ì´ íšŒì „ë¨)
     {
         float _yRotation = Input.GetAxisRaw("Mouse X");
         Vector3 _characterRotationY = new Vector3(0f, _yRotation, 0f) * lookSensitivity;
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
-        // ½ÇÁ¦ À¯´ÏÆ¼ ³»ºÎ¿¡ È¸ÀüÀº quaternion »ç¿ëÇÔ. ¿ì¸®°¡ ±¸ÇÑ vector(euler)¸¦ quaternionÀ¸·Î ¹Ù²ãÁÖ´Â °úÁ¤
+        // ì‹¤ì œ ìœ ë‹ˆí‹° ë‚´ë¶€ì— íšŒì „ì€ quaternion ì‚¬ìš©í•¨. ìš°ë¦¬ê°€ êµ¬í•œ vector(euler)ë¥¼ quaternionìœ¼ë¡œ ë°”ê¿”ì£¼ëŠ” ê³¼ì •
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("EnemyWeapon"))
+        if (other.CompareTag("EnemyWeapon")) // ë¬´ê¸°ì— ë§ìœ¼ë©´
         {
-            if (!isDamage)
+            if (!isDamage) // ë¬´ì ì‹œê°„ì´ ì•„ë‹ˆë©´
             {
-                Vector3 hitDirection = other.transform.position - transform.position;
+                Vector3 hitDirection = other.transform.position - transform.position; // ë§ì€ ë°©í–¥ ê³„ì‚°
                 hitDirection = -hitDirection.normalized;
-                GetComponent<Rigidbody>().AddForce(hitDirection * force * 100);
-                curHealth -= 1;
-                if (curHealth <= 0) isdead = true;
+                hitDirection = hitDirection * force;
+                hitDirection.y = force;
+                GetComponent<Rigidbody>().AddForce(hitDirection, ForceMode.Impulse); // ë§ì€ ë°©í–¥ìœ¼ë¡œ ë‚ ë¼ê°
+                TakeDamage(1); // ë°ë¯¸ì§€ ì…ìŒ
+                if (Health <= 0) Dodie();
                 StartCoroutine(OnDamage());
-                Debug.Log("ÇÇ°İµÊ");
+                Debug.Log("í”¼ê²©ë¨");
             }
         }
-        if (other.CompareTag("OutBottom")) isdead = true;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("OutBottom"))
+        {
+            TakeDamage(health);
+            Dodie();
+        }
+    }
     IEnumerator OnDamage()
     {
         isDamage = true;
@@ -178,5 +210,32 @@ public class PlayerController : MonoBehaviour
         {
             mesh.material.color = Color.green;
         }
+    }
+    
+
+    public void Heal(float health) // í”¼ íšŒë³µ
+    {
+        this.health += health;
+        ClampHealth();
+    }
+
+    public void TakeDamage(float dmg) // í”¼ê²©
+    {
+        health -= dmg;
+        ClampHealth();
+    }
+
+    void ClampHealth()
+    {
+        health = Mathf.Clamp(health, 0, maxHealth);
+
+        if (onHealthChangedCallback != null)
+            onHealthChangedCallback.Invoke();
+    }
+
+    private void Dodie() // í”¼ê°€ ë‹¤ ë‹³ì•„ì„œ ì£½ìŒ
+    {
+        isdead = true;
+        Debug.Log("ì£½ìŒ");
     }
 }
