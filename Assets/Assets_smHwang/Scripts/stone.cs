@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class stone : MonoBehaviour
 {
     public GameObject[] player;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
-    public Text Yut;
+    public TextMeshProUGUI Yut;
 
     public struct user
     {
