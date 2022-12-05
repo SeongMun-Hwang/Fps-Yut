@@ -46,7 +46,7 @@ public class stone : MonoBehaviour
             {
                 yut[i] = Random.Range(0, 2);
                 sum += yut[i];
-            }           
+            }
             switch (sum)
             {
                 case 0:
@@ -133,12 +133,13 @@ public class stone : MonoBehaviour
 
             users[turn].nextPos = currentRoute.childNodeList[users[turn].routePosition].position;
             while (MoveToNextNode(users[turn].nextPos)) { yield return null; }
+
             //포지션이 같으면 fps 전투로 이동
-            if ((users[0].nowPosition == users[1].nowPosition) && users[1].nowPosition != 0)
+            if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
             {
                 Yut.text = "Encounter!!";
                 yield return new WaitForSeconds(1f);
-                SceneManager.LoadScene("Fpsfight");
+                SceneManager.LoadScene("Fpsfight",LoadSceneMode.Additive);
             }
 
             yield return new WaitForSeconds(0.1f);
