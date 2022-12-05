@@ -10,14 +10,15 @@ public class GameManager : MonoBehaviour
     public float LeftTime; // 남은 시간
     public bool isdead; 
     public float WaitTime; // 씬 전환 시간
+    public string loseplayer;
 
     public GameObject diedPanel;
+    public TextMeshProUGUI WinPlayerTxt;
     public TextMeshProUGUI SceneChangeTimeTxt;
     public TextMeshProUGUI LeftTimeTxt; // 남은 시간 텍스트
 
     private void Start()
     {
-        
     }
     private void Update()
     {
@@ -35,14 +36,22 @@ public class GameManager : MonoBehaviour
         LeftTimeTxt.text = string.Format("{0:00}", min) + ":" + string.Format("{0:00}", sec);
 
         int diesec = (int)WaitTime % 60;
-        SceneChangeTimeTxt.text = string.Format("Please wait : ") + string.Format("{0:0}", diesec) + string.Format("secs");
+        SceneChangeTimeTxt.text = string.Format("Please wait : ") + string.Format("{0:0}", diesec) + string.Format(" secs");
     }
 
     public void GameOver()
     {
-        isdead = true;
-        diedPanel.SetActive(true);
-        StartCoroutine(ChangeScene());
+        if (!isdead)
+        {
+            isdead = true;
+            if(loseplayer == "Player1")
+            {
+                WinPlayerTxt.text = string.Format("{0} Win!!", "TestPlayer");
+            }
+            else WinPlayerTxt.text = string.Format("{0} Win!!", "Player1");
+            diedPanel.SetActive(true);
+            StartCoroutine(ChangeScene());
+        }
     }
 
     IEnumerator ChangeScene()
