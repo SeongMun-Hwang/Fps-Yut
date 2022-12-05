@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
     private float jumpForce; // 점프 뛰는 힘
 
     // 상태 변수
-    private bool isRun = false; // 지금 달리고 있나?
     private bool isGround = true; // 지금 땅에 붙어있나?
 
     // 땅 착지 여부
@@ -127,13 +126,11 @@ public class PlayerController : MonoBehaviour
 
     private void Running() // 달리기
     {
-        isRun = true;
         applySpeed = runSpeed;
     }
 
     private void RunningCancle() // 달리기 끝
     {
-        isRun = false;
         applySpeed = walkSpeed;
     }
 
@@ -238,8 +235,9 @@ public class PlayerController : MonoBehaviour
     private void Dodie() // 피가 다 닳아서 죽음
     {
         isdead = true;
-        Debug.Log("죽음");
+        manager.loseplayer = this.gameObject.name;
         manager.GameOver();
+
         foreach (MeshRenderer mesh in meshs)
         {
             mesh.material.color = Color.red;
