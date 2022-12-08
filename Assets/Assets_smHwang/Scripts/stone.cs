@@ -27,14 +27,20 @@ public class stone : MonoBehaviour
     int sum = 0;
     int chance = 0;
     float time;
+    bool isFight = false;
 
     user[] users = new user[2];
 
     void Start()
     {
-        users[0].player = player[0];
-        users[1].player = player[1];
-        for(int i = 0; i < 5; i++)
+        if (isFight == false)
+        {
+            users[0].player = player[0];
+            users[1].player = player[1];
+        }
+        //DontDestroyOnLoad(users[0].player);
+        //DontDestroyOnLoad(users[1].player);
+        for (int i = 0; i < 5; i++)
         {
             yutSound[i].mute = true;
         }
@@ -42,40 +48,41 @@ public class stone : MonoBehaviour
 
     public void throwYut()
     {
-            int[] yut = new int[4];
-            for (int i = 0; i < 4; i++)
-            {
-                yut[i] = Random.Range(0, 2);
-                sum += yut[i];
-            }
-            switch (sum)
-            {
-                case 0:
-                    users[turn].steps = 5;
-                    chance = 1;
-                    Yut.text = "¸ð!";
-                    break;
-                case 1:
-                    users[turn].steps = 1;
-                    Yut.text = "µµ!";
-                    break;
-                case 2:
-                    users[turn].steps = 2;
-                    Yut.text = "°³!";
-                    break;
-                case 3:
-                    users[turn].steps = 3;
-                    Yut.text = "°É!";
-                    break;
-                case 4:
-                    users[turn].steps = 4;
-                    chance = 1;
-                    Yut.text = "À·!";
-                    break;
-            }
-            yutSound[sum].mute = false;
-            yutSound[sum].Play();
-            StartCoroutine(Move());
+        int[] yut = new int[4];
+        for (int i = 0; i < 4; i++)
+        {
+            yut[i] = Random.Range(0, 2);
+            sum += yut[i];
+        }
+        sum = 3;
+        switch (sum)
+        {
+            case 0:
+                users[turn].steps = 5;
+                chance = 1;
+                Yut.text = "¸ð!";
+                break;
+            case 1:
+                users[turn].steps = 1;
+                Yut.text = "µµ!";
+                break;
+            case 2:
+                users[turn].steps = 2;
+                Yut.text = "°³!";
+                break;
+            case 3:
+                users[turn].steps = 3;
+                Yut.text = "°É!";
+                break;
+            case 4:
+                users[turn].steps = 4;
+                chance = 1;
+                Yut.text = "À·!";
+                break;
+        }
+        yutSound[sum].mute = false;
+        yutSound[sum].Play();
+        StartCoroutine(Move());
     }
 
     IEnumerator Move()
@@ -139,11 +146,17 @@ public class stone : MonoBehaviour
             if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
             {
                 Yut.text = "Encounter!!";
+                isFight = true;
                 yield return new WaitForSeconds(1f);
-                SceneManager.LoadScene("Fpsfight",LoadSceneMode.Additive);
+                SceneManager.LoadScene("Fpsfight");
             }
-
             yield return new WaitForSeconds(0.1f);
+            while (isFight == true)
+            {
+                Yut.text = "";
+                yield return new WaitForSeconds(0.1f);
+            }
+           
             users[turn].steps--;
         }
 
