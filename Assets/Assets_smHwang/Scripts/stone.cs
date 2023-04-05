@@ -54,7 +54,6 @@ public class stone : MonoBehaviour
             yut[i] = Random.Range(0, 2);
             sum += yut[i];
         }
-        sum = 3;
         switch (sum)
         {
             case 0:
@@ -63,6 +62,12 @@ public class stone : MonoBehaviour
                 Yut.text = "모!";
                 break;
             case 1:
+                if (yut[3] == 1)
+                {
+                    users[turn].steps = -1;
+                    Yut.text = "back-do!";
+                    break;
+                }
                 users[turn].steps = 1;
                 Yut.text = "도!";
                 break;
@@ -84,6 +89,38 @@ public class stone : MonoBehaviour
         yutSound[sum].Play();
         StartCoroutine(Move());
     }
+
+    public void throw_do()
+    {
+        users[turn].steps = 1;
+        StartCoroutine(Move());
+    }
+    public void throw_back_do()
+    {
+        users[turn].steps = -1;
+        StartCoroutine(Move());
+    }
+    public void throw_gae()
+    {
+        users[turn].steps = 2;
+        StartCoroutine(Move());
+    }
+    public void throw_girl()
+    {
+        users[turn].steps = 3;
+        StartCoroutine(Move());
+    }
+    public void throw_yut()
+    {
+        users[turn].steps = 4;
+        StartCoroutine(Move());
+    }
+    public void throw_mo()
+    {
+        users[turn].steps = 5;
+        StartCoroutine(Move());
+    }
+
 
     IEnumerator Move()
     {
@@ -142,7 +179,7 @@ public class stone : MonoBehaviour
             users[turn].nextPos = currentRoute.childNodeList[users[turn].routePosition].position;
             while (MoveToNextNode(users[turn].nextPos)) { yield return null; }
 
-            //포지션이 같으면 fps 전투로 이동
+            //start fps fight if position same
             if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
             {
                 Yut.text = "Encounter!!";
