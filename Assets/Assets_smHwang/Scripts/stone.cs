@@ -11,10 +11,12 @@ public class stone : MonoBehaviour
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
     public TextMeshProUGUI Yut;
+    public GameObject[] red_team;
+    public GameObject[] blue_team;
 
     public struct user
     {
-        public GameObject player;
+        public GameObject[] player;
         public int routePosition;
         public int nowPosition;
         public int lastPosition;      
@@ -30,16 +32,19 @@ public class stone : MonoBehaviour
     bool isFight = false;
 
     user[] users = new user[2];
-
+    //users[0].player = new GameObject[4];
     void Start()
     {
         if (isFight == false)
         {
-            users[0].player = player[0];
-            users[1].player = player[1];
+            users[0].player = red_team[0];
+            users[1].player = blue_team[1];
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    users[0].player[i] = red_team[i];
+            //    users[1].player[i] = blue_team[i];
+            //}
         }
-        //DontDestroyOnLoad(users[0].player);
-        //DontDestroyOnLoad(users[1].player);
         for (int i = 0; i < 5; i++)
         {
             yutSound[i].mute = true;
