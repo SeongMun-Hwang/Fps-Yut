@@ -21,6 +21,8 @@ public class stone : MonoBehaviour
         public int lastPosition;      
         public int steps;
         public Vector3 nextPos;
+        public Vector3 player_start_position;
+        public bool goal;
     };
 
     bool isMoving;
@@ -30,8 +32,9 @@ public class stone : MonoBehaviour
     float time;
     bool isFight = false;
     public int player_number = 1; 
-
     user[][] users;
+    int enemy;
+    public GameObject[] objectPrefab;
     void Start()
     {
         users = new user[2][];
@@ -43,6 +46,8 @@ public class stone : MonoBehaviour
             {
                 users[0][i].player = red_team[i];
                 users[1][i].player = blue_team[i];
+                users[0][i].player_start_position = users[0][i].player.transform.position;
+                users[1][i].player_start_position = users[1][i].player.transform.position;
             }
         }
         for (int i = 0; i < 5; i++)
@@ -144,6 +149,37 @@ public class stone : MonoBehaviour
         player_number = 3;
     }
 
+    void clear_player(ref user u) //player 말 삭제
+    {
+        if (u.player != null)
+        {
+            Destroy(u.player);
+            u.player = null;
+        }
+    }
+    //삭제한 플레이어 말 재생성
+    public void reset_player(ref user u, GameObject playerPrefab)
+    {
+        // 먼저 현재 user에 대한 리소스를 해제하기 전에 이전 player 정보를 저장합니다.
+        Quaternion prevRotation = u.player.transform.rotation;
+
+        // 먼저 현재 user에 대한 리소스를 해제합니다.
+        clear_player(ref u);
+
+        // 초기값 설정
+        u.player = Instantiate(playerPrefab); // player 게임 오브젝트를 생성합니다.
+        u.routePosition = 0;
+        u.nowPosition = 0;
+        u.lastPosition = 0;
+        u.steps = 0;
+        u.nextPos = Vector3.zero;
+        u.goal = false;
+
+        // 새로 생성된 player 게임 오브젝트의 위치와 회전을 이전 플레이어와 동일하게 설정합니다.
+        u.player.transform.position = u.player_start_position;
+    }
+
+
 
     IEnumerator Move()
     {              
@@ -211,18 +247,41 @@ public class stone : MonoBehaviour
                 //    yield return new WaitForSeconds(1f);
                 //    SceneManager.LoadScene("Fpsfight");
                 //}
+                
                 yield return new WaitForSeconds(0.1f);
                 while (isFight == true)
                 {
                     Yut.text = "";
                     yield return new WaitForSeconds(0.1f);
                 }
-
                 users[turn][player_number].steps--;
+                users[turn][player_number].nowPosition++;
+            }
+            //말끼리 먹기 동작
+            if (turn == 0)
+            {
+                enemy = 1;
+            }
+            else
+            {
+                enemy = 0;
+            }
+            Debug.Log("me -- nowposition : " + users[turn][player_number].nowPosition + " lastposition : " + users[turn][player_number].lastPosition);
+            Debug.Log("enemy -- nowposition : " + users[enemy][player_number].nowPosition + " lastposition : " + users[enemy][player_number].lastPosition);
+            for (int i = 0; i < 4; i++)
+            {
+                if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
+                {
+                    Debug.Log("encounter");
+                    reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                }
             }
 
             isMoving = false;
             sum = 0;
+            Debug.Log("move all");
+           
+            
             //윷, 모 나왔을 시 턴 유지, 아니면 변경
             if (chance == 1)
             {
