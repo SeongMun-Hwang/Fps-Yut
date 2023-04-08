@@ -7,7 +7,6 @@ using TMPro;
 
 public class stone : MonoBehaviour
 {
-    public GameObject[] player;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
     public TextMeshProUGUI Yut;
@@ -16,7 +15,7 @@ public class stone : MonoBehaviour
 
     public struct user
     {
-        public GameObject[] player;
+        public GameObject player;
         public int routePosition;
         public int nowPosition;
         public int lastPosition;      
@@ -30,20 +29,21 @@ public class stone : MonoBehaviour
     int chance = 0;
     float time;
     bool isFight = false;
+    public int player_number = 1; 
 
-    user[] users = new user[2];
-    //users[0].player = new GameObject[4];
+    user[][] users;
     void Start()
     {
+        users = new user[2][];
+        users[0] = new user[red_team.Length];
+        users[1] = new user[blue_team.Length];
         if (isFight == false)
         {
-            users[0].player = red_team[0];
-            users[1].player = blue_team[1];
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    users[0].player[i] = red_team[i];
-            //    users[1].player[i] = blue_team[i];
-            //}
+            for(int i = 0; i < 4; i++)
+            {
+                users[0][i].player = red_team[i];
+                users[1][i].player = blue_team[i];
+            }
         }
         for (int i = 0; i < 5; i++)
         {
@@ -62,32 +62,24 @@ public class stone : MonoBehaviour
         switch (sum)
         {
             case 0:
-                users[turn].steps = 5;
-                chance = 1;
-                Yut.text = "모!";
+                throw_mo();
                 break;
             case 1:
                 if (yut[3] == 1)
                 {
-                    users[turn].steps = -1;
-                    Yut.text = "back-do!";
+                    throw_back_do();
                     break;
                 }
-                users[turn].steps = 1;
-                Yut.text = "도!";
+                throw_do();
                 break;
             case 2:
-                users[turn].steps = 2;
-                Yut.text = "개!";
+                throw_gae();
                 break;
             case 3:
-                users[turn].steps = 3;
-                Yut.text = "걸!";
+                throw_girl();
                 break;
             case 4:
-                users[turn].steps = 4;
-                chance = 1;
-                Yut.text = "윷!";
+                throw_yut();
                 break;
         }
         yutSound[sum].mute = false;
@@ -97,127 +89,157 @@ public class stone : MonoBehaviour
 
     public void throw_do()
     {
-        users[turn].steps = 1;
+        users[turn][player_number].steps = 1;
         StartCoroutine(Move());
+        Yut.text = "도!";
     }
     public void throw_back_do()
     {
-        users[turn].steps = -1;
+        users[turn][player_number].steps = -1;
         StartCoroutine(Move());
+        Yut.text = "백도!";
     }
     public void throw_gae()
     {
-        users[turn].steps = 2;
+        users[turn][player_number].steps = 2;
         StartCoroutine(Move());
+        Yut.text = "개!";
     }
     public void throw_girl()
     {
-        users[turn].steps = 3;
+        users[turn][player_number].steps = 3;
         StartCoroutine(Move());
+        Yut.text = "걸!";
     }
     public void throw_yut()
     {
-        users[turn].steps = 4;
+        users[turn][player_number].steps = 4;
+        chance++;
+        Yut.text = "윷!";
         StartCoroutine(Move());
     }
     public void throw_mo()
     {
-        users[turn].steps = 5;
+        users[turn][player_number].steps = 5;
+        chance++;
+        Yut.text = "모!";
         StartCoroutine(Move());
+    }
+
+    //플레이어 선택
+    public void one()
+    {
+        player_number = 0;
+    }
+    public void two()
+    {
+        player_number = 1;
+    }
+    public void three()
+    {
+        player_number = 2;
+    }
+    public void four()
+    {
+        player_number = 3;
     }
 
 
     IEnumerator Move()
-    {
-        yield return new WaitForSeconds(1f);
-        Yut.text = "";
-        if (isMoving)
+    {              
         {
-            yield break;
-        }
-        isMoving = true;
-
-        users[turn].lastPosition = users[turn].routePosition;
-
-
-        while (users[turn].steps > 0)
-        {            
-            if (users[turn].routePosition == 30 && users[turn].steps > 0)
+            yield return new WaitForSeconds(1f);
+            Yut.text = "";
+            if (isMoving)
             {
-                Debug.Log("Goal");
-                Destroy(player[turn]);
-                break;
+                yield break;
             }
+            isMoving = true;
 
-            users[turn].nowPosition = users[turn].routePosition;
-            users[turn].routePosition++;
+            users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
 
-            if (users[turn].lastPosition == 5 && users[turn].nowPosition == 5)
-            {
-                users[turn].routePosition = 20;
-            }
-            else if (users[turn].lastPosition == 10 && users[turn].nowPosition == 10)
-            {
-                users[turn].routePosition = 25;
-            }
-            else if (users[turn].lastPosition == 22 && users[turn].nowPosition == 22) //center
-            {
-                users[turn].routePosition = 28;
-            }
-            else if (users[turn].lastPosition == 24 && users[turn].nowPosition == 24)
-            {
-                users[turn].routePosition = 15;
-            }
-            if (users[turn].nowPosition == 24 && users[turn].steps >= 1)
-            {
-                users[turn].routePosition = 15;
 
-            }
-            if ((users[turn].lastPosition >= 15 && users[turn].lastPosition <= 19) || (users[turn].lastPosition >= 28 && users[turn].lastPosition <= 29))
+            while (users[turn][player_number].steps > 0)
             {
-                if ((users[turn].nowPosition == 19 || users[turn].nowPosition == 29) && users[turn].steps >= 1)
+                if (users[turn][player_number].routePosition == 30 && users[turn][player_number].steps > 0)
                 {
-                    users[turn].routePosition = 30;
+                    Debug.Log("Goal");
+                    Destroy(users[turn][player_number].player);
+                    break;
                 }
-            }
 
-            users[turn].nextPos = currentRoute.childNodeList[users[turn].routePosition].position;
-            while (MoveToNextNode(users[turn].nextPos)) { yield return null; }
+                users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+                users[turn][player_number].routePosition++;
 
-            //start fps fight if position same
-            if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
-            {
-                Yut.text = "Encounter!!";
-                isFight = true;
-                yield return new WaitForSeconds(1f);
-                SceneManager.LoadScene("Fpsfight");
-            }
-            yield return new WaitForSeconds(0.1f);
-            while (isFight == true)
-            {
-                Yut.text = "";
+                if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
+                {
+                    users[turn][player_number].routePosition = 20;
+                }
+                else if (users[turn][player_number].lastPosition == 10 && users[turn][player_number].nowPosition == 10)
+                {
+                    users[turn][player_number].routePosition = 25;
+                }
+                else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
+                {
+                    users[turn][player_number].routePosition = 28;
+                }
+                else if (users[turn][player_number].lastPosition == 24 && users[turn][player_number].nowPosition == 24)
+                {
+                    users[turn][player_number].routePosition = 15;
+                }
+                if (users[turn][player_number].nowPosition == 24 && users[turn][player_number].steps >= 1)
+                {
+                    users[turn][player_number].routePosition = 15;
+
+                }
+                if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
+                {
+                    if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && users[turn][player_number].steps >= 1)
+                    {
+                        users[turn][player_number].routePosition = 30;
+                    }
+                }
+
+                users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
+                while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
+
+                //start fps fight if position same
+                //if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
+                //{
+                //    Yut.text = "Encounter!!";
+                //    isFight = true;
+                //    yield return new WaitForSeconds(1f);
+                //    SceneManager.LoadScene("Fpsfight");
+                //}
                 yield return new WaitForSeconds(0.1f);
-            }
-           
-            users[turn].steps--;
-        }
+                while (isFight == true)
+                {
+                    Yut.text = "";
+                    yield return new WaitForSeconds(0.1f);
+                }
 
-        isMoving = false;
-        sum = 0;
-        //윷, 모 나왔을 시 턴 유지, 아니면 변경
-        if (chance == 1)
-        {
-            chance--;
+                users[turn][player_number].steps--;
+            }
+
+            isMoving = false;
+            sum = 0;
+            //윷, 모 나왔을 시 턴 유지, 아니면 변경
+            if (chance == 1)
+            {
+                chance--;
+            }
+            else
+            {
+                if (turn == 0) { turn = 1; }
+                else if (turn == 1) { turn = 0; }
+                Yut.text = "player " + (turn + 1) + " turn!";
+            }
+            player_number = 0;
         }
-        else {
-            if (turn == 0) { turn = 1; }
-            else if (turn == 1) { turn = 0; }
-            Yut.text = "player " + (turn+1) + " turn!";
-        }        
     }
 
     bool MoveToNextNode(Vector3 goal)
     {
-        return goal != (player[turn].transform.position = Vector3.MoveTowards(player[turn].transform.position, goal, 8f * Time.deltaTime));
+        return goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
     }
 }
