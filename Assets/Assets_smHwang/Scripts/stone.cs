@@ -35,25 +35,51 @@ public class stone : MonoBehaviour
     user[][] users;
     int enemy;
     public GameObject[] objectPrefab;
+
+    //오브젝트 테두리
+    Material originalMaterial;
+    Material outlineMaterial;
+    GameObject lastSelectedPlayer;
+
+    void SetOutline(GameObject player)
+    {
+        if (lastSelectedPlayer != null)
+        {
+            lastSelectedPlayer.GetComponent<Renderer>().material = originalMaterial;
+        }
+
+        if (player != null)
+        {
+            originalMaterial = player.GetComponent<Renderer>().material;
+            player.GetComponent<Renderer>().material = outlineMaterial;
+        }
+
+        lastSelectedPlayer = player;
+    }
     void Start()
     {
         users = new user[2][];
         users[0] = new user[red_team.Length];
         users[1] = new user[blue_team.Length];
+
         if (isFight == false)
         {
-            for(int i = 0; i < 4; i++)
+            for(int j = 0; j < 2; j++)
             {
-                users[0][i].player = red_team[i];
-                users[1][i].player = blue_team[i];
-                users[0][i].player_start_position = users[0][i].player.transform.position;
-                users[1][i].player_start_position = users[1][i].player.transform.position;
+                for (int i = 0; i < 4; i++)
+                {
+                    users[0][i].player = red_team[i];
+                    users[1][i].player = blue_team[i];
+                    users[j][i].player_start_position = users[j][i].player.transform.position;
+                }
             }
+            
         }
         for (int i = 0; i < 5; i++)
         {
             yutSound[i].mute = true;
         }
+        outlineMaterial = Resources.Load<Material>("OutlineMaterial");
     }
 
     public void throwYut()
@@ -90,6 +116,7 @@ public class stone : MonoBehaviour
         yutSound[sum].mute = false;
         yutSound[sum].Play();
         StartCoroutine(Move());
+        // 턴이 바뀌기 전에 현재 선택된 플레이어의 테두리를 업데이트합니다.
     }
 
     public void throw_do()
@@ -130,23 +157,27 @@ public class stone : MonoBehaviour
         Yut.text = "모!";
         StartCoroutine(Move());
     }
-
+    
     //플레이어 선택
     public void one()
     {
         player_number = 0;
+        SetOutline(users[turn][player_number].player);
     }
     public void two()
     {
         player_number = 1;
+        SetOutline(users[turn][player_number].player);
     }
     public void three()
     {
         player_number = 2;
+        SetOutline(users[turn][player_number].player);
     }
     public void four()
     {
         player_number = 3;
+        SetOutline(users[turn][player_number].player);
     }
 
     void clear_player(ref user u) //player 말 삭제
@@ -178,12 +209,11 @@ public class stone : MonoBehaviour
         // 새로 생성된 player 게임 오브젝트의 위치와 회전을 이전 플레이어와 동일하게 설정합니다.
         u.player.transform.position = u.player_start_position;
     }
-
-
-
+    
     IEnumerator Move()
     {              
         {
+            SetOutline(users[turn][player_number].player);
             yield return new WaitForSeconds(1f);
             Yut.text = "";
             if (isMoving)
@@ -195,7 +225,7 @@ public class stone : MonoBehaviour
             users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
 
 
-            while (users[turn][player_number].steps > 0)
+            while (users[turn][player_number].steps != 0)
             {
                 if (users[turn][player_number].routePosition == 30 && users[turn][player_number].steps > 0)
                 {
