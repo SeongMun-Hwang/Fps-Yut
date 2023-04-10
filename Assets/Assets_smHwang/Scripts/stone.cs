@@ -23,6 +23,7 @@ public class stone : MonoBehaviour
         public Vector3 nextPos;
         public Vector3 player_start_position;
         public bool goal;
+        public bool is_destroyed;
     };
 
     bool isMoving;
@@ -31,7 +32,7 @@ public class stone : MonoBehaviour
     int chance = 0;
     float time;
     bool isFight = false;
-    public int player_number = 1; 
+    public int player_number = 0; 
     user[][] users;
     int enemy;
     public GameObject[] objectPrefab;
@@ -60,6 +61,8 @@ public class stone : MonoBehaviour
     private void Update()
     {
         keyboard_Input();
+        check_Winner();
+        AutoSelectClosestPlayerInArray();
     }
     void Start()
     {
@@ -76,6 +79,7 @@ public class stone : MonoBehaviour
                     users[0][i].player = red_team[i];
                     users[1][i].player = blue_team[i];
                     users[j][i].player_start_position = users[j][i].player.transform.position;
+                    users[j][i].is_destroyed = false;
                 }
             }
             
@@ -167,22 +171,33 @@ public class stone : MonoBehaviour
     public void one()
     {
         player_number = 0;
+        check_player();
         SetOutline(users[turn][player_number].player);
     }
     public void two()
     {
         player_number = 1;
+        check_player();
         SetOutline(users[turn][player_number].player);
     }
     public void three()
     {
         player_number = 2;
+        check_player();
         SetOutline(users[turn][player_number].player);
     }
     public void four()
     {
         player_number = 3;
+        check_player();
         SetOutline(users[turn][player_number].player);
+    }
+    public void check_player()
+    {
+        if (users[turn][player_number].is_destroyed == true)
+        {
+            Yut.text = "player already goaled!";
+        }
     }
 
     void clear_player(ref user u) //player 말 삭제
@@ -210,6 +225,7 @@ public class stone : MonoBehaviour
         u.steps = 0;
         u.nextPos = Vector3.zero;
         u.goal = false;
+        u.is_destroyed = false;
 
         // 새로 생성된 player 게임 오브젝트의 위치와 회전을 이전 플레이어와 동일하게 설정합니다.
         u.player.transform.position = u.player_start_position;
@@ -241,7 +257,64 @@ public class stone : MonoBehaviour
             throwYut();
         }
     }
-    
+    //한 팀의 모든 플레이어 오브젝트가 null일 시 승리 선언
+    void check_Winner()
+    {
+        bool redTeamAllNull = true;
+        bool blueTeamAllNull = true;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (users[0][i].player != null)
+            {
+                redTeamAllNull = false;
+            }
+            if (users[1][i].player != null)
+            {
+                blueTeamAllNull = false;
+            }
+        }
+
+        if (redTeamAllNull)
+        {
+            Yut.text = "Red Team is the winner!";
+        }
+        else if (blueTeamAllNull)
+        {
+            Yut.text = "Blue Team is the winner!";
+        }
+        else
+        {
+            Yut.text = "";
+        }
+    }
+
+
+    //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
+    void AutoSelectClosestPlayerInArray()
+    {
+        if (users[turn][player_number].player == null)
+        {
+            int closestPlayerNumber = -1;
+
+            for (int i = 0; i < users[turn].Length; i++)
+            {
+                int nextPlayerNumber = (player_number + i) % users[turn].Length;
+
+                if (users[turn][nextPlayerNumber].player != null)
+                {
+                    closestPlayerNumber = nextPlayerNumber;
+                    break;
+                }
+            }
+
+            if (closestPlayerNumber != -1)
+            {
+                player_number = closestPlayerNumber;
+                SetOutline(users[turn][player_number].player);
+            }
+        }
+    }
     IEnumerator Move()
     {              
         {
@@ -263,6 +336,7 @@ public class stone : MonoBehaviour
                 {
                     Debug.Log("Goal");
                     Destroy(users[turn][player_number].player);
+                    users[turn][player_number].is_destroyed = true;
                     break;
                 }
 
@@ -361,6 +435,10 @@ public class stone : MonoBehaviour
 
     bool MoveToNextNode(Vector3 goal)
     {
-        return goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
+        if (users[turn][player_number].player != null)
+        {
+            return goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
+        }
+        return false;
     }
 }
