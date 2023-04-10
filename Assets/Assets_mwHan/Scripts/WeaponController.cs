@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +11,18 @@ public class WeaponController : MonoBehaviour
     public bool IsAttacking = false;
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
+
+    public float KnockbackForce = 15f;
+    public float KnockbackForceY = 3f;
+    public float KnockbackTime = 2f;
+
+    // PlayerController 스크립트 참조
+    public PlayerController playerController;
+
+    // 플레이어 맞은 후 움직일 수 없도록 하는 변수, 타이머
+    private bool isPlayerHit = false;
+    private float playerHitTimer = 0f;
+    public float playerHitDuration = 3f;
 
     void Update()
     {
@@ -54,5 +66,12 @@ public class WeaponController : MonoBehaviour
 
         yield return new WaitForSeconds(0.25f);
         trailEffect.enabled = false;
+    }
+
+    public void OnPlayerHit()
+    {
+        isPlayerHit = true;
+        playerHitTimer = playerHitDuration;
+        playerController.isKnockedBack = true;
     }
 }
