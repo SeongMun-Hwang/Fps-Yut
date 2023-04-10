@@ -46,6 +46,10 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _velocity;
 
+    // 넉백중인지 여부
+    public bool isKnockedBack = false;
+    private float knockbackTimer = 0f;
+
     [SerializeField]
     private float lookSensitivity; // 카메라 민감도
 
@@ -59,8 +63,6 @@ public class PlayerController : MonoBehaviour
     private Camera theCamera;
 
     bool isDamage = false; // 데미지를 받고 있는 상태인가?
-
-    public float force = 1; // 밀쳐지는 힘
 
     public bool isdead = false; // 죽었나 확인
 
@@ -84,11 +86,22 @@ public class PlayerController : MonoBehaviour
     {
         if (!isdead)
         {
-            GetKey();
-            Move();
-            TryRun();
-            IsGround();
-            TryJump();
+            if (!isKnockedBack)
+            {
+                GetKey();
+                Move();
+                TryRun();
+                IsGround();
+                TryJump();
+            }
+            else // 넉백중이면 움직임 불가능
+            {
+                knockbackTimer -= Time.deltaTime;
+                if (knockbackTimer <= 0f)
+                {
+                    isKnockedBack = false;
+                }
+            }
             CameraRotation();
             CharactorRotation();
         }
@@ -175,12 +188,28 @@ public class PlayerController : MonoBehaviour
         {
             if (!isDamage) // 무적시간이 아니면
             {
-                Vector3 hitDirection = other.transform.position - transform.position; // 맞은 방향 계산
-                hitDirection = -hitDirection.normalized;
-                hitDirection = hitDirection * force;
-                hitDirection.y = force;
-                GetComponent<Rigidbody>().AddForce(hitDirection, ForceMode.Impulse); // 맞은 방향으로 날라감
+                //Vector3 hitDirection = other.transform.position - transform.position; // 맞은 방향 계산
+                //hitDirection = -hitDirection.normalized;
+                //hitDirection = hitDirection * force;
+                //hitDirection.y = force;
+                //GetComponent<Rigidbody>().AddForce(hitDirection, ForceMode.Impulse); // 맞은 방향으로 날라감
+
+                WeaponController weaponController = other.GetComponent<WeaponController>();
+                float knockbackForce = weaponController.KnockbackForce;
+
+                isKnockedBack = true; // 맞은 상태
+                knockbackTimer = weaponController.KnockbackTime;
+
+                // 망치 방향으로 밀어내기
+                Vector3 pushDirection = transform.position - other.transform.position;
+                pushDirection.Normalize();
+                pushDirection *= knockbackForce;
+                pushDirection.y = weaponController.KnockbackForceY;
+                myRigid.AddForce(pushDirection, ForceMode.Impulse);
+
+                Debug.Log($"KnockbackForce = {knockbackForce}");
                 TakeDamage(1); // 데미지 입음
+
                 if (Health <= 0) Dodie();
                 StartCoroutine(OnDamage());
                 Debug.Log("피격됨");
