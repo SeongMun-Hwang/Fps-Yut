@@ -56,6 +56,11 @@ public class stone : MonoBehaviour
 
         lastSelectedPlayer = player;
     }
+
+    private void Update()
+    {
+        keyboard_Input();
+    }
     void Start()
     {
         users = new user[2][];
@@ -208,6 +213,33 @@ public class stone : MonoBehaviour
 
         // 새로 생성된 player 게임 오브젝트의 위치와 회전을 이전 플레이어와 동일하게 설정합니다.
         u.player.transform.position = u.player_start_position;
+    }
+
+    /*키보드 입력으로 말 선택
+     1~4 : 말 선택
+    space : 윷던지기*/
+    void keyboard_Input()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            one();
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            two();
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            three();
+        }
+        else if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            four();
+        }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            throwYut();
+        }
     }
     
     IEnumerator Move()
