@@ -360,6 +360,10 @@ public class stone : MonoBehaviour
                     {
                         users[turn][player_number].routePosition = 24;
                     }
+                    else if(users[turn][player_number].nowPosition == 1)
+                    {
+                        users[turn][player_number].routePosition = 31;
+                    }
                     else
                     {
                         users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
