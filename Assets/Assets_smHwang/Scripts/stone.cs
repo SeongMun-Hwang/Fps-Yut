@@ -36,6 +36,7 @@ public class stone : MonoBehaviour
     user[][] users;
     int enemy;
     public GameObject[] objectPrefab;
+    bool isBackdo = false;
 
     //오브젝트 테두리
     Material originalMaterial;
@@ -136,9 +137,10 @@ public class stone : MonoBehaviour
     }
     public void throw_back_do()
     {
-        users[turn][player_number].steps = -1;
+        users[turn][player_number].steps = 1;
         StartCoroutine(Move());
         Yut.text = "백도!";
+        isBackdo = true;
     }
     public void throw_gae()
     {
@@ -343,7 +345,28 @@ public class stone : MonoBehaviour
                 users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
                 users[turn][player_number].routePosition++;
 
-                if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
+                //백도 예외 처리
+                if (isBackdo == true)
+                {
+                    if (users[turn][player_number].nowPosition == 20)
+                    {
+                        users[turn][player_number].routePosition = 5;
+                    }
+                    else if(users[turn][player_number].nowPosition == 25)
+                    {
+                        users[turn][player_number].routePosition = 10;
+                    }
+                    else if(users[turn][player_number].nowPosition==15&& users[turn][player_number].lastPosition==24)
+                    {
+                        users[turn][player_number].routePosition = 24;
+                    }
+                    else
+                    {
+                        users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
+                    }
+                    isBackdo = false;
+                }
+                else if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
                 {
                     users[turn][player_number].routePosition = 20;
                 }
@@ -419,7 +442,7 @@ public class stone : MonoBehaviour
            
             
             //윷, 모 나왔을 시 턴 유지, 아니면 변경
-            if (chance == 1)
+            if (chance > 0)
             {
                 chance--;
             }
@@ -431,6 +454,7 @@ public class stone : MonoBehaviour
             }
             player_number = 0;
         }
+        users[turn][player_number].lastPosition = users[turn][player_number].nowPosition;
     }
 
     bool MoveToNextNode(Vector3 goal)
