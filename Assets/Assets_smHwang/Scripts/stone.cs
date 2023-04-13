@@ -285,10 +285,6 @@ public class stone : MonoBehaviour
         {
             Yut.text = "Blue Team is the winner!";
         }
-        else
-        {
-            Yut.text = "";
-        }
     }
 
 
@@ -356,18 +352,19 @@ public class stone : MonoBehaviour
                     {
                         users[turn][player_number].routePosition = 10;
                     }
-                    else if(users[turn][player_number].nowPosition==15&& users[turn][player_number].lastPosition==24)
+                    else if(users[turn][player_number].nowPosition==15 && users[turn][player_number].lastPosition==24)
                     {
                         users[turn][player_number].routePosition = 24;
                     }
                     else if(users[turn][player_number].nowPosition == 1)
                     {
-                        users[turn][player_number].routePosition = 31;
+                        users[turn][player_number].routePosition = 30;
                     }
                     else
                     {
                         users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
                     }
+                    users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
                     isBackdo = false;
                 }
                 else if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
@@ -437,6 +434,7 @@ public class stone : MonoBehaviour
                 {
                     Debug.Log("encounter");
                     reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    chance++;
                 }
             }
 
