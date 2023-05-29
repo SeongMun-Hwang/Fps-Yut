@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class move_Player : MonoBehaviour
 {
-    public float speed = 5.0f;  // 움직이는 속도
+    public float speed = 10.0f;  // 움직이는 속도
     private Rigidbody rb;
 
     private void Start()
@@ -13,11 +13,29 @@ public class move_Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void FixedUpdate()  // 물리 계산이 들어가므로 FixedUpdate로 변경합니다.
     {
         // 입력을 받습니다.
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = 0;
+        float moveVertical = 0;
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            moveVertical = 1;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            moveVertical = -1;
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            moveHorizontal = -1;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            moveHorizontal = 1;
+        }
 
         // 움직일 방향을 계산합니다.
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
