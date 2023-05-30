@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Assets_mwHan/Scenes/Fpsfight.unity
     guid: 7afaa98bad21bd046a0e1aa387b357da
+  - enabled: 1
+    path: Assets/Defenese_Game/Defense_Game.unity
+    guid: 1c671cb33d5723e468a80a0a3b0074af
   m_configObjects: {}
