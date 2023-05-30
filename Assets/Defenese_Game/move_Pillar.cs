@@ -54,7 +54,7 @@ public class move_Pillar : MonoBehaviour
             rend[3].material.color = Color.red;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)&&((pillar[0]|| pillar[1] || pillar[2] || pillar[3]) != false))
         {
             launch = true;
         }
