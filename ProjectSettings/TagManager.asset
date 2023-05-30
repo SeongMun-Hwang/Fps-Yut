@@ -8,6 +8,7 @@ TagManager:
   - Field
   - EnemyWeapon
   - OutBottom
+  - Floor
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - UI
   - Field
   - EnemyWeapon
-  - 
+  - Def_Wall
   - 
   - 
   - 
