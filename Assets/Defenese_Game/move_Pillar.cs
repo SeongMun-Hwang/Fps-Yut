@@ -10,7 +10,7 @@ public class move_Pillar : MonoBehaviour
     bool[] pillar = { false, false, false, false };
     bool launch;
     public GameObject player;
-
+    public GameObject[] obstacle;
     public Renderer[] rend;
 
     void Start()
@@ -24,6 +24,30 @@ public class move_Pillar : MonoBehaviour
         {
             rbs[i].constraints = RigidbodyConstraints.FreezeRotation;
             rbs[i].constraints = RigidbodyConstraints.FreezePositionY;
+        }
+
+        float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
+        Vector3 prevPosition = Vector3.zero;
+
+        foreach (GameObject ob in obstacle) // obstacle 배열의 각 원소에 대해...
+        {
+            Vector3 newPosition;
+
+            do
+            {
+                // X축 섹션을 랜덤하게 선택합니다.
+                float posX = positions[Random.Range(0, positions.Length)];
+
+                // Z축 섹션을 랜덤하게 선택합니다.
+                float posZ = positions[Random.Range(0, positions.Length)];
+
+                // 선택된 섹션 중심을 오브젝트의 위치로 설정합니다.
+                newPosition = new Vector3(posX, ob.transform.position.y, posZ);
+
+            } while (Mathf.Approximately(newPosition.x, prevPosition.x) || Mathf.Approximately(newPosition.z, prevPosition.z));
+
+            ob.transform.position = newPosition;
+            prevPosition = newPosition;
         }
     }
 
@@ -87,16 +111,14 @@ public class move_Pillar : MonoBehaviour
         }
     }
 
-    //void OnCollisionEnter(Collision collision)
-    //{
-    //    foreach (Rigidbody rb in rbs)
-    //    {
-    //        if (collision.gameObject == player)
-    //        {
-    //            Debug.Log("collision with Player");
-    //        }
-    //    }
-    //}
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject == player)
+        {
+            Debug.Log("Collision with Player");
+        }
+    }
+
 
     void pillar_Right()
     {
