@@ -7,7 +7,18 @@ public class start_Menu : MonoBehaviour
 {
     private void Update()
     {
-        game_Start();
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            SceneManager.LoadScene(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.F2))
+        {
+            SceneManager.LoadScene(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.F3))
+        {
+            SceneManager.LoadScene("Fpsfight");
+        }
     }
     public void game_Start()
     {
@@ -15,7 +26,7 @@ public class start_Menu : MonoBehaviour
     }
     public void Settings()
     {
-
+        Debug.Log("setting button clicked");
     }
     public void game_Quit()
     {
