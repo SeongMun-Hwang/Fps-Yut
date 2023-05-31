@@ -25,7 +25,10 @@ public class stone : MonoBehaviour
         public bool goal;
         public bool is_destroyed;
     };
-    int steps;
+
+    public List<int> steps = new List<int>();
+    //int steps;
+
     bool isMoving;
     int turn = 0;
     int sum = 0;
@@ -37,7 +40,8 @@ public class stone : MonoBehaviour
     int enemy;
     public GameObject[] objectPrefab;
     bool isBackdo = false;
-
+    int choose_step;
+    bool isYutThrown = false;
     //오브젝트 테두리
     Material originalMaterial;
     Material outlineMaterial;
@@ -61,7 +65,7 @@ public class stone : MonoBehaviour
     }
 
     private void Update()
-    {
+    {      
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
@@ -124,50 +128,70 @@ public class stone : MonoBehaviour
                 throw_yut();
                 break;
         }
+
         yutSound[sum].mute = false;
         yutSound[sum].Play();
-    }
 
+        Debug.Log("steps number"+steps.Count);
+        if (steps.Count>1)
+        {
+            choose_Step();
+        }
+    }
+    void choose_Step()
+    {
+        foreach (int i in steps)
+        {
+            Yut.text += i;
+        }
+    }
     public void throw_do()
     {
-        steps = 1;
-        //StartCoroutine(Move());
+        steps.Add(1);
+        Debug.Log(steps);
         Yut.text = "도!";
+        isYutThrown = true;
     }
     public void throw_back_do()
     {
-        steps = 1;
-        //StartCoroutine(Move());
+        steps.Add(1);
+        Debug.Log(steps[0]);
         Yut.text = "백도!";
         isBackdo = true;
+        isYutThrown = true;
     }
     public void throw_gae()
     {
-        steps = 2;
-        //StartCoroutine(Move());
+        steps.Add(2);
+        Debug.Log(steps[0]);
         Yut.text = "개!";
+        isYutThrown = true;
     }
     public void throw_girl()
     {
-        steps = 3;
-        //StartCoroutine(Move());
+        steps.Add(3);
+        Debug.Log(steps[0]);
         Yut.text = "걸!";
+        isYutThrown = true;
     }
     public void throw_yut()
     {
-        steps = 4;
-        chance++;
+        steps.Add(4);
+        Debug.Log(steps[0]);
         Yut.text = "윷!";
-        //StartCoroutine(Move());
+        isYutThrown = true;
+        throwYut(); // Throw yut again
     }
+
     public void throw_mo()
     {
-        steps = 5;
-        chance++;
+        steps.Add(5);
+        Debug.Log(steps[0]);
         Yut.text = "모!";
-        //StartCoroutine(Move());
+        isYutThrown = true;
+        throwYut(); // Throw yut again
     }
-    
+
     //플레이어 선택
     public void one()
     {
@@ -239,34 +263,44 @@ public class stone : MonoBehaviour
     {
         if (isMoving == false)
         {
-            if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 one();
                 Debug.Log("choose" + player_number);
             }
-            else if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 two();
                 Debug.Log("choose" + player_number);
             }
-            else if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3))
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
                 three();
                 Debug.Log("choose" + player_number);
             }
-            else if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 four();
                 Debug.Log("choose"+player_number);
             }
-            else if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
+            else if (Input.GetKeyDown(KeyCode.Return)&&isYutThrown==true)
             {
                 Debug.Log("move"+player_number);
-                StartCoroutine(Move());
+                StartCoroutine(Move(steps[choose_step]));
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 throwYut();
+            }
+            else if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                choose_step = 0;
+                Debug.Log("choose_step=0 real steps=" + steps[0]);
+            }
+            else if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                choose_step = 1;
+                Debug.Log("choose_step=1 real steps=" + steps[1]);
             }
         }
     }
@@ -297,6 +331,7 @@ public class stone : MonoBehaviour
             Yut.text = "Blue Team is the winner!";
         }
     }
+    
 
 
     //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
@@ -324,7 +359,7 @@ public class stone : MonoBehaviour
             }
         }
     }
-    IEnumerator Move()
+    IEnumerator Move(int chosed_step)
     {
         if (turn == 0)
         {
@@ -346,10 +381,9 @@ public class stone : MonoBehaviour
 
             users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
 
-
-            while (steps != 0)
+            while (chosed_step > 0)
             {
-                if (users[turn][player_number].routePosition == 30 && steps > 0)
+                if (users[turn][player_number].routePosition == 30 && chosed_step > 0)
                 {
                     Debug.Log("Goal");
                     Destroy(users[turn][player_number].player);
@@ -367,15 +401,15 @@ public class stone : MonoBehaviour
                     {
                         users[turn][player_number].routePosition = 5;
                     }
-                    else if(users[turn][player_number].nowPosition == 25)
+                    else if (users[turn][player_number].nowPosition == 25)
                     {
                         users[turn][player_number].routePosition = 10;
                     }
-                    else if(users[turn][player_number].nowPosition==15 && users[turn][player_number].lastPosition==24)
+                    else if (users[turn][player_number].nowPosition == 15 && users[turn][player_number].lastPosition == 24)
                     {
                         users[turn][player_number].routePosition = 24;
                     }
-                    else if(users[turn][player_number].nowPosition == 1)
+                    else if (users[turn][player_number].nowPosition == 1)
                     {
                         users[turn][player_number].routePosition = 30;
                     }
@@ -402,14 +436,14 @@ public class stone : MonoBehaviour
                 {
                     users[turn][player_number].routePosition = 15;
                 }
-                if (users[turn][player_number].nowPosition == 24 && steps >= 1)
+                if (users[turn][player_number].nowPosition == 24 && chosed_step >= 1)
                 {
                     users[turn][player_number].routePosition = 15;
 
                 }
                 if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
                 {
-                    if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && steps >= 1)
+                    if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && chosed_step >= 1)
                     {
                         users[turn][player_number].routePosition = 30;
                     }
@@ -417,14 +451,16 @@ public class stone : MonoBehaviour
 
                 users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
                 while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
+                chosed_step--;
+                users[turn][player_number].nowPosition++;
 
                 //상대방 말을 지나갈때
                 for (int i = 0; i < 4; i++)
                 {
-                    if ((users[turn][player_number].routePosition == users[enemy][i].nowPosition)&& steps>1)
+                    if ((users[turn][player_number].routePosition == users[enemy][i].nowPosition) && chosed_step > 1)
                     {
                         Yut.text = "To pass, Win!";
-                        yield return new WaitForSeconds(0.5f);                        
+                        yield return new WaitForSeconds(0.5f);
                         Debug.Log("Moving piece passed by an enemy piece.");
                         SceneManager.LoadScene("Defense_Game");
                     }
@@ -436,9 +472,21 @@ public class stone : MonoBehaviour
                     Yut.text = "";
                     yield return new WaitForSeconds(0.1f);
                 }
-                steps--;
-                users[turn][player_number].nowPosition++;
             }
+
+             steps.RemoveAt(choose_step);
+            if (choose_step == steps.Count)
+            {
+                choose_step--;
+                Debug.Log("if =" + choose_step);
+            }
+
+            Debug.Log("after remove" + steps.Count);
+            foreach(int i in steps)
+            {
+                Debug.Log(i);
+            }
+
 
             //말끼리 먹기 동작
             //for (int i = 0; i < 4; i++)
@@ -455,17 +503,16 @@ public class stone : MonoBehaviour
             //    }
             //}
 
-
             isMoving = false;
             sum = 0;
             Debug.Log("move all");
-                  
+
             //윷, 모 나왔을 시 턴 유지, 아니면 변경
-            if (chance > 0)
-            {
-                chance--;
-            }
-            else
+            //if (chance > 0)
+            //{
+            //    chance--;
+            //}
+            if (steps.Count == 0)
             {
                 if (turn == 0) { turn = 1; }
                 else if (turn == 1) { turn = 0; }
