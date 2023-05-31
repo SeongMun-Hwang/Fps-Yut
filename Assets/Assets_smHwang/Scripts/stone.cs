@@ -314,7 +314,15 @@ public class stone : MonoBehaviour
         }
     }
     IEnumerator Move()
-    {              
+    {
+        if (turn == 0)
+        {
+            enemy = 1;
+        }
+        else
+        {
+            enemy = 0;
+        }
         {
             SetOutline(users[turn][player_number].player);
             yield return new WaitForSeconds(1f);
@@ -399,15 +407,18 @@ public class stone : MonoBehaviour
                 users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
                 while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
 
-                //start fps fight if position same
-                //if ((users[0].nowPosition == users[1].nowPosition) && users[1].routePosition != 0)
-                //{
-                //    Yut.text = "Encounter!!";
-                //    isFight = true;
-                //    yield return new WaitForSeconds(1f);
-                //    SceneManager.LoadScene("Fpsfight");
-                //}
-                
+                //상대방 말을 지나갈때
+                for (int i = 0; i < 4; i++)
+                {
+                    if ((users[turn][player_number].routePosition == users[enemy][i].nowPosition)&& users[turn][player_number].steps>1)
+                    {
+                        Yut.text = "To pass, Win!";
+                        yield return new WaitForSeconds(0.5f);                        
+                        Debug.Log("Moving piece passed by an enemy piece.");
+                        SceneManager.LoadScene("Defense_Game");
+                    }
+                }
+
                 yield return new WaitForSeconds(0.1f);
                 while (isFight == true)
                 {
@@ -417,32 +428,39 @@ public class stone : MonoBehaviour
                 users[turn][player_number].steps--;
                 users[turn][player_number].nowPosition++;
             }
+
             //말끼리 먹기 동작
-            if (turn == 0)
-            {
-                enemy = 1;
-            }
-            else
-            {
-                enemy = 0;
-            }
             Debug.Log("me -- nowposition : " + users[turn][player_number].nowPosition + " lastposition : " + users[turn][player_number].lastPosition);
             Debug.Log("enemy -- nowposition : " + users[enemy][player_number].nowPosition + " lastposition : " + users[enemy][player_number].lastPosition);
+
+            //start fps fight if position same
+            //if ((users[0][player_number].nowPosition == users[1][player_number].nowPosition) && users[1][player_number].routePosition != 0)
+            //{
+            //    Yut.text = "Encounter!!";
+            //    isFight = true;
+            //    yield return new WaitForSeconds(1f);
+            //    SceneManager.LoadScene("Fpsfight");
+            //}
+
             for (int i = 0; i < 4; i++)
             {
                 if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
                 {
-                    Debug.Log("encounter");
-                    reset_player(ref users[enemy][i], objectPrefab[enemy]);
-                    chance++;
+                    //미니 게임 없이 말을 먹을 때의 동작
+                    //Debug.Log("encounter");
+                    //reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    //chance++;
+
+                    //Fpsfight 진행
+                    SceneManager.LoadScene("Fpsfight");
                 }
             }
+
 
             isMoving = false;
             sum = 0;
             Debug.Log("move all");
-           
-            
+                  
             //윷, 모 나왔을 시 턴 유지, 아니면 변경
             if (chance > 0)
             {
