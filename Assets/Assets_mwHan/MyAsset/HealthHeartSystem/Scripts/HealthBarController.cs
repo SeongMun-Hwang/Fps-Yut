@@ -1,8 +1,4 @@
-﻿/*
- *  Author: ariel oliveira [o.arielg@gmail.com]
- */
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthBarController : MonoBehaviour
@@ -12,14 +8,15 @@ public class HealthBarController : MonoBehaviour
 
     public Transform heartsParent;
     public GameObject heartContainerPrefab;
+    public GameObject player;
 
     private void Start()
     {
         // Should I use lists? Maybe :)
-        heartContainers = new GameObject[(int)PlayerController.Instance.MaxHealth];
-        heartFills = new Image[(int)PlayerController.Instance.MaxHealth];
+        heartContainers = new GameObject[(int)player.GetComponent<MyPlayerController>().MaxHealth];
+        heartFills = new Image[(int)player.GetComponent<MyPlayerController>().MaxHealth];
 
-        PlayerController.Instance.onHealthChangedCallback += UpdateHeartsHUD;
+        player.GetComponent<MyPlayerController>().onHealthChangedCallback += UpdateHeartsHUD;
         InstantiateHeartContainers();
         UpdateHeartsHUD();
     }
@@ -34,7 +31,7 @@ public class HealthBarController : MonoBehaviour
     {
         for (int i = 0; i < heartContainers.Length; i++)
         {
-            if (i < PlayerController.Instance.MaxHealth)
+            if (i < player.GetComponent<MyPlayerController>().MaxHealth)
             {
                 heartContainers[i].SetActive(true);
             }
@@ -49,7 +46,7 @@ public class HealthBarController : MonoBehaviour
     {
         for (int i = 0; i < heartFills.Length; i++)
         {
-            if (i < PlayerController.Instance.Health)
+            if (i < player.GetComponent<MyPlayerController>().Health)
             {
                 heartFills[i].fillAmount = 1;
             }
@@ -59,16 +56,16 @@ public class HealthBarController : MonoBehaviour
             }
         }
 
-        if (PlayerController.Instance.Health % 1 != 0)
+        if (player.GetComponent<MyPlayerController>().Health % 1 != 0)
         {
-            int lastPos = Mathf.FloorToInt(PlayerController.Instance.Health);
-            heartFills[lastPos].fillAmount = PlayerController.Instance.Health % 1;
+            int lastPos = Mathf.FloorToInt(player.GetComponent<MyPlayerController>().Health);
+            heartFills[lastPos].fillAmount = player.GetComponent<MyPlayerController>().Health % 1;
         }
     }
 
     void InstantiateHeartContainers()
     {
-        for (int i = 0; i < PlayerController.Instance.MaxHealth; i++)
+        for (int i = 0; i < player.GetComponent<MyPlayerController>().MaxHealth; i++)
         {
             GameObject temp = Instantiate(heartContainerPrefab);
             temp.transform.SetParent(heartsParent, false);
