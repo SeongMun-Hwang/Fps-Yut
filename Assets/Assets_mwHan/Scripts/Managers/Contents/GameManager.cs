@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
             PlayerController player1 = GameObject.Find("Player1").GetComponent<PlayerController>();
             PlayerController player2 = GameObject.Find("Enemy").GetComponent<PlayerController>();
 
-            if (player1.Health < player2.Health)
+            if (player1.Hp < player2.Hp)
                 loseplayer = "Player1";
             else
                 loseplayer = "Player2";

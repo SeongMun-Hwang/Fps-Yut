@@ -20,6 +20,7 @@ public class ObjectManager
 			MyPlayer = go.GetComponent<MyPlayerController>();
 			MyPlayer.PosInfo = info.PosInfo;
 			MyPlayer.RotInfo = info.RotInfo;
+			MyPlayer.Stat = info.StatInfo;
 		}
 		else
 		{
@@ -31,17 +32,18 @@ public class ObjectManager
 			pc.Id = info.PlayerId;
 			pc.PosInfo = info.PosInfo;
 			pc.RotInfo = info.RotInfo;
+			pc.Stat = info.StatInfo;
 		}
-	}
-
-	public void Add(int id, GameObject go)
-	{
-		_objects.Add(id, go);
 	}
 
 	public void Remove(int id)
 	{
+		GameObject go = FindById(id);
+		if (go == null)
+			return;
+
 		_objects.Remove(id);
+		Managers.Resource.Destroy(go);
 	}
 
 	public void RemoveMyPlayer()
@@ -53,33 +55,40 @@ public class ObjectManager
 		MyPlayer = null;
 	}
 
+	public GameObject FindById(int id)
+	{
+		GameObject go = null;
+		_objects.TryGetValue(id, out go);
+		return go;
+	}
+
 	//public GameObject Find(Vector3Int cellPos)
 	//{
-	//	foreach (GameObject obj in _objects.Values)
-	//	{
-	//		CreatureController cc = obj.GetComponent<CreatureController>();
-	//		if (cc == null)
-	//			continue;
+	//    foreach (GameObject obj in _objects.Values)
+	//    {
+	//        CreatureController cc = obj.GetComponent<CreatureController>();
+	//        if (cc == null)
+	//            continue;
 
-	//		if (cc.CellPos == cellPos)
-	//			return obj;
-	//	}
+	//        if (cc.CellPos == cellPos)
+	//            return obj;
+	//    }
 
-	//	return null;
+	//    return null;
 	//}
 
-	//public GameObject Find(Func<GameObject, bool> condition)
-	//{
-	//	foreach (GameObject obj in _objects.Values)
-	//	{
-	//		if (condition.Invoke(obj))
-	//			return obj;
-	//	}
+	public GameObject Find(Func<GameObject, bool> condition)
+    {
+        foreach (GameObject obj in _objects.Values)
+        {
+            if (condition.Invoke(obj))
+                return obj;
+        }
 
-	//	return null;
-	//}
+        return null;
+    }
 
-	public void Clear()
+    public void Clear()
 	{
 		_objects.Clear();
 	}

@@ -6,7 +6,10 @@ using UnityEngine.SceneManagement;
 public class ChangeScene : MonoBehaviour
 {
     // Update is called once per frame
-
+    private void Awake()
+    {
+        //DontDestroyOnLoad(gameObject);
+    }
     private void Start()
     {
         Screen.SetResolution(640, 480, false);

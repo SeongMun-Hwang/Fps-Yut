@@ -13,8 +13,8 @@ public class HealthBarController : MonoBehaviour
     private void Start()
     {
         // Should I use lists? Maybe :)
-        heartContainers = new GameObject[(int)player.GetComponent<MyPlayerController>().MaxHealth];
-        heartFills = new Image[(int)player.GetComponent<MyPlayerController>().MaxHealth];
+        heartContainers = new GameObject[(int)player.GetComponent<MyPlayerController>().MaxHp];
+        heartFills = new Image[(int)player.GetComponent<MyPlayerController>().MaxHp];
 
         player.GetComponent<MyPlayerController>().onHealthChangedCallback += UpdateHeartsHUD;
         InstantiateHeartContainers();
@@ -31,7 +31,7 @@ public class HealthBarController : MonoBehaviour
     {
         for (int i = 0; i < heartContainers.Length; i++)
         {
-            if (i < player.GetComponent<MyPlayerController>().MaxHealth)
+            if (i < player.GetComponent<MyPlayerController>().MaxHp)
             {
                 heartContainers[i].SetActive(true);
             }
@@ -46,7 +46,7 @@ public class HealthBarController : MonoBehaviour
     {
         for (int i = 0; i < heartFills.Length; i++)
         {
-            if (i < player.GetComponent<MyPlayerController>().Health)
+            if (i < player.GetComponent<MyPlayerController>().Hp)
             {
                 heartFills[i].fillAmount = 1;
             }
@@ -56,16 +56,16 @@ public class HealthBarController : MonoBehaviour
             }
         }
 
-        if (player.GetComponent<MyPlayerController>().Health % 1 != 0)
+        if (player.GetComponent<MyPlayerController>().Hp % 1 != 0)
         {
-            int lastPos = Mathf.FloorToInt(player.GetComponent<MyPlayerController>().Health);
-            heartFills[lastPos].fillAmount = player.GetComponent<MyPlayerController>().Health % 1;
+            int lastPos = Mathf.FloorToInt(player.GetComponent<MyPlayerController>().Hp);
+            heartFills[lastPos].fillAmount = player.GetComponent<MyPlayerController>().Hp % 1;
         }
     }
 
     void InstantiateHeartContainers()
     {
-        for (int i = 0; i < player.GetComponent<MyPlayerController>().MaxHealth; i++)
+        for (int i = 0; i < player.GetComponent<MyPlayerController>().MaxHp; i++)
         {
             GameObject temp = Instantiate(heartContainerPrefab);
             temp.transform.SetParent(heartsParent, false);

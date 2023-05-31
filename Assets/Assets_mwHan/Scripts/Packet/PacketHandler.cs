@@ -40,17 +40,44 @@ class PacketHandler
 	public static void S_MoveHandler(PacketSession session, IMessage packet)
 	{
 		S_Move movePacket = packet as S_Move;
-		ServerSession serverSession = session as ServerSession;
 
-		Debug.Log("S_MoveHandler");
+		GameObject go = Managers.Object.FindById(movePacket.PlayerId);
+		if (go == null)
+		{
+			return;
+		}
+
+		PlayerController pc = go.GetComponent<PlayerController>();
+		if (pc == null)
+		{
+			return;
+		}
+
+		pc.PosInfo = movePacket.PosInfo;
+
+		Debug.Log(pc.Id);
+		Debug.Log(pc.PlayerPos);
 	}
 
 	public static void S_RotationHandler(PacketSession session, IMessage packet)
 	{
 		S_Rotation rotationPacket = packet as S_Rotation;
-		ServerSession serverSession = session as ServerSession;
 
-		Debug.Log("S_RotationHandler");
+		GameObject go = Managers.Object.FindById(rotationPacket.PlayerId);
+		if (go == null)
+		{
+			Debug.Log("FindById 실패");
+			return;
+		}
+
+		PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+        {
+			Debug.Log("GetComponent 실패함 RotationHandler");
+			return;
+        }
+
+		pc.RotInfo = rotationPacket.RotInfo;
 	}
 }
 
