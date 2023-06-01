@@ -204,7 +204,6 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-
     public GameManager manager;
 
     // 넉백중인지 여부
@@ -215,32 +214,20 @@ public class PlayerController : MonoBehaviour
 
     public bool isdead = false; // 죽었나 확인
 
+    public bool doAttack = false; // 공격 키를 눌렀나?
+    public bool canattack = true; // 공격을 할 수 있나?
+
     protected Rigidbody myRigid; // 플레이어 실제 몸. 물리학 입히는거
     protected MeshRenderer[] meshs;
+    protected WeaponController weaponController;
 
     protected void Start()
     {
         myRigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-
-        Transform hammerTransform = transform.Find("Main Camera/Weapon Camera/WeaponHolder/Hammer");
-        if (hammerTransform != null)
-        {
-            WeaponController weaponController = hammerTransform.GetComponent<WeaponController>();
-            if (weaponController != null)
-            {
-                weaponController.owner = gameObject;
-            }
-            else
-            {
-                Debug.LogWarning("Hammer 개체에 WeaponController 컴포넌트가 없습니다.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Hammer 개체를 찾을 수 없습니다.");
-        }
+        weaponController = GetComponentInChildren<WeaponController>();
+        weaponController.owner = gameObject;
 
         applySpeed = Speed;
 
@@ -277,6 +264,12 @@ public class PlayerController : MonoBehaviour
             }
             //CameraRotation();
             //CharacterRotation();
+
+            if (doAttack)
+            {
+                doAttack = false;
+                weaponController.Attack();
+            }
 
             // 이전 위치와 회전값 업데이트
             previousPosition = PlayerPos;
@@ -325,8 +318,6 @@ public class PlayerController : MonoBehaviour
         // 최종 회전값으로 회전
         transform.rotation = target;
     }
-
-
 
     protected void Move()
     {
@@ -426,7 +417,7 @@ public class PlayerController : MonoBehaviour
         foreach (MeshRenderer mesh in meshs)
         {
             if (mesh.CompareTag("Weapon")) continue;
-            mesh.material.color = Color.green;
+            mesh.material.color = Color.red;
         }
     }
 

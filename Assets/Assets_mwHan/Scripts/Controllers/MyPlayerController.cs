@@ -11,6 +11,7 @@ public class MyPlayerController : PlayerController
     [SerializeField]
     protected float lookSensitivity; // 카메라 민감도
 
+    public bool _canAttack;
 
     // Start is called before the first frame update
     new void Start()
@@ -18,29 +19,13 @@ public class MyPlayerController : PlayerController
         myRigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-
-        Transform hammerTransform = transform.Find("Main Camera/Weapon Camera/WeaponHolder/Hammer");
-        if (hammerTransform != null)
-        {
-            WeaponController weaponController = hammerTransform.GetComponent<WeaponController>();
-            if (weaponController != null)
-            {
-                weaponController.owner = gameObject;
-            }
-            else
-            {
-                Debug.LogWarning("Hammer 개체에 WeaponController 컴포넌트가 없습니다.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Hammer 개체를 찾을 수 없습니다.");
-        }
+        weaponController = GetComponentInChildren<WeaponController>();
+        weaponController.owner = gameObject;
 
         applySpeed = Speed;
+
         InvokeRepeating("UpdatePlayerInfo", 0f, 0.2f);
         InvokeRepeating("SendPlayerMoving", 0f, 0.2f);
-        // 초기화
     }
 
     // Update is called once per frame
@@ -64,10 +49,17 @@ public class MyPlayerController : PlayerController
                     isKnockedBack = false;
                 }
             }
+
             GetMouseRotation();
             CameraRotation();
             CharacterRotation();
 
+            GetAttackKey();
+            if (doAttack)
+            {
+                doAttack = false;
+                weaponController.Attack();
+            }
             //base.Update();
         }
     }
@@ -96,6 +88,12 @@ public class MyPlayerController : PlayerController
     {
         MoveDirX = Input.GetAxisRaw("Horizontal"); // 좌우 오른쪽 방향키 1, 왼쪽 -1, 안누르면 0
         MoveDirZ = Input.GetAxisRaw("Vertical"); // 정면, 뒤
+    }
+
+    private void GetAttackKey()
+    {
+        doAttack = Input.GetMouseButtonDown(0);
+        Debug.Log(doAttack);
     }
 
     protected void Move(Vector3 targetPosition)

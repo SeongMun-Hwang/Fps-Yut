@@ -8,10 +8,13 @@ public class WeaponController : MonoBehaviour
     public PlayerController playerController;
 
     public GameObject owner;
-    public GameObject Owner { get { return owner; } }
+    public GameObject Owner 
+    { 
+        get { return owner; }
+        set { owner = value; }
+    }
 
     public GameObject Hammer;
-    public bool canAttack = true;
     public float AttackCooldown = 1f;
 
 
@@ -29,26 +32,12 @@ public class WeaponController : MonoBehaviour
     protected void Start()
     {
         playerController = GetComponentInParent<PlayerController>();
-    }
-
-    protected void Update()
-    {
-        if (!playerController.isdead)  // 예시: 플레이어가 제어 가능한 상태일 때만 입력 받음
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                //if (canAttack && IsOwner())
-                if (canAttack)
-                {
-                    Attack();
-                }
-            }
-        }
+        Owner = playerController.gameObject;
     }
 
     public void Attack()
     {
-        canAttack = false;
+        playerController.canattack = false;
         Animator anim = Hammer.GetComponent<Animator>();
         anim.SetTrigger("Attack");
         StartCoroutine(ResetAttackCooldown());
@@ -58,7 +47,7 @@ public class WeaponController : MonoBehaviour
     {
         StartCoroutine(ResetAttackBool());
         yield return new WaitForSeconds(AttackCooldown);
-        canAttack = true;
+        playerController.canattack = true;
     }
 
     protected IEnumerator ResetAttackBool()

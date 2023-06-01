@@ -137,7 +137,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7925613721312807129}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -394,6 +394,8 @@ MonoBehaviour:
   manager: {fileID: 0}
   isKnockedBack: 0
   isdead: 0
+  doAttack: 0
+  canattack: 1
 --- !u!1 &7925613722368316039
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,7 +755,6 @@ MonoBehaviour:
   playerController: {fileID: 7331721781679991961}
   owner: {fileID: 7925613721385915695}
   Hammer: {fileID: 7925613720960889146}
-  canAttack: 1
   AttackCooldown: 1
   IsAttacking: 0
   meleeArea: {fileID: 7925613722826568470}
