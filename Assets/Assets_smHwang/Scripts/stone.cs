@@ -103,38 +103,41 @@ public class stone : MonoBehaviour
 
     public void throwYut()
     {
-        int[] yut = new int[4];
-        for (int i = 0; i < 4; i++)
+        if (!isYutThrown)
         {
-            yut[i] = UnityEngine.Random.Range(0, 2);
-            sum += yut[i];
-        }
-        switch (sum)
-        {
-            case 0:
-                throw_mo();
-                break;
-            case 1:
-                if (yut[3] == 1)
-                {
-                    throw_back_do();
+            int[] yut = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                yut[i] = UnityEngine.Random.Range(0, 2);
+                sum += yut[i];
+            }
+            switch (sum)
+            {
+                case 0:
+                    throw_mo();
                     break;
-                }
-                throw_do();
-                break;
-            case 2:
-                throw_gae();
-                break;
-            case 3:
-                throw_girl();
-                break;
-            case 4:
-                throw_yut();
-                break;
-        }
+                case 1:
+                    if (yut[3] == 1)
+                    {
+                        throw_back_do();
+                        break;
+                    }
+                    throw_do();
+                    break;
+                case 2:
+                    throw_gae();
+                    break;
+                case 3:
+                    throw_girl();
+                    break;
+                case 4:
+                    throw_yut();
+                    break;
+            }
 
-        yutSound[sum].mute = false;
-        yutSound[sum].Play();
+            yutSound[sum].mute = false;
+            yutSound[sum].Play();
+        }        
     }
     public void throw_do()
     {
@@ -380,8 +383,6 @@ public class stone : MonoBehaviour
             Yut.text = "Blue Team is the winner!";
         }
     }
-    
-
 
     //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
     void AutoSelectClosestPlayerInArray()
@@ -504,16 +505,21 @@ public class stone : MonoBehaviour
                 users[turn][player_number].nowPosition++;
 
                 //상대방 말을 지나갈때
+                Debug.Log(turn + " " + enemy);
                 for (int i = 0; i < 4; i++)
                 {
-                    if ((users[turn][player_number].routePosition == users[enemy][i].nowPosition) && chosed_step > 1)
+                    if (users[turn][player_number].routePosition == users[enemy][i].nowPosition)
                     {
-                        Yut.text = "To pass, Win!";
-                        yield return new WaitForSeconds(0.5f);
-                        Debug.Log("Moving piece passed by an enemy piece.");
-                        SceneManager.LoadScene("Defense_Game");
+                        if (chosed_step > 0)
+                        {
+                            Yut.text = "To pass, Win!";
+                            yield return new WaitForSeconds(0.5f);
+                            Debug.Log("Moving piece passed by an enemy piece.");
+                            SceneManager.LoadScene("Defense_Game");
+                        }
                     }
                 }
+
 
                 yield return new WaitForSeconds(0.1f);
                 while (isFight == true)
@@ -538,19 +544,19 @@ public class stone : MonoBehaviour
 
 
             //말끼리 먹기 동작
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
-            //    {
-            //        미니 게임 없이 말을 먹을 때의 동작
-            //        Debug.Log("encounter");
-            //        reset_player(ref users[enemy][i], objectPrefab[enemy]);
-            //        chance++;
+            for (int i = 0; i < 4; i++)
+            {
+                if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
+                {
+                    //미니 게임 없이 말을 먹을 때의 동작
+                    //Debug.Log("encounter");
+                    //reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    //chance++;
 
-            //        //Fpsfight 진행
-            //        SceneManager.LoadScene("Fpsfight");
-            //    }
-            //}
+                    //Fpsfight 진행
+                    SceneManager.LoadScene("Fpsfight");
+                }
+            }
 
             isMoving = false;
             sum = 0;
