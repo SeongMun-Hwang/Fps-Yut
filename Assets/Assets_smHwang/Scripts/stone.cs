@@ -14,13 +14,14 @@ public class stone : MonoBehaviour
     public TextMeshProUGUI Yut;
     public GameObject[] red_team;
     public GameObject[] blue_team;
-
+    public Button[] steps_button;
+    public TextMeshProUGUI[] steps_button_Text;
     public struct user
     {
         public GameObject player;
         public int routePosition;
         public int nowPosition;
-        public int lastPosition;      
+        public int lastPosition;
         public Vector3 nextPos;
         public Vector3 player_start_position;
         public bool goal;
@@ -51,6 +52,11 @@ public class stone : MonoBehaviour
     Material outlineMaterial;
     GameObject lastSelectedPlayer;
 
+    Color original_Edge = Color.white;
+    Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
+    private int selectedButtonIndex = -1;
+    public int index;
+
     // 턴이 바뀌기 전에 현재 선택된 플레이어의 테두리를 업데이트합니다.
     void SetOutline(GameObject player)
     {
@@ -69,7 +75,7 @@ public class stone : MonoBehaviour
     }
 
     private void Update()
-    {      
+    {
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
@@ -80,9 +86,20 @@ public class stone : MonoBehaviour
         users[0] = new user[red_team.Length];
         users[1] = new user[blue_team.Length];
 
+        for (int i = 0; i < steps_button.Length; i++)
+        {
+            int index = i; // 이유: 클로저 때문에 바깥 변수를 직접 쓰면 마지막 값이 고정될 수 있음
+            steps_button[i].onClick.AddListener(() => choose_steps(index));
+        }
+        //steps_button_Text 연결
+        for (int i = 0; i < 5; i++)
+        {
+            steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
+        }
+
         if (isFight == false)
         {
-            for(int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -92,7 +109,7 @@ public class stone : MonoBehaviour
                     users[j][i].is_destroyed = false;
                 }
             }
-            
+
         }
         for (int i = 0; i < 5; i++)
         {
@@ -103,92 +120,122 @@ public class stone : MonoBehaviour
 
     public void throwYut()
     {
-        int[] yut = new int[4];
-        for (int i = 0; i < 4; i++)
+        if (!isYutThrown)
         {
-            yut[i] = UnityEngine.Random.Range(0, 2);
-            sum += yut[i];
-        }
-        switch (sum)
-        {
-            case 0:
-                throw_mo();
-                break;
-            case 1:
-                if (yut[3] == 1)
-                {
-                    throw_back_do();
+            int[] yut = new int[4];
+            for (int i = 0; i < 4; i++)
+            {
+                yut[i] = UnityEngine.Random.Range(0, 2);
+                sum += yut[i];
+            }
+            switch (sum)
+            {
+                case 0:
+                    throw_mo();
                     break;
-                }
-                throw_do();
-                break;
-            case 2:
-                throw_gae();
-                break;
-            case 3:
-                throw_girl();
-                break;
-            case 4:
-                throw_yut();
-                break;
-        }
+                case 1:
+                    if (yut[3] == 1)
+                    {
+                        throw_back_do();
+                        break;
+                    }
+                    throw_do();
+                    break;
+                case 2:
+                    throw_gae();
+                    break;
+                case 3:
+                    throw_girl();
+                    break;
+                case 4:
+                    throw_yut();
+                    break;
+            }
 
-        yutSound[sum].mute = false;
-        yutSound[sum].Play();
+            yutSound[sum].mute = false;
+            yutSound[sum].Play();
+        }
     }
     public void throw_do()
     {
-        steps.Add(1);
-        Debug.Log(steps);
-        Yut.text = "도!";
-        isYutThrown = true;
+        if (!isYutThrown)
+        {
+            steps.Add(1);            
+            Debug.Log(steps);
+            Yut.text = "도!";
+            steps_button_Text[steps.Count - 1].text = "도";
+            isYutThrown = true;
+        }
     }
     public void throw_back_do()
     {
-        steps.Add(1);
-        Debug.Log(steps[0]);
-        Yut.text = "백도!";
-        isBackdo = true;
-        isYutThrown = true;
+        if (!isYutThrown)
+        {
+            steps.Add(1);
+            Debug.Log(steps[0]);
+            Yut.text = "백도!";
+            steps_button_Text[steps.Count-1].text = "백도";
+            isBackdo = true;
+            isYutThrown = true;
+        }
     }
     public void throw_gae()
     {
-        steps.Add(2);
-        Debug.Log(steps[0]);
-        Yut.text = "개!";
-        isYutThrown = true;
+        if (!isYutThrown)
+        {
+            steps.Add(2);
+            Debug.Log(steps[0]);
+            Yut.text = "개!";
+            steps_button_Text[steps.Count-1].text = "개";
+            isYutThrown = true;
+        }
     }
     public void throw_girl()
     {
-        steps.Add(3);
-        Debug.Log(steps[0]);
-        Yut.text = "걸!";
-        isYutThrown = true;
+        if (!isYutThrown)
+        {
+            steps.Add(3);
+            Debug.Log(steps[0]);
+            Yut.text = "걸!";
+            steps_button_Text[steps.Count - 1].text = "걸";
+            isYutThrown = true;
+        }
+
     }
     public async void throw_yut()
     {
-        steps.Add(4);
-        Debug.Log(steps[0]);
-        Yut.text = "윷!";
-        await DelayAsync(0.5f);
-        Yut.text = "한 번 더!";
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!isYutThrown)
         {
-            throwYut(); // Throw yut again
+            steps.Add(4);
+            Debug.Log(steps[0]);
+            Yut.text = "윷!";
+            steps_button_Text[steps.Count - 1].text = "윷";
+            await DelayAsync(0.5f);
+            Yut.text = "한 번 더!";
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                throwYut(); // Throw yut again
+            }
         }
+
     }
 
     public async void throw_mo()
     {
-        steps.Add(5);
-        Debug.Log(steps[0]);
-        Yut.text = "모!";
-        await DelayAsync(0.5f);
-        Yut.text = "한 번 더!";
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!isYutThrown)
         {
-            throwYut(); // Throw yut again
+            steps.Add(5);
+            Debug.Log(steps[0]);
+            Yut.text = "모!";
+            steps_button_Text[steps.Count - 1].text = "모";
+            await DelayAsync(0.5f);
+            Yut.text = "한 번 더!";
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                throwYut(); // Throw yut again
+            }
         }
+
     }
 
     public void one()
@@ -245,7 +292,7 @@ public class stone : MonoBehaviour
         u.player = Instantiate(playerPrefab); // player 게임 오브젝트를 생성합니다.
         u.routePosition = 0;
         u.nowPosition = 0;
-        u.lastPosition = 0;       
+        u.lastPosition = 0;
         u.nextPos = Vector3.zero;
         u.goal = false;
         u.is_destroyed = false;
@@ -280,14 +327,14 @@ public class stone : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 four();
-                Debug.Log("choose"+player_number);
+                Debug.Log("choose" + player_number);
             }
-            else if (Input.GetKeyDown(KeyCode.Return)&&isYutThrown==true)
+            else if (Input.GetKeyDown(KeyCode.Return) && isYutThrown == true)
             {
-                Debug.Log("move"+player_number);
+                Debug.Log("move" + player_number);
                 StartCoroutine(Move(steps[choose_step]));
             }
-            else if (Input.GetKeyDown(KeyCode.Space)&&isYutThrown==false)
+            else if (Input.GetKeyDown(KeyCode.Space) && isYutThrown == false)
             {
                 throwYut();
             }
@@ -310,7 +357,7 @@ public class stone : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 Yut.text = "";
-                if (choose_step < steps.Count-1)
+                if (choose_step < steps.Count - 1)
                 {
                     choose_step++;
                 }
@@ -324,6 +371,15 @@ public class stone : MonoBehaviour
             }
         }
     }
+    public void move_Player()
+    {
+        if (isYutThrown)
+        {
+            Debug.Log("clicked");
+            StartCoroutine(Move(steps[choose_step]));
+        }
+    }
+
     void match_Yut(int i)
     {
         switch (i)
@@ -380,8 +436,6 @@ public class stone : MonoBehaviour
             Yut.text = "Blue Team is the winner!";
         }
     }
-    
-
 
     //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
     void AutoSelectClosestPlayerInArray()
@@ -406,6 +460,64 @@ public class stone : MonoBehaviour
                 player_number = closestPlayerNumber;
                 SetOutline(users[turn][player_number].player);
             }
+        }
+    }
+    public void choose_steps(int buttonIndex)
+    {
+        if (buttonIndex >= 0 && buttonIndex < steps.Count && steps[buttonIndex] != null)
+        {
+            choose_step = buttonIndex;
+            Debug.Log(buttonIndex);
+            if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
+            {
+                //if (buttonIndex == selectedButtonIndex-1)
+                //{
+                //    // 이미 선택된 버튼을 클릭한 경우 선택 해제
+                //    selectedButtonIndex = -1;
+                //    ResetButtonColors();
+                //}
+                //else
+                //{
+                // 새로운 버튼을 선택한 경우
+                selectedButtonIndex = buttonIndex;
+                UpdateButtonColors();
+                //}
+            }
+        }       
+    }
+
+    private void ResetButtonColors()
+    {
+        Debug.Log("resetbutton");
+        for (int i = 0; i < steps_button.Length; i++)
+        {
+            Image buttonImage = steps_button[i].GetComponent<Image>();
+            buttonImage.color = original_Edge;
+        }
+    }
+
+    private void UpdateButtonColors()
+    {
+        Debug.Log("updatebutton");
+        for (int i = 0; i < steps_button.Length; i++)
+        {
+            Image buttonImage = steps_button[i].GetComponent<Image>();
+            if (i == selectedButtonIndex)
+            {
+                buttonImage.color = highligted_Edge;
+            }
+            else
+            {
+                buttonImage.color = original_Edge;
+            }
+        }
+    }
+    void clear_stepsButton()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            steps_button_Text[i].text = "";
+            steps_button[i].image.color = original_Edge;
         }
     }
     IEnumerator Move(int chosed_step)
@@ -504,16 +616,21 @@ public class stone : MonoBehaviour
                 users[turn][player_number].nowPosition++;
 
                 //상대방 말을 지나갈때
+                Debug.Log(turn + " " + enemy);
                 for (int i = 0; i < 4; i++)
                 {
-                    if ((users[turn][player_number].routePosition == users[enemy][i].nowPosition) && chosed_step > 1)
+                    if (users[turn][player_number].routePosition == users[enemy][i].nowPosition)
                     {
-                        Yut.text = "To pass, Win!";
-                        yield return new WaitForSeconds(0.5f);
-                        Debug.Log("Moving piece passed by an enemy piece.");
-                        SceneManager.LoadScene("Defense_Game");
+                        if (chosed_step > 0)
+                        {
+                            Yut.text = "To pass, Win!";
+                            yield return new WaitForSeconds(0.5f);
+                            Debug.Log("Moving piece passed by an enemy piece.");
+                            SceneManager.LoadScene("Defense_Game");
+                        }
                     }
                 }
+
 
                 yield return new WaitForSeconds(0.1f);
                 while (isFight == true)
@@ -523,7 +640,20 @@ public class stone : MonoBehaviour
                 }
             }
 
-             steps.RemoveAt(choose_step);
+            steps.RemoveAt(choose_step);
+
+            steps_button_Text[index].text = "";
+
+            // 해당 인덱스 이후의 모든 텍스트 요소를 앞으로 한 칸씩 이동
+            for (int i = index; i < steps.Count; i++)
+            {
+                steps_button_Text[i].text = steps_button_Text[i + 1].text;
+            }
+            if (steps.Count < steps_button_Text.Length)
+            {
+                steps_button_Text[steps.Count].text = "";
+            }
+            /////////////////////////////////////////////////////////////
             if (choose_step == steps.Count)
             {
                 choose_step--;
@@ -531,26 +661,26 @@ public class stone : MonoBehaviour
             }
 
             Debug.Log("after remove" + steps.Count);
-            foreach(int i in steps)
+            foreach (int i in steps)
             {
                 Debug.Log(i);
             }
 
 
             //말끼리 먹기 동작
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
-            //    {
-            //        미니 게임 없이 말을 먹을 때의 동작
-            //        Debug.Log("encounter");
-            //        reset_player(ref users[enemy][i], objectPrefab[enemy]);
-            //        chance++;
+            for (int i = 0; i < 4; i++)
+            {
+                if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
+                {
+                    //미니 게임 없이 말을 먹을 때의 동작
+                    //Debug.Log("encounter");
+                    //reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    //chance++;
 
-            //        //Fpsfight 진행
-            //        SceneManager.LoadScene("Fpsfight");
-            //    }
-            //}
+                    //Fpsfight 진행
+                    SceneManager.LoadScene("Fpsfight");
+                }
+            }
 
             isMoving = false;
             sum = 0;
@@ -563,8 +693,8 @@ public class stone : MonoBehaviour
             //}
             if (steps.Count == 0)
             {
-                if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; }
-                else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; }
+                if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
+                else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
                 Yut.text = "player " + (turn + 1) + " turn!";
             }
             player_number = 0;
