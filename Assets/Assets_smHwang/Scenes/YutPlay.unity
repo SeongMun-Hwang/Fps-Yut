@@ -1710,8 +1710,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 658787159}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: throw_do
-        m_Mode: 1
+        m_MethodName: choose_steps
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3044,11 +3044,23 @@ MonoBehaviour:
   - {fileID: 1677843937}
   - {fileID: 288508795}
   - {fileID: 2071326698}
-  steps_button: []
+  steps_button:
+  - {fileID: 400549285}
+  - {fileID: 2130405708}
+  - {fileID: 1808772286}
+  - {fileID: 1903856789}
+  - {fileID: 2028555288}
+  steps_button_Text:
+  - {fileID: 23266177}
+  - {fileID: 1530951847}
+  - {fileID: 1509212778}
+  - {fileID: 1854658184}
+  - {fileID: 932443828}
   steps: 
   objectPrefab:
   - {fileID: 2070411140}
   - {fileID: 2025427989}
+  index: 0
 --- !u!1 &666031935
 GameObject:
   m_ObjectHideFlags: 0
@@ -7322,8 +7334,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 658787159}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: throw_do
-        m_Mode: 1
+        m_MethodName: choose_steps
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8033,8 +8045,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 658787159}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: throw_do
-        m_Mode: 1
+        m_MethodName: choose_steps
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -8693,8 +8705,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 658787159}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: throw_do
-        m_Mode: 1
+        m_MethodName: choose_steps
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9366,8 +9378,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 658787159}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: throw_do
-        m_Mode: 1
+        m_MethodName: choose_steps
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
