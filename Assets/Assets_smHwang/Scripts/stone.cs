@@ -642,10 +642,10 @@ public class stone : MonoBehaviour
 
             steps.RemoveAt(choose_step);
 
-            steps_button_Text[index].text = "";
+            steps_button_Text[choose_step].text = "";
 
             // 해당 인덱스 이후의 모든 텍스트 요소를 앞으로 한 칸씩 이동
-            for (int i = index; i < steps.Count; i++)
+            for (int i = choose_step; i < steps.Count; i++)
             {
                 steps_button_Text[i].text = steps_button_Text[i + 1].text;
             }
