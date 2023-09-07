@@ -12,9 +12,31 @@ public class move_Pillar : MonoBehaviour
     public GameObject player;
     public GameObject[] obstacle;
     public Renderer[] rend;
+    private Vector3[] initialPosition;
+
+    private struct PillarState
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+        public Vector3 velocity;
+        public Vector3 angularVelocity;
+    }
+    private PillarState[] initialPillarStates;
 
     void Start()
     {
+        initialPillarStates = new PillarState[rbs.Length];
+        for (int i = 0; i < rbs.Length; i++)
+        {
+            initialPillarStates[i] = new PillarState
+            {
+                position = rbs[i].transform.position,
+                rotation = rbs[i].transform.rotation,
+                velocity = rbs[i].velocity,
+                angularVelocity = rbs[i].angularVelocity
+            };
+        }
+
         for (int i = 0; i < isStopped.Length; i++)
         {
             isStopped[i] = false;
@@ -102,12 +124,29 @@ public class move_Pillar : MonoBehaviour
         if (pillar[3] && !isStopped[3]) pillar_Up();
 
     }
+    //공격 후 5초 뒤 기둥 위치 리셋
+    IEnumerator ResetPillarPositionsAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+        for (int i = 0; i < rbs.Length; i++)
+        {
+            rbs[i].transform.position = initialPillarStates[i].position;
+            rbs[i].transform.rotation = initialPillarStates[i].rotation;
+            rbs[i].velocity = initialPillarStates[i].velocity;
+            rbs[i].angularVelocity = initialPillarStates[i].angularVelocity;
+        }
+        launch = false;
+    }
+
+
+
     void FixedUpdate()
     {
         // 스페이스바가 눌린 후, 움직임 시작
         if (launch)
         {
             StartCoroutine(WaitHalfSecond());
+            StartCoroutine(ResetPillarPositionsAfterDelay());
         }
     }
 
@@ -119,7 +158,7 @@ public class move_Pillar : MonoBehaviour
         }
     }
 
-
+    //각 입력에 따라 각 방향에 해당하는 기둥 공격
     void pillar_Right()
     {
         for (int i = 0; i < 4; i++)
