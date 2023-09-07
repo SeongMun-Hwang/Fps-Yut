@@ -9,6 +9,9 @@ TagManager:
   - EnemyWeapon
   - OutBottom
   - Floor
+  - player
+  - edge
+  - pillar
   layers:
   - Default
   - TransparentFX

@@ -13,6 +13,7 @@ public class move_Pillar : MonoBehaviour
     public GameObject[] obstacle;
     public Renderer[] rend;
     private Vector3[] initialPosition;
+    private bool hasLaunched = false;
 
     private struct PillarState
     {
@@ -25,6 +26,17 @@ public class move_Pillar : MonoBehaviour
 
     void Start()
     {
+        GameObject[] pillars = GameObject.FindGameObjectsWithTag("pillar");
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
+
+        foreach (GameObject pillar in pillars)
+        {
+            foreach (GameObject edge in edges)
+            {
+                Physics.IgnoreCollision(pillar.GetComponent<Collider>(), edge.GetComponent<Collider>());
+            }
+        }
+
         initialPillarStates = new PillarState[rbs.Length];
         for (int i = 0; i < rbs.Length; i++)
         {
@@ -42,11 +54,11 @@ public class move_Pillar : MonoBehaviour
             isStopped[i] = false;
         }
 
-        for (int i = 0; i < rbs.Length; i++)
-        {
-            rbs[i].constraints = RigidbodyConstraints.FreezeRotation;
-            rbs[i].constraints = RigidbodyConstraints.FreezePositionY;
-        }
+        //for (int i = 0; i < rbs.Length; i++)
+        //{
+        //    rbs[i].constraints = RigidbodyConstraints.FreezeRotation;
+        //    rbs[i].constraints = RigidbodyConstraints.FreezePositionY;
+        //}
 
         float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
         Vector3 prevPosition = Vector3.zero;
@@ -136,27 +148,43 @@ public class move_Pillar : MonoBehaviour
             rbs[i].angularVelocity = initialPillarStates[i].angularVelocity;
         }
         launch = false;
+        hasLaunched = false;
     }
-
-
 
     void FixedUpdate()
     {
-        // 스페이스바가 눌린 후, 움직임 시작
-        if (launch)
+        if (launch && !hasLaunched)
         {
             StartCoroutine(WaitHalfSecond());
             StartCoroutine(ResetPillarPositionsAfterDelay());
+            hasLaunched = true;
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject == player)
+        if (this.CompareTag("player"))
         {
-            Debug.Log("Collision with Player");
+            // player는 pillar와 edge와 모두 충돌하므로, 여기에 별도의 코드가 필요 없습니다.
         }
+        else if (this.CompareTag("pillar"))
+        {
+            if (collision.gameObject.CompareTag("edge"))
+            {
+                return;  // pillar는 edge와 충돌하면 안되므로 아무것도 하지 않습니다.
+            }
+        }
+        else if (this.CompareTag("edge"))
+        {
+            if (!collision.gameObject.CompareTag("player"))
+            {
+                return;  // edge는 player 외의 다른 오브젝트와 충돌하면 아무것도 하지 않습니다.
+            }
+        }
+
+        // 충돌 처리 로직
     }
+
 
     //각 입력에 따라 각 방향에 해당하는 기둥 공격
     void pillar_Right()
@@ -192,4 +220,3 @@ public class move_Pillar : MonoBehaviour
         }
     }
 }
-
