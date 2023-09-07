@@ -279,7 +279,8 @@ public class stone : MonoBehaviour
             u.player = null;
         }
     }
-    //삭제한 플레이어 말 재생성
+
+    //먹힌 플레이어 말 재생성
     public void reset_player(ref user u, GameObject playerPrefab)
     {
         // 먼저 현재 user에 대한 리소스를 해제하기 전에 이전 player 정보를 저장합니다.
@@ -469,31 +470,11 @@ public class stone : MonoBehaviour
             choose_step = buttonIndex;
             Debug.Log(buttonIndex);
             if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
-            {
-                //if (buttonIndex == selectedButtonIndex-1)
-                //{
-                //    // 이미 선택된 버튼을 클릭한 경우 선택 해제
-                //    selectedButtonIndex = -1;
-                //    ResetButtonColors();
-                //}
-                //else
-                //{
-                // 새로운 버튼을 선택한 경우
+            {                
                 selectedButtonIndex = buttonIndex;
                 UpdateButtonColors();
-                //}
             }
         }       
-    }
-
-    private void ResetButtonColors()
-    {
-        Debug.Log("resetbutton");
-        for (int i = 0; i < steps_button.Length; i++)
-        {
-            Image buttonImage = steps_button[i].GetComponent<Image>();
-            buttonImage.color = original_Edge;
-        }
     }
 
     private void UpdateButtonColors()
@@ -512,6 +493,7 @@ public class stone : MonoBehaviour
             }
         }
     }
+    //말 버튼 초기화
     void clear_stepsButton()
     {
         for (int i = 0; i < 5; i++)
