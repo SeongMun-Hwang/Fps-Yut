@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class move_Pillar : MonoBehaviour
 {
@@ -14,7 +16,9 @@ public class move_Pillar : MonoBehaviour
     public Renderer[] rend;
     private Vector3[] initialPosition;
     private bool hasLaunched = false;
-
+    public TextMeshProUGUI status_text;
+    int count = 0;
+    int round = 1;
     private struct PillarState
     {
         public Vector3 position;
@@ -23,9 +27,11 @@ public class move_Pillar : MonoBehaviour
         public Vector3 angularVelocity;
     }
     private PillarState[] initialPillarStates;
+    private bool playerCollidedWithPillar = false; //충돌 여부 체크
 
     void Start()
     {
+        status_text.text = "Round: " + round;
         //pillar, edge 초기화
         GameObject[] pillars = GameObject.FindGameObjectsWithTag("pillar");
         GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
@@ -83,6 +89,7 @@ public class move_Pillar : MonoBehaviour
     {
         foreach (GameObject pillar in GameObject.FindGameObjectsWithTag("pillar"))
         {
+            //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
             adjustedBounds.extents *= 1.0f; //충돌 판정 범위 상세 조정
 
@@ -90,6 +97,9 @@ public class move_Pillar : MonoBehaviour
             {
                 Debug.Log("플레이어와 기둥이 충돌했습니다.");
                 // 여기에 충돌 시 수행될 로직을 추가합니다.
+                status_text.text = "패배!";
+                StartCoroutine(delay());
+                playerCollidedWithPillar = true;
             }
         }
 
@@ -118,11 +128,25 @@ public class move_Pillar : MonoBehaviour
             rend[3].material.color = Color.red;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)&&((pillar[0]|| pillar[1] || pillar[2] || pillar[3]) != false))
+        if (Input.GetKeyDown(KeyCode.Space) && ((pillar[0] || pillar[1] || pillar[2] || pillar[3]) != false))
         {
+            playerCollidedWithPillar = false; // 이 부분을 추가합니다.
             launch = true;
         }
     }
+    //2초 대기 후 씬 이동
+    IEnumerator delay()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("YutPlay");
+    }
+    //라운드 표시 함수
+    void UpdateRoundInfo()
+    {
+        round++;
+        status_text.text = "라운드 " + round + "!";
+    }
+
     void ResetPillarAndColor()
     {
         Color initialColor = new Color(243f / 255f, 171f / 255f, 6f / 255f);
@@ -132,17 +156,17 @@ public class move_Pillar : MonoBehaviour
             rend[i].material.color = initialColor; // 원하는 초기 색상으로 변경
         }
     }
+    //0.5초 후 공격
     IEnumerator WaitHalfSecond()
     {
         yield return new WaitForSeconds(0.5f);
-        // 0.5초 후에 수행할 작업을 여기에 추가합니다.
         if (pillar[0] && !isStopped[0]) pillar_Right();
         if (pillar[1] && !isStopped[1]) pillar_Left();
         if (pillar[2] && !isStopped[2]) pillar_Down();
         if (pillar[3] && !isStopped[3]) pillar_Up();
 
     }
-    //공격 후 5초 뒤 기둥 위치 리셋
+    //공격 후 5초 뒤 기둥 위치 리셋, count 증가
     IEnumerator ResetPillarPositionsAfterDelay()
     {
         yield return new WaitForSeconds(5f);
@@ -155,7 +179,24 @@ public class move_Pillar : MonoBehaviour
         }
         launch = false;
         hasLaunched = false;
+
+        // pillar reset 후에 충돌이 발생하지 않았으면 count를 증가시킵니다.
+        if (!playerCollidedWithPillar)
+        {
+            count++;
+            if (count == 3)
+            {
+                status_text.text = "승리!";
+                count = 0;
+                StartCoroutine(delay());
+            }
+            else
+            {
+                UpdateRoundInfo();
+            }
+        }
     }
+
 
     void FixedUpdate()
     {
