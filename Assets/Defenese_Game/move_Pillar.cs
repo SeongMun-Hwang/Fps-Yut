@@ -26,9 +26,10 @@ public class move_Pillar : MonoBehaviour
 
     void Start()
     {
+        //pillar, edge 초기화
         GameObject[] pillars = GameObject.FindGameObjectsWithTag("pillar");
         GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
-
+        //충돌 무시 설정
         foreach (GameObject pillar in pillars)
         {
             foreach (GameObject edge in edges)
@@ -36,7 +37,7 @@ public class move_Pillar : MonoBehaviour
                 Physics.IgnoreCollision(pillar.GetComponent<Collider>(), edge.GetComponent<Collider>());
             }
         }
-
+        //기둥 초기화를 위한 초기 위치 저장
         initialPillarStates = new PillarState[rbs.Length];
         for (int i = 0; i < rbs.Length; i++)
         {
@@ -54,28 +55,21 @@ public class move_Pillar : MonoBehaviour
             isStopped[i] = false;
         }
 
-        //for (int i = 0; i < rbs.Length; i++)
-        //{
-        //    rbs[i].constraints = RigidbodyConstraints.FreezeRotation;
-        //    rbs[i].constraints = RigidbodyConstraints.FreezePositionY;
-        //}
-
         float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
         Vector3 prevPosition = Vector3.zero;
 
-        foreach (GameObject ob in obstacle) // obstacle 배열의 각 원소에 대해...
+        //장애물 위치 랜덤 생성
+        foreach (GameObject ob in obstacle)
         {
             Vector3 newPosition;
 
             do
             {
-                // X축 섹션을 랜덤하게 선택합니다.
+                //x축 랜덤
                 float posX = positions[Random.Range(0, positions.Length)];
 
-                // Z축 섹션을 랜덤하게 선택합니다.
+                //z축 랜덤
                 float posZ = positions[Random.Range(0, positions.Length)];
-
-                // 선택된 섹션 중심을 오브젝트의 위치로 설정합니다.
                 newPosition = new Vector3(posX, ob.transform.position.y, posZ);
 
             } while (Mathf.Approximately(newPosition.x, prevPosition.x) || Mathf.Approximately(newPosition.z, prevPosition.z));
@@ -87,6 +81,18 @@ public class move_Pillar : MonoBehaviour
 
     void Update()
     {
+        foreach (GameObject pillar in GameObject.FindGameObjectsWithTag("pillar"))
+        {
+            Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
+            adjustedBounds.extents *= 1.0f; //충돌 판정 범위 상세 조정
+
+            if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
+            {
+                Debug.Log("플레이어와 기둥이 충돌했습니다.");
+                // 여기에 충돌 시 수행될 로직을 추가합니다.
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             ResetPillarAndColor();
@@ -163,11 +169,7 @@ public class move_Pillar : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (this.CompareTag("player"))
-        {
-            // player는 pillar와 edge와 모두 충돌하므로, 여기에 별도의 코드가 필요 없습니다.
-        }
-        else if (this.CompareTag("pillar"))
+        if (this.CompareTag("pillar"))
         {
             if (collision.gameObject.CompareTag("edge"))
             {
