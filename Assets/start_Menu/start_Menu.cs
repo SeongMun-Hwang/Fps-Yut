@@ -19,6 +19,14 @@ public class start_Menu : MonoBehaviour
         {
             SceneManager.LoadScene("Fpsfight");
         }
+        else if (Input.GetKeyDown(KeyCode.F4))
+        {
+            SceneManager.LoadScene("Defense_Game");
+        }
+        else if (Input.GetKeyDown(KeyCode.F5))
+        {
+            SceneManager.LoadScene("setting");
+        }
     }
     public void game_Start()
     {
