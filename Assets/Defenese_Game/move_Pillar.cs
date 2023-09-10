@@ -31,7 +31,7 @@ public class move_Pillar : MonoBehaviour
 
     void Start()
     {
-        status_text.text = "Round: " + round;
+        status_text.text = "라운드 " + round + "!";
         //pillar, edge 초기화
         GameObject[] pillars = GameObject.FindGameObjectsWithTag("pillar");
         GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
@@ -87,6 +87,26 @@ public class move_Pillar : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            SceneManager.LoadScene(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.F2))
+        {
+            SceneManager.LoadScene(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.F3))
+        {
+            SceneManager.LoadScene("Fpsfight");
+        }
+        else if (Input.GetKeyDown(KeyCode.F4))
+        {
+            SceneManager.LoadScene("Defense_Game");
+        }
+        else if (Input.GetKeyDown(KeyCode.F5))
+        {
+            SceneManager.LoadScene("setting");
+        }
         foreach (GameObject pillar in GameObject.FindGameObjectsWithTag("pillar"))
         {
             //충돌판정
@@ -214,20 +234,17 @@ public class move_Pillar : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("edge"))
             {
-                return;  // pillar는 edge와 충돌하면 안되므로 아무것도 하지 않습니다.
+                return;
             }
         }
         else if (this.CompareTag("edge"))
         {
             if (!collision.gameObject.CompareTag("player"))
             {
-                return;  // edge는 player 외의 다른 오브젝트와 충돌하면 아무것도 하지 않습니다.
+                return;
             }
         }
-
-        // 충돌 처리 로직
-    }
-
+     }
 
     //각 입력에 따라 각 방향에 해당하는 기둥 공격
     void pillar_Right()
