@@ -248,17 +248,12 @@ public class stone : MonoBehaviour
         }
     }
 
-    //먹힌 플레이어 말 재생성
+    //플레이어 말 재생성
     public void reset_player(ref user u, GameObject playerPrefab)
     {
-        // 먼저 현재 user에 대한 리소스를 해제하기 전에 이전 player 정보를 저장합니다.
         Quaternion prevRotation = u.player.transform.rotation;
-
-        // 먼저 현재 user에 대한 리소스를 해제합니다.
         clear_player(ref u);
-
-        // 초기값 설정
-        u.player = Instantiate(playerPrefab); // player 게임 오브젝트를 생성합니다.
+        u.player = Instantiate(playerPrefab);
         u.routePosition = 0;
         u.nowPosition = 0;
         u.lastPosition = 0;
@@ -266,14 +261,12 @@ public class stone : MonoBehaviour
         u.goal = false;
         u.is_destroyed = false;
 
-        // 새로 생성된 player 게임 오브젝트의 위치와 회전을 이전 플레이어와 동일하게 설정합니다.
         u.player.transform.position = u.player_start_position;
     }
 
     /*키보드 입력으로 말 선택
      1~4 : 말 선택
     space : 윷던지기*/
-
     void choose_Player()
     {
         if (isMoving == false)
@@ -321,6 +314,8 @@ public class stone : MonoBehaviour
                     match_Yut(i);
                 }
                 Yut.text = "Available" + Yut.text + "\nyou choose";
+                selectedButtonIndex = choose_step;
+                UpdateButtonColors();
                 match_Yut(steps[choose_step]);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -336,6 +331,8 @@ public class stone : MonoBehaviour
                     match_Yut(i);
                 }
                 Yut.text = "Available" + Yut.text + "\nyou choose";
+                selectedButtonIndex = choose_step;
+                UpdateButtonColors();
                 match_Yut(steps[choose_step]);
             }
         }
