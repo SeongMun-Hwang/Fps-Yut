@@ -156,86 +156,54 @@ public class stone : MonoBehaviour
             yutSound[sum].Play();
         }
     }
-    public void throw_do()
+    private async void UpdateThrowResult(int value, string text)
     {
         if (!isYutThrown)
         {
-            steps.Add(1);            
-            Debug.Log(steps);
-            Yut.text = "도!";
-            steps_button_Text[steps.Count - 1].text = "도";
-            isYutThrown = true;
+            steps.Add(value);
+            Debug.Log(steps[0]);
+            Yut.text = text+"!";
+            steps_button_Text[steps.Count - 1].text = text;
+            if (value == 4 || value == 5) // 윷 or 모
+            {
+                await DelayAsync(0.5f);
+                Yut.text = "한 번 더!";
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    throwYut(); // 윷을 다시 던집니다.
+                }
+            }
         }
+    }
+    public void throw_do()
+    {
+        UpdateThrowResult(1, "도");
+        isYutThrown = true;
     }
     public void throw_back_do()
     {
-        if (!isYutThrown)
-        {
-            steps.Add(1);
-            Debug.Log(steps[0]);
-            Yut.text = "백도!";
-            steps_button_Text[steps.Count-1].text = "백도";
-            isBackdo = true;
-            isYutThrown = true;
-        }
+        UpdateThrowResult(1, "백도");
+        isBackdo = true;
+        isYutThrown = true;
     }
     public void throw_gae()
     {
-        if (!isYutThrown)
-        {
-            steps.Add(2);
-            Debug.Log(steps[0]);
-            Yut.text = "개!";
-            steps_button_Text[steps.Count-1].text = "개";
-            isYutThrown = true;
-        }
+        UpdateThrowResult(2, "개");
+        isYutThrown = true;
     }
     public void throw_girl()
     {
-        if (!isYutThrown)
-        {
-            steps.Add(3);
-            Debug.Log(steps[0]);
-            Yut.text = "걸!";
-            steps_button_Text[steps.Count - 1].text = "걸";
-            isYutThrown = true;
-        }
-
+        UpdateThrowResult(3, "걸");
+        isYutThrown = true;
     }
-    public async void throw_yut()
+    public void throw_yut()
     {
-        if (!isYutThrown)
-        {
-            steps.Add(4);
-            Debug.Log(steps[0]);
-            Yut.text = "윷!";
-            steps_button_Text[steps.Count - 1].text = "윷";
-            await DelayAsync(0.5f);
-            Yut.text = "한 번 더!";
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                throwYut(); // Throw yut again
-            }
-        }
-
+        UpdateThrowResult(4, "윷");
     }
 
-    public async void throw_mo()
+    public void throw_mo()
     {
-        if (!isYutThrown)
-        {
-            steps.Add(5);
-            Debug.Log(steps[0]);
-            Yut.text = "모!";
-            steps_button_Text[steps.Count - 1].text = "모";
-            await DelayAsync(0.5f);
-            Yut.text = "한 번 더!";
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                throwYut(); // Throw yut again
-            }
-        }
-
+        UpdateThrowResult(5, "모");
     }
 
     public void one()
