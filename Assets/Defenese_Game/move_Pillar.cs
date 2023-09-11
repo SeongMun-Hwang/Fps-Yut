@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class move_Pillar : MonoBehaviour
 {
@@ -14,11 +15,11 @@ public class move_Pillar : MonoBehaviour
     public GameObject player;
     public GameObject[] obstacle;
     public Renderer[] rend;
-    private Vector3[] initialPosition;
     private bool hasLaunched = false;
     public TextMeshProUGUI status_text;
     int count = 0;
     int round = 1;
+
     private struct PillarState
     {
         public Vector3 position;
@@ -29,11 +30,12 @@ public class move_Pillar : MonoBehaviour
     private PillarState[] initialPillarStates;
     private bool playerCollidedWithPillar = false; //충돌 여부 체크
 
+    private GameObject[] pillars;
     void Start()
     {
+        pillars = GameObject.FindGameObjectsWithTag("pillar");
         status_text.text = "라운드 " + round + "!";
         //pillar, edge 초기화
-        GameObject[] pillars = GameObject.FindGameObjectsWithTag("pillar");
         GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
         //충돌 무시 설정
         foreach (GameObject pillar in pillars)
@@ -68,7 +70,6 @@ public class move_Pillar : MonoBehaviour
         foreach (GameObject ob in obstacle)
         {
             Vector3 newPosition;
-
             do
             {
                 //x축 랜덤
@@ -107,7 +108,7 @@ public class move_Pillar : MonoBehaviour
         {
             SceneManager.LoadScene("setting");
         }
-        foreach (GameObject pillar in GameObject.FindGameObjectsWithTag("pillar"))
+        foreach (GameObject pillar in pillars)
         {
             //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
@@ -122,33 +123,35 @@ public class move_Pillar : MonoBehaviour
                 playerCollidedWithPillar = true;
             }
         }
+        if (!launch && !hasLaunched)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                ResetPillarAndColor();
+                pillar[0] = true;
+                rend[0].material.color = Color.red;
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                ResetPillarAndColor();
+                pillar[1] = true;
+                rend[1].material.color = Color.red;
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                ResetPillarAndColor();
+                pillar[2] = true;
+                rend[2].material.color = Color.red;
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                ResetPillarAndColor();
+                pillar[3] = true;
+                rend[3].material.color = Color.red;
+            }
+        }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            ResetPillarAndColor();
-            pillar[0] = true;
-            rend[0].material.color = Color.red;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            ResetPillarAndColor();
-            pillar[1] = true;
-            rend[1].material.color = Color.red;
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            ResetPillarAndColor();
-            pillar[2] = true;
-            rend[2].material.color = Color.red;
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            ResetPillarAndColor();
-            pillar[3] = true;
-            rend[3].material.color = Color.red;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && ((pillar[0] || pillar[1] || pillar[2] || pillar[3]) != false))
+        if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
         {
             playerCollidedWithPillar = false; // 이 부분을 추가합니다.
             launch = true;
@@ -227,24 +230,6 @@ public class move_Pillar : MonoBehaviour
             hasLaunched = true;
         }
     }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (this.CompareTag("pillar"))
-        {
-            if (collision.gameObject.CompareTag("edge"))
-            {
-                return;
-            }
-        }
-        else if (this.CompareTag("edge"))
-        {
-            if (!collision.gameObject.CompareTag("player"))
-            {
-                return;
-            }
-        }
-     }
 
     //각 입력에 따라 각 방향에 해당하는 기둥 공격
     void pillar_Right()
