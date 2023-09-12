@@ -21,6 +21,8 @@ public class stone : MonoBehaviour
     public GameObject[] red_team;
     public GameObject[] blue_team;
     public Button[] steps_button;
+    public Button yes;
+    public Button no;
     public TextMeshProUGUI[] steps_button_Text;
     public struct user
     {
@@ -87,6 +89,8 @@ public class stone : MonoBehaviour
     }
     void Start()
     {
+        yes.gameObject.SetActive(false);
+        no.gameObject.SetActive(false);
         users = new user[Constants.PlayerNumber][];
         users[0] = new user[Constants.HorseNumber];
         users[1] = new user[Constants.HorseNumber];
@@ -558,7 +562,7 @@ public class stone : MonoBehaviour
             users[turn][player_number].nowPosition++;
 
             //상대방 말을 지나갈때
-            DefenseGameTrigger(chosed_step);
+            //DefenseGameTrigger(chosed_step);
 
             yield return new WaitForSeconds(0.1f);
             while (isFight == true)
@@ -573,7 +577,8 @@ public class stone : MonoBehaviour
         steps_button_Text[choose_step].text = "";
 
         UpdateYutChoice();
-        FpsfightTrigger();
+        GoTogether();
+        //FpsfightTrigger();
 
         isMoving = false;
         sum = 0;
@@ -730,5 +735,18 @@ public class stone : MonoBehaviour
             clear_stepsButton();
         }
         Yut.text = "player " + (turn + 1) + " turn!";
+    }
+    private  void GoTogether()
+    {
+        for (int i = 0; i < Constants.HorseNumber; i++)
+        {
+            if (player_number == i) continue;
+            if (users[turn][player_number].nowPosition == users[turn][i].nowPosition)
+            {
+                Yut.text = "윷을 엎으시겠습니까?";
+                yes.gameObject.SetActive(true);
+                no.gameObject.SetActive(true);
+            }
+        }
     }
 }
