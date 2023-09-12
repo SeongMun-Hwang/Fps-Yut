@@ -61,7 +61,6 @@ public class stone : MonoBehaviour
     Color original_Edge = Color.white;
     Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
     private int selectedButtonIndex = -1;
-    public int index;
 
     // 플레이어 테두리 업데이트
     void SetOutline(GameObject player)
@@ -102,7 +101,7 @@ public class stone : MonoBehaviour
         {
             steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
         }
-
+     
         if (isFight == false)
         {
             for (int j = 0; j < Constants.PlayerNumber; j++)
@@ -116,6 +115,10 @@ public class stone : MonoBehaviour
                 }
             }
 
+        }
+        for(int i = 0; i < Constants.HorseNumber; i++)
+        {
+            Debug.Log("user"+i+": "+users[0][i].nowPosition);
         }
         for (int i = 0; i < 5; i++)
         {
@@ -509,9 +512,30 @@ public class stone : MonoBehaviour
             users[turn][player_number].routePosition++;
 
             //백도 예외 처리
-            if (isBackdo == true)
+            if (isBackdo == true && steps.Count < 2)
             {
-                BackdoRoute(); //백도이동
+                int NowpositionSum = 0;
+                for(int i = 0; i < Constants.HorseNumber; i++)
+                {
+                    NowpositionSum += users[turn][i].nowPosition;
+                }
+                if (NowpositionSum == 0)
+                {
+                    Yut.fontSize = 20f;
+                    Yut.text = "이동할 수 있는 말이 없습니다!";
+                    yield return new WaitForSeconds(1f);
+                    Yut.fontSize = 30f;
+                    chosed_step = 0;
+                    isMoving = false;
+                    isBackdo = false;
+                    ChangeTurn();
+                    steps.RemoveAt(choose_step);
+                    yield break;
+                }
+                else
+                {
+                    BackdoRoute(); //백도이동
+                }
             }
             else
             {
@@ -519,7 +543,16 @@ public class stone : MonoBehaviour
             }
 
 
-            users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
+            if (users[turn][player_number].routePosition < currentRoute.childNodeList.Count)
+            {
+                users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
+            }
+            else
+            {
+                // 처리 방법이 필요한 경우 여기에 코드를 추가. 예를 들면, 오류 메시지를 출력하거나 다른 루틴을 실행.
+                Debug.LogError("routePosition is out of range!");
+            }
+
             while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
             chosed_step--;
             users[turn][player_number].nowPosition++;
@@ -679,5 +712,23 @@ public class stone : MonoBehaviour
             return goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
         }
         return false;
+    }
+    void ChangeTurn()
+    {
+        if (turn == 0)
+        {
+            turn = 1;
+            choose_step = 0;
+            isYutThrown = false;
+            clear_stepsButton();
+        }
+        else if (turn == 1)
+        {
+            turn = 0;
+            choose_step = 0;
+            isYutThrown = false;
+            clear_stepsButton();
+        }
+        Yut.text = "player " + (turn + 1) + " turn!";
     }
 }
