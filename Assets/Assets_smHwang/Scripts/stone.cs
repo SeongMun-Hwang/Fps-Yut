@@ -7,6 +7,12 @@ using TMPro;
 using System;
 using System.Threading.Tasks;
 
+static class Constants
+{
+    public const int PlayerNumber = 2;
+    public const int HorseNumber = 4;
+}
+
 public class stone : MonoBehaviour
 {
     public Yut_Field currentRoute;
@@ -57,7 +63,7 @@ public class stone : MonoBehaviour
     private int selectedButtonIndex = -1;
     public int index;
 
-    // 턴이 바뀌기 전에 현재 선택된 플레이어의 테두리를 업데이트합니다.
+    // 플레이어 테두리 업데이트
     void SetOutline(GameObject player)
     {
         if (lastSelectedPlayer != null)
@@ -82,9 +88,9 @@ public class stone : MonoBehaviour
     }
     void Start()
     {
-        users = new user[2][];
-        users[0] = new user[red_team.Length];
-        users[1] = new user[blue_team.Length];
+        users = new user[Constants.PlayerNumber][];
+        users[0] = new user[Constants.HorseNumber];
+        users[1] = new user[Constants.HorseNumber];
 
         for (int i = 0; i < steps_button.Length; i++)
         {
@@ -99,9 +105,9 @@ public class stone : MonoBehaviour
 
         if (isFight == false)
         {
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < Constants.PlayerNumber; j++)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < Constants.HorseNumber; i++)
                 {
                     users[0][i].player = red_team[i];
                     users[1][i].player = blue_team[i];
@@ -117,7 +123,7 @@ public class stone : MonoBehaviour
         }
         outlineMaterial = Resources.Load<Material>("OutlineMaterial");
     }
-
+    //윷던지기 랜덤 함수
     public void throwYut()
     {
         if (!isYutThrown)
@@ -156,25 +162,27 @@ public class stone : MonoBehaviour
             yutSound[sum].Play();
         }
     }
+    //윷 던지기 함수
     private async void UpdateThrowResult(int value, string text)
     {
         if (!isYutThrown)
         {
             steps.Add(value);
             Debug.Log(steps[0]);
-            Yut.text = text+"!";
+            Yut.text = text + "!";
             steps_button_Text[steps.Count - 1].text = text;
-            if (value == 4 || value == 5) // 윷 or 모
+            if (value == 4 || value == 5)
             {
                 await DelayAsync(0.5f);
                 Yut.text = "한 번 더!";
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    throwYut(); // 윷을 다시 던집니다.
+                    throwYut();
                 }
             }
         }
     }
+    //개발자용 지정 던지기
     public void throw_do()
     {
         UpdateThrowResult(1, "도");
@@ -200,14 +208,12 @@ public class stone : MonoBehaviour
     {
         UpdateThrowResult(4, "윷");
     }
-
     public void throw_mo()
     {
         UpdateThrowResult(5, "모");
     }
-
-    public void one()
     //플레이어 선택
+    public void one()
     {
         player_number = 0;
         check_player();
@@ -238,8 +244,8 @@ public class stone : MonoBehaviour
             Yut.text = "player already goaled!";
         }
     }
-
-    void clear_player(ref user u) //player 말 삭제
+    //플레이어 말 삭제
+    void clear_player(ref user u)
     {
         if (u.player != null)
         {
@@ -381,7 +387,7 @@ public class stone : MonoBehaviour
         bool redTeamAllNull = true;
         bool blueTeamAllNull = true;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < Constants.HorseNumber; i++)
         {
             if (users[0][i].player != null)
             {
@@ -410,9 +416,9 @@ public class stone : MonoBehaviour
         {
             int closestPlayerNumber = -1;
 
-            for (int i = 0; i < users[turn].Length; i++)
+            for (int i = 0; i < Constants.HorseNumber; i++)
             {
-                int nextPlayerNumber = (player_number + i) % users[turn].Length;
+                int nextPlayerNumber = (player_number + i) % Constants.HorseNumber;
 
                 if (users[turn][nextPlayerNumber].player != null)
                 {
@@ -435,11 +441,11 @@ public class stone : MonoBehaviour
             choose_step = buttonIndex;
             Debug.Log(buttonIndex);
             if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
-            {                
+            {
                 selectedButtonIndex = buttonIndex;
                 UpdateButtonColors();
             }
-        }       
+        }
     }
 
     private void UpdateButtonColors()
@@ -477,178 +483,195 @@ public class stone : MonoBehaviour
         {
             enemy = 0;
         }
+
+        SetOutline(users[turn][player_number].player);
+        yield return new WaitForSeconds(1f);
+        Yut.text = "";
+        if (isMoving)
         {
-            SetOutline(users[turn][player_number].player);
-            yield return new WaitForSeconds(1f);
-            Yut.text = "";
-            if (isMoving)
-            {
-                yield break;
-            }
-            isMoving = true;
-
-            users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
-
-            while (chosed_step > 0)
-            {
-                if (users[turn][player_number].routePosition == 30 && chosed_step > 0)
-                {
-                    Debug.Log("Goal");
-                    Destroy(users[turn][player_number].player);
-                    users[turn][player_number].is_destroyed = true;
-                    break;
-                }
-
-                users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-                users[turn][player_number].routePosition++;
-
-                //백도 예외 처리
-                if (isBackdo == true)
-                {
-                    if (users[turn][player_number].nowPosition == 20)
-                    {
-                        users[turn][player_number].routePosition = 5;
-                    }
-                    else if (users[turn][player_number].nowPosition == 25)
-                    {
-                        users[turn][player_number].routePosition = 10;
-                    }
-                    else if (users[turn][player_number].nowPosition == 15 && users[turn][player_number].lastPosition == 24)
-                    {
-                        users[turn][player_number].routePosition = 24;
-                    }
-                    else if (users[turn][player_number].nowPosition == 1)
-                    {
-                        users[turn][player_number].routePosition = 30;
-                    }
-                    else
-                    {
-                        users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
-                    }
-                    users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-                    isBackdo = false;
-                }
-                else if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
-                {
-                    users[turn][player_number].routePosition = 20;
-                }
-                else if (users[turn][player_number].lastPosition == 10 && users[turn][player_number].nowPosition == 10)
-                {
-                    users[turn][player_number].routePosition = 25;
-                }
-                else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
-                {
-                    users[turn][player_number].routePosition = 28;
-                }
-                else if (users[turn][player_number].lastPosition == 24 && users[turn][player_number].nowPosition == 24)
-                {
-                    users[turn][player_number].routePosition = 15;
-                }
-                if (users[turn][player_number].nowPosition == 24 && chosed_step >= 1)
-                {
-                    users[turn][player_number].routePosition = 15;
-
-                }
-                if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
-                {
-                    if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && chosed_step >= 1)
-                    {
-                        users[turn][player_number].routePosition = 30;
-                    }
-                }
-
-                users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
-                while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
-                chosed_step--;
-                users[turn][player_number].nowPosition++;
-
-                //상대방 말을 지나갈때
-                Debug.Log(turn + " " + enemy);
-                for (int i = 0; i < 4; i++)
-                {
-                    if (users[turn][player_number].routePosition == users[enemy][i].nowPosition)
-                    {
-                        if (chosed_step > 0)
-                        {
-                            Yut.text = "To pass, Win!";
-                            yield return new WaitForSeconds(0.5f);
-                            Debug.Log("Moving piece passed by an enemy piece.");
-                            SceneManager.LoadScene("Defense_Game");
-                        }
-                    }
-                }
-
-
-                yield return new WaitForSeconds(0.1f);
-                while (isFight == true)
-                {
-                    Yut.text = "";
-                    yield return new WaitForSeconds(0.1f);
-                }
-            }
-
-            steps.RemoveAt(choose_step);
-
-            steps_button_Text[choose_step].text = "";
-
-            // 해당 인덱스 이후의 모든 텍스트 요소를 앞으로 한 칸씩 이동
-            for (int i = choose_step; i < steps.Count; i++)
-            {
-                steps_button_Text[i].text = steps_button_Text[i + 1].text;
-            }
-            if (steps.Count < steps_button_Text.Length)
-            {
-                steps_button_Text[steps.Count].text = "";
-            }
-            /////////////////////////////////////////////////////////////
-            if (choose_step == steps.Count)
-            {
-                choose_step--;
-                Debug.Log("if =" + choose_step);
-            }
-
-            Debug.Log("after remove" + steps.Count);
-            foreach (int i in steps)
-            {
-                Debug.Log(i);
-            }
-
-
-            //말끼리 먹기 동작
-            for (int i = 0; i < 4; i++)
-            {
-                if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
-                {
-                    //미니 게임 없이 말을 먹을 때의 동작
-                    //Debug.Log("encounter");
-                    //reset_player(ref users[enemy][i], objectPrefab[enemy]);
-                    //chance++;
-
-                    //Fpsfight 진행
-                    SceneManager.LoadScene("Fpsfight");
-                }
-            }
-
-            isMoving = false;
-            sum = 0;
-            Debug.Log("move all");
-
-            //윷, 모 나왔을 시 턴 유지, 아니면 변경
-            //if (chance > 0)
-            //{
-            //    chance--;
-            //}
-            if (steps.Count == 0)
-            {
-                if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-                else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-                Yut.text = "player " + (turn + 1) + " turn!";
-            }
-            player_number = 0;
+            yield break;
         }
+        isMoving = true;
+
+        users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
+
+        while (chosed_step > 0)
+        {
+            if (users[turn][player_number].routePosition == 30 && chosed_step > 0)
+            {
+                Debug.Log("Goal");
+                Destroy(users[turn][player_number].player);
+                users[turn][player_number].is_destroyed = true;
+                break;
+            }
+
+            users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+            users[turn][player_number].routePosition++;
+
+            //백도 예외 처리
+            if (isBackdo == true)
+            {
+                BackdoRoute(); //백도이동
+            }
+            else
+            {
+                NormalRoute(chosed_step); //일반이동
+            }
+
+
+            users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
+            while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
+            chosed_step--;
+            users[turn][player_number].nowPosition++;
+
+            //상대방 말을 지나갈때
+            DefenseGameTrigger(chosed_step);
+
+            yield return new WaitForSeconds(0.1f);
+            while (isFight == true)
+            {
+                Yut.text = "";
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        steps.RemoveAt(choose_step);
+
+        steps_button_Text[choose_step].text = "";
+
+        UpdateYutChoice();
+        FpsfightTrigger();
+
+        isMoving = false;
+        sum = 0;
+        Debug.Log("move all");
+
+        //윷, 모 나왔을 시 턴 유지, 아니면 변경
+        //if (chance > 0)
+        //{
+        //    chance--;
+        //}
+        if (steps.Count == 0)
+        {
+            if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
+            else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
+            Yut.text = "player " + (turn + 1) + " turn!";
+        }
+        player_number = 0;
+
         users[turn][player_number].lastPosition = users[turn][player_number].nowPosition;
     }
+    //이동 선택지 업데이트
+    private void UpdateYutChoice()
+    {
+        for (int i = choose_step; i < steps.Count; i++)
+        {
+            steps_button_Text[i].text = steps_button_Text[i + 1].text;
+        }
+        if (steps.Count < steps_button_Text.Length)
+        {
+            steps_button_Text[steps.Count].text = "";
+        }
+        if (choose_step == steps.Count)
+        {
+            choose_step--;
+            Debug.Log("if =" + choose_step);
+        }
+        Debug.Log("after remove" + steps.Count);
+        foreach (int i in steps)
+        {
+            Debug.Log(i);
+        }
+    }
+    //Fps Fight 트리거
+    private void FpsfightTrigger()
+    {
+        for (int i = 0; i < Constants.HorseNumber; i++)
+        {
+            if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
+            {
+                //미니 게임 없이 말을 먹을 때의 동작
+                //Debug.Log("encounter");
+                //reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                //chance++;
 
+                //Fpsfight 진행
+                SceneManager.LoadScene("Fpsfight");
+            }
+        }
+    }
+    //DefenseGame 트리거
+    private IEnumerator DefenseGameTrigger(int chosed_step)
+    {
+        for (int i = 0; i < Constants.HorseNumber; i++)
+        {
+            if (users[turn][player_number].routePosition == users[enemy][i].nowPosition)
+            {
+                if (chosed_step > 0)
+                {
+                    Yut.text = "To pass, Win!";
+                    yield return new WaitForSeconds(1f);
+                    SceneManager.LoadScene("Defense_Game");
+                }
+            }
+        }
+    }
+    private void BackdoRoute()
+    {
+        if (users[turn][player_number].nowPosition == 20)
+        {
+            users[turn][player_number].routePosition = 5;
+        }
+        else if (users[turn][player_number].nowPosition == 25)
+        {
+            users[turn][player_number].routePosition = 10;
+        }
+        else if (users[turn][player_number].nowPosition == 15 && users[turn][player_number].lastPosition == 24)
+        {
+            users[turn][player_number].routePosition = 24;
+        }
+        else if (users[turn][player_number].nowPosition == 1)
+        {
+            users[turn][player_number].routePosition = 30;
+        }
+        else
+        {
+            users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
+        }
+        users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+        isBackdo = false;
+    }
+    private void NormalRoute(int chosed_step)
+    {
+        if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
+        {
+            users[turn][player_number].routePosition = 20;
+        }
+        else if (users[turn][player_number].lastPosition == 10 && users[turn][player_number].nowPosition == 10)
+        {
+            users[turn][player_number].routePosition = 25;
+        }
+        else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
+        {
+            users[turn][player_number].routePosition = 28;
+        }
+        else if (users[turn][player_number].lastPosition == 24 && users[turn][player_number].nowPosition == 24)
+        {
+            users[turn][player_number].routePosition = 15;
+        }
+        if (users[turn][player_number].nowPosition == 24 && chosed_step >= 1)
+        {
+            users[turn][player_number].routePosition = 15;
+
+        }
+        if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
+        {
+            if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && chosed_step >= 1)
+            {
+                users[turn][player_number].routePosition = 30;
+            }
+        }
+    }
     bool MoveToNextNode(Vector3 goal)
     {
         if (users[turn][player_number].player != null)
