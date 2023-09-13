@@ -34,6 +34,8 @@ public class stone : MonoBehaviour
         public Vector3 player_start_position;
         public bool goal;
         public bool is_destroyed;
+        public bool is_bind;
+        public List<int> BindedeHorse;
     };
 
     public List<int> steps = new List<int>();
@@ -59,11 +61,11 @@ public class stone : MonoBehaviour
     Material originalMaterial;
     Material outlineMaterial;
     GameObject lastSelectedPlayer;
-
+    private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
     Color original_Edge = Color.white;
     Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
     private int selectedButtonIndex = -1;
-
+    private bool chooseBindCalled = false;
     // 플레이어 테두리 업데이트
     void SetOutline(GameObject player)
     {
@@ -80,7 +82,6 @@ public class stone : MonoBehaviour
 
         lastSelectedPlayer = player;
     }
-
     private void Update()
     {
         choose_Player();
@@ -91,6 +92,8 @@ public class stone : MonoBehaviour
     {
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
+        yes.onClick.AddListener(BindYes);
+        no.onClick.AddListener(BindNo);
         users = new user[Constants.PlayerNumber][];
         users[0] = new user[Constants.HorseNumber];
         users[1] = new user[Constants.HorseNumber];
@@ -105,9 +108,8 @@ public class stone : MonoBehaviour
         {
             steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
         }
-     
-        if (isFight == false)
-        {
+        //users 초기화
+        
             for (int j = 0; j < Constants.PlayerNumber; j++)
             {
                 for (int i = 0; i < Constants.HorseNumber; i++)
@@ -116,13 +118,15 @@ public class stone : MonoBehaviour
                     users[1][i].player = blue_team[i];
                     users[j][i].player_start_position = users[j][i].player.transform.position;
                     users[j][i].is_destroyed = false;
+                    users[j][i].is_bind = false;
+                    users[j][i].BindedeHorse = new List<int>();
                 }
             }
+        
 
-        }
-        for(int i = 0; i < Constants.HorseNumber; i++)
+        for (int i = 0; i < Constants.HorseNumber; i++)
         {
-            Debug.Log("user"+i+": "+users[0][i].nowPosition);
+            Debug.Log("user" + i + ": " + users[0][i].nowPosition);
         }
         for (int i = 0; i < 5; i++)
         {
@@ -358,7 +362,6 @@ public class stone : MonoBehaviour
             StartCoroutine(Move(steps[choose_step]));
         }
     }
-
     void match_Yut(int i)
     {
         switch (i)
@@ -387,7 +390,6 @@ public class stone : MonoBehaviour
                 break;
         }
     }
-
     //한 팀의 모든 플레이어 오브젝트가 null일 시 승리 선언
     void check_Winner()
     {
@@ -415,7 +417,6 @@ public class stone : MonoBehaviour
             Yut.text = "Blue Team is the winner!";
         }
     }
-
     //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
     void AutoSelectClosestPlayerInArray()
     {
@@ -519,7 +520,7 @@ public class stone : MonoBehaviour
             if (isBackdo == true && steps.Count < 2)
             {
                 int NowpositionSum = 0;
-                for(int i = 0; i < Constants.HorseNumber; i++)
+                for (int i = 0; i < Constants.HorseNumber; i++)
                 {
                     NowpositionSum += users[turn][i].nowPosition;
                 }
@@ -577,7 +578,12 @@ public class stone : MonoBehaviour
         steps_button_Text[choose_step].text = "";
 
         UpdateYutChoice();
-        GoTogether();
+        BindHorse();
+        if (bindedHorseIndex != -1)
+        {
+            yield return new WaitUntil(() => chooseBindCalled);
+            chooseBindCalled = false;
+        }
         //FpsfightTrigger();
 
         isMoving = false;
@@ -613,9 +619,7 @@ public class stone : MonoBehaviour
         if (choose_step == steps.Count)
         {
             choose_step--;
-            Debug.Log("if =" + choose_step);
         }
-        Debug.Log("after remove" + steps.Count);
         foreach (int i in steps)
         {
             Debug.Log(i);
@@ -736,7 +740,7 @@ public class stone : MonoBehaviour
         }
         Yut.text = "player " + (turn + 1) + " turn!";
     }
-    private  void GoTogether()
+    private void BindHorse()
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
@@ -744,9 +748,33 @@ public class stone : MonoBehaviour
             if (users[turn][player_number].nowPosition == users[turn][i].nowPosition)
             {
                 Yut.text = "윷을 엎으시겠습니까?";
+                Debug.Log("playernumber: " + player_number);
+                Debug.Log("index: " + i);
+                bindedHorseIndex = i;
                 yes.gameObject.SetActive(true);
                 no.gameObject.SetActive(true);
             }
         }
+    }
+    private void BindYes()
+    {
+        if (bindedHorseIndex < 0) return;
+
+        yes.gameObject.SetActive(false);
+        no.gameObject.SetActive(false);
+        users[turn][player_number].is_bind = true;
+        users[turn][player_number].BindedeHorse.Add(bindedHorseIndex);
+        users[turn][bindedHorseIndex].is_bind = true;
+        users[turn][bindedHorseIndex].BindedeHorse.Add(player_number);
+        Debug.Log(users[turn][player_number].BindedeHorse[0]);
+        Debug.Log(users[turn][bindedHorseIndex].BindedeHorse[0]);
+        chooseBindCalled = true;
+        bindedHorseIndex = -1;
+    }
+    private void BindNo()
+    {
+        yes.gameObject.SetActive(false);
+        no.gameObject.SetActive(false);
+        chooseBindCalled = true;
     }
 }
