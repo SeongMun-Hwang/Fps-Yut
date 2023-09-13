@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 static class Constants
 {
@@ -108,20 +109,20 @@ public class stone : MonoBehaviour
             steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
         }
         //users 초기화
-        
-            for (int j = 0; j < Constants.PlayerNumber; j++)
+
+        for (int j = 0; j < Constants.PlayerNumber; j++)
+        {
+            for (int i = 0; i < Constants.HorseNumber; i++)
             {
-                for (int i = 0; i < Constants.HorseNumber; i++)
-                {
-                    users[0][i].player = red_team[i];
-                    users[1][i].player = blue_team[i];
-                    users[j][i].player_start_position = users[j][i].player.transform.position;
-                    users[j][i].is_destroyed = false;
-                    users[j][i].is_bind = false;
-                    users[j][i].BindedeHorse = new List<int>();
-                }
+                users[0][i].player = red_team[i];
+                users[1][i].player = blue_team[i];
+                users[j][i].player_start_position = users[j][i].player.transform.position;
+                users[j][i].is_destroyed = false;
+                users[j][i].is_bind = false;
+                users[j][i].BindedeHorse = new List<int>();
             }
-        
+        }
+
 
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
@@ -455,7 +456,6 @@ public class stone : MonoBehaviour
 
     private void UpdateButtonColors()
     {
-        Debug.Log("updatebutton");
         for (int i = 0; i < steps_button.Length; i++)
         {
             Image buttonImage = steps_button[i].GetComponent<Image>();
@@ -480,14 +480,14 @@ public class stone : MonoBehaviour
     }
     IEnumerator Move(int chosed_step)
     {
-        if (turn == 0)
-        {
-            enemy = 1;
-        }
-        else
-        {
-            enemy = 0;
-        }
+        //if (turn == 0)
+        //{
+        //    enemy = 1;
+        //}
+        //else
+        //{
+        //    enemy = 0;
+        //}
 
         SetOutline(users[turn][player_number].player);
         yield return new WaitForSeconds(1f);
@@ -592,11 +592,17 @@ public class stone : MonoBehaviour
         //{
         //    chance--;
         //}
+
+        //if (steps.Count == 0)
+        //{
+        //    if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
+        //    else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
+        //    Yut.text = "player " + (turn + 1) + " turn!";
+        //}
         if (steps.Count == 0)
         {
-            if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-            else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-            Yut.text = "player " + (turn + 1) + " turn!";
+            isYutThrown = false;
+            choose_step = 0;
         }
         player_number = 0;
 
@@ -711,28 +717,30 @@ public class stone : MonoBehaviour
             }
         }
     }
+    //플레이어 이동함수
     bool MoveToNextNode(Vector3 goal)
-{
-    if (users[turn][player_number].player != null)
     {
-        // 원래 말 움직이기
-        bool isMovingPlayer = goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
-
-        // 바인드된 말도 움직이기 (is_bind가 true이면)
-        if (users[turn][player_number].is_bind && users[turn][player_number].BindedeHorse.Count > 0)
+        if (users[turn][player_number].player != null)
         {
-            int bindedIndex = users[turn][player_number].BindedeHorse[0];
-            if (users[turn][bindedIndex].player != null)
-            {
-                users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, goal, 8f * Time.deltaTime);
-            }
-        }
+            bool isMovingPlayer = goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
 
-        return isMovingPlayer;
+            if (users[turn][player_number].is_bind)
+            {
+                foreach (int bindedIndex in users[turn][player_number].BindedeHorse)
+                {
+                    if (users[turn][bindedIndex].player != null)
+                    {
+                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, goal, 8f * Time.deltaTime);
+                    }
+                }
+            }
+
+            return isMovingPlayer;
+        }
+        SynchronizeBindedHorses(player_number);
+        return false;
     }
 
-    return false;
-}
 
     void ChangeTurn()
     {
@@ -774,19 +782,51 @@ public class stone : MonoBehaviour
 
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
-        users[turn][player_number].is_bind = true;
-        users[turn][player_number].BindedeHorse.Add(bindedHorseIndex);
-        users[turn][bindedHorseIndex].is_bind = true;
-        users[turn][bindedHorseIndex].BindedeHorse.Add(player_number);
-        Debug.Log(users[turn][player_number].BindedeHorse[0]);
-        Debug.Log(users[turn][bindedHorseIndex].BindedeHorse[0]);
+
+        // 바인딩되어 있는 모든 말들의 리스트 생성
+        List<int> allBindedHorses = new List<int>();
+        allBindedHorses.Add(player_number);
+        allBindedHorses.AddRange(users[turn][player_number].BindedeHorse);
+        allBindedHorses.Add(bindedHorseIndex);
+        allBindedHorses.AddRange(users[turn][bindedHorseIndex].BindedeHorse);
+
+        // 중복 항목 제거
+        allBindedHorses = allBindedHorses.Distinct().ToList();
+
+        // 모든 관련된 말들에 바인딩 정보 업데이트
+        foreach (int horseIndex in allBindedHorses)
+        {
+            users[turn][horseIndex].is_bind = true;
+            users[turn][horseIndex].BindedeHorse = new List<int>(allBindedHorses);
+            users[turn][horseIndex].BindedeHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
+        }
+
+        Debug.Log(users[turn][player_number].BindedeHorse[0]); // 디버그 정보가 1개만 표시됩니다. 필요하다면 전체 바인딩 목록을 출력하도록 수정해주세요.
+
         chooseBindCalled = true;
         bindedHorseIndex = -1;
     }
+
     private void BindNo()
     {
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
         chooseBindCalled = true;
     }
+    public void SynchronizeBindedHorses(int mainHorseIndex)
+    {
+        List<int> bindedHorses = users[turn][mainHorseIndex].BindedeHorse;
+
+        user mainHorse = users[turn][mainHorseIndex];
+
+        foreach (int bindedIndex in bindedHorses)
+        {
+            users[turn][bindedIndex].routePosition = mainHorse.routePosition;
+            users[turn][bindedIndex].nowPosition = mainHorse.nowPosition;
+            users[turn][bindedIndex].lastPosition = mainHorse.lastPosition;
+            users[turn][bindedIndex].nextPos = mainHorse.nextPos;
+            users[turn][bindedIndex].goal = mainHorse.goal;
+        }
+    }
+
 }
