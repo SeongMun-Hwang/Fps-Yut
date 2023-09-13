@@ -47,7 +47,6 @@ public class stone : MonoBehaviour
     bool isMoving;
     int turn = 0;
     int sum = 0;
-    int chance = 0;
     float time;
     bool isFight = false;
     int player_number;
@@ -264,7 +263,6 @@ public class stone : MonoBehaviour
             u.player = null;
         }
     }
-
     //플레이어 말 재생성
     public void reset_player(ref user u, GameObject playerPrefab)
     {
@@ -280,7 +278,6 @@ public class stone : MonoBehaviour
 
         u.player.transform.position = u.player_start_position;
     }
-
     /*키보드 입력으로 말 선택
      1~4 : 말 선택
     space : 윷던지기*/
@@ -715,13 +712,28 @@ public class stone : MonoBehaviour
         }
     }
     bool MoveToNextNode(Vector3 goal)
+{
+    if (users[turn][player_number].player != null)
     {
-        if (users[turn][player_number].player != null)
+        // 원래 말 움직이기
+        bool isMovingPlayer = goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
+
+        // 바인드된 말도 움직이기 (is_bind가 true이면)
+        if (users[turn][player_number].is_bind && users[turn][player_number].BindedeHorse.Count > 0)
         {
-            return goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
+            int bindedIndex = users[turn][player_number].BindedeHorse[0];
+            if (users[turn][bindedIndex].player != null)
+            {
+                users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, goal, 8f * Time.deltaTime);
+            }
         }
-        return false;
+
+        return isMovingPlayer;
     }
+
+    return false;
+}
+
     void ChangeTurn()
     {
         if (turn == 0)
