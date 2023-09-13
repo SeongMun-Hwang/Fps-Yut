@@ -505,8 +505,9 @@ public class stone : MonoBehaviour
             if (users[turn][player_number].routePosition == 30 && chosed_step > 0)
             {
                 Debug.Log("Goal");
+                DestroyBindedHorses(player_number);
                 Destroy(users[turn][player_number].player);
-                users[turn][player_number].is_destroyed = true;
+                SetUserToGoal(ref users[turn][player_number]);
                 break;
             }
 
@@ -765,7 +766,8 @@ public class stone : MonoBehaviour
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             if (player_number == i) continue;
-            if (users[turn][player_number].nowPosition == users[turn][i].nowPosition)
+            if (users[turn][player_number].nowPosition == users[turn][i].nowPosition &&
+                users[turn][i].goal!=true)
             {
                 Yut.text = "윷을 엎으시겠습니까?";
                 Debug.Log("playernumber: " + player_number);
@@ -776,6 +778,7 @@ public class stone : MonoBehaviour
             }
         }
     }
+    //묶기 선택시 BindedHorse, is_bind 업데이트
     private void BindYes()
     {
         if (bindedHorseIndex < 0) return;
@@ -800,9 +803,6 @@ public class stone : MonoBehaviour
             users[turn][horseIndex].BindedeHorse = new List<int>(allBindedHorses);
             users[turn][horseIndex].BindedeHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
         }
-
-        Debug.Log(users[turn][player_number].BindedeHorse[0]); // 디버그 정보가 1개만 표시됩니다. 필요하다면 전체 바인딩 목록을 출력하도록 수정해주세요.
-
         chooseBindCalled = true;
         bindedHorseIndex = -1;
     }
@@ -813,6 +813,7 @@ public class stone : MonoBehaviour
         no.gameObject.SetActive(false);
         chooseBindCalled = true;
     }
+    //묶인 말 이동후 묶인 말들 정보 동기화
     public void SynchronizeBindedHorses(int mainHorseIndex)
     {
         List<int> bindedHorses = users[turn][mainHorseIndex].BindedeHorse;
@@ -828,5 +829,25 @@ public class stone : MonoBehaviour
             users[turn][bindedIndex].goal = mainHorse.goal;
         }
     }
+    //묶일 말들 동시 파괴
+    public void DestroyBindedHorses(int mainHorseIndex)
+    {
+        List<int> bindedHorses = users[turn][mainHorseIndex].BindedeHorse;
 
+        foreach (int bindedIndex in bindedHorses)
+        {
+            Destroy(users[turn][bindedIndex].player);
+            users[turn][bindedIndex].is_destroyed = true;
+            SetUserToGoal(ref users[turn][bindedIndex]);
+        }
+    }
+    //골인한 말들에 대한 정보 초기화
+    public void SetUserToGoal(ref user u)
+    {
+        u.nextPos = Vector3.zero; // 다음 위치가 필요 없음
+        u.goal = true;
+        u.is_destroyed = true;
+        u.is_bind = false;
+        u.BindedeHorse?.Clear();
+    }
 }
