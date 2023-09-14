@@ -12,6 +12,7 @@ static class Constants
 {
     public const int PlayerNumber = 2;
     public const int HorseNumber = 4;
+    public const float STACK_HEIGHT = 0.5f;
 }
 
 public class stone : MonoBehaviour
@@ -763,21 +764,21 @@ public class stone : MonoBehaviour
     }
     private void BindHorse()
     {
-        for (int i = 0; i < Constants.HorseNumber; i++)
+        List<int> overlappedHorses = GetBindedHorses(player_number);
+
+        for (int i = 0; i < overlappedHorses.Count; i++)
         {
-            if (player_number == i) continue;
-            if (users[turn][player_number].nowPosition == users[turn][i].nowPosition &&
-                users[turn][i].goal!=true)
-            {
-                Yut.text = "윷을 엎으시겠습니까?";
-                Debug.Log("playernumber: " + player_number);
-                Debug.Log("index: " + i);
-                bindedHorseIndex = i;
-                yes.gameObject.SetActive(true);
-                no.gameObject.SetActive(true);
-            }
+            Yut.text = "윷을 엎으시겠습니까?";
+            Debug.Log("playernumber: " + player_number);
+            Debug.Log("index: " + overlappedHorses[i]);
+            bindedHorseIndex = overlappedHorses[i];
+            yes.gameObject.SetActive(true);
+            no.gameObject.SetActive(true);
         }
+
+        AdjustPositionByStacking(player_number, overlappedHorses);
     }
+
     //묶기 선택시 BindedHorse, is_bind 업데이트
     private void BindYes()
     {
@@ -849,5 +850,41 @@ public class stone : MonoBehaviour
         u.is_destroyed = true;
         u.is_bind = false;
         u.BindedeHorse?.Clear();
+    }
+
+    List<int> GetBindedHorses(int currentPlayer)
+    {
+        List<int> overlappedHorses = new List<int>();
+        for (int i = 0; i < Constants.HorseNumber; i++)
+        {
+            if (currentPlayer == i) continue;
+            if (users[turn][currentPlayer].nowPosition == users[turn][i].nowPosition &&
+                users[turn][i].goal != true)
+            {
+                overlappedHorses.Add(i);
+            }
+        }
+        return overlappedHorses;
+    }
+    void AdjustPositionByStacking(int currentPlayer, List<int> overlappedHorses)
+    {
+        Vector3 basePosition = users[turn][currentPlayer].player.transform.position;
+
+        // 현재 말의 위치는 기본 위치에 따라 y축을 조정합니다.
+        users[turn][currentPlayer].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * overlappedHorses.Count, 0);
+
+        for (int i = 0; i < overlappedHorses.Count; i++)
+        {
+            // 겹치는 다른 말들의 위치도 y축을 기반으로 조정합니다.
+            users[turn][overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
+        }
+    }
+
+    Vector3 CalculatePosition(Vector3 center, float distance, float angleInDegrees)
+    {
+        float angleInRadians = angleInDegrees * Mathf.Deg2Rad;
+        float x = center.x + distance * Mathf.Cos(angleInRadians);
+        float z = center.z + distance * Mathf.Sin(angleInRadians);
+        return new Vector3(x, center.y, z);
     }
 }

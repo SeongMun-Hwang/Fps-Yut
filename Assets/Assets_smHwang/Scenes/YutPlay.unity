@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -22, y: 60.7}
+  m_AnchoredPosition: {x: -22, y: 60.69995}
   m_SizeDelta: {x: 78.1211, y: 17.2924}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &5886938
@@ -3129,6 +3129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 658787158}
   - component: {fileID: 658787159}
+  - component: {fileID: 658787160}
   m_Layer: 0
   m_Name: stone
   m_TagString: Untagged
@@ -3199,6 +3200,18 @@ MonoBehaviour:
   objectPrefab:
   - {fileID: 2070411140}
   - {fileID: 2025427989}
+--- !u!114 &658787160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658787157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad15e1c3b1d8cd8449731b210a76b28e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &666031935
 GameObject:
   m_ObjectHideFlags: 0
@@ -5687,7 +5700,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -22, y: 7.399994}
+  m_AnchoredPosition: {x: -22, y: 7.4000244}
   m_SizeDelta: {x: 78.1211, y: 17.2924}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1320858368
