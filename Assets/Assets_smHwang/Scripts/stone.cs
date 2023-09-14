@@ -12,7 +12,7 @@ static class Constants
 {
     public const int PlayerNumber = 2;
     public const int HorseNumber = 4;
-    public const float STACK_HEIGHT = 0.5f;
+    public const float STACK_HEIGHT = 1f;
 }
 
 public class stone : MonoBehaviour
@@ -197,31 +197,37 @@ public class stone : MonoBehaviour
     //개발자용 지정 던지기
     public void throw_do()
     {
+        Debug.Log("윷 지정 : 도");
         UpdateThrowResult(1, "도");
         isYutThrown = true;
     }
     public void throw_back_do()
     {
+        Debug.Log("윷 지정 : 백도");
         UpdateThrowResult(1, "백도");
         isBackdo = true;
         isYutThrown = true;
     }
     public void throw_gae()
     {
+        Debug.Log("윷 지정 : 개");
         UpdateThrowResult(2, "개");
         isYutThrown = true;
     }
     public void throw_girl()
     {
+        Debug.Log("윷 지정 : 걸");
         UpdateThrowResult(3, "걸");
         isYutThrown = true;
     }
     public void throw_yut()
     {
+        Debug.Log("윷 지정 : 윷");
         UpdateThrowResult(4, "윷");
     }
     public void throw_mo()
     {
+        Debug.Log("윷 지정 : 모");
         UpdateThrowResult(5, "모");
     }
     //플레이어 선택
@@ -489,7 +495,6 @@ public class stone : MonoBehaviour
         //{
         //    enemy = 0;
         //}
-
         SetOutline(users[turn][player_number].player);
         yield return new WaitForSeconds(1f);
         Yut.text = "";
@@ -518,6 +523,7 @@ public class stone : MonoBehaviour
             //백도 예외 처리
             if (isBackdo == true && steps.Count < 2)
             {
+                Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
                 for (int i = 0; i < Constants.HorseNumber; i++)
                 {
@@ -575,7 +581,6 @@ public class stone : MonoBehaviour
         steps.RemoveAt(choose_step);
 
         steps_button_Text[choose_step].text = "";
-
         UpdateYutChoice();
         BindHorse();
         if (bindedHorseIndex != -1)
@@ -584,7 +589,6 @@ public class stone : MonoBehaviour
             chooseBindCalled = false;
         }
         //FpsfightTrigger();
-
         isMoving = false;
         sum = 0;
         Debug.Log("move all");
@@ -603,6 +607,7 @@ public class stone : MonoBehaviour
         //}
         if (steps.Count == 0)
         {
+            Debug.Log("작동");
             isYutThrown = false;
             choose_step = 0;
         }
@@ -724,7 +729,11 @@ public class stone : MonoBehaviour
     {
         if (users[turn][player_number].player != null)
         {
-            bool isMovingPlayer = goal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, goal, 8f * Time.deltaTime));
+            // 현재 y 좌표를 저장합니다.
+            float currentY = users[turn][player_number].player.transform.position.y;
+
+            Vector3 newGoal = new Vector3(goal.x, currentY, goal.z);
+            bool isMovingPlayer = newGoal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, newGoal, 8f * Time.deltaTime));
 
             if (users[turn][player_number].is_bind)
             {
@@ -732,18 +741,18 @@ public class stone : MonoBehaviour
                 {
                     if (users[turn][bindedIndex].player != null)
                     {
-                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, goal, 8f * Time.deltaTime);
+                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, newGoal, 8f * Time.deltaTime);
                     }
                 }
             }
-
             return isMovingPlayer;
         }
-        SynchronizeBindedHorses(player_number);
+        if (users[turn][player_number].is_bind)
+        {
+            SynchronizeBindedHorses(player_number);
+        }
         return false;
     }
-
-
     void ChangeTurn()
     {
         if (turn == 0)
@@ -765,23 +774,26 @@ public class stone : MonoBehaviour
     private void BindHorse()
     {
         List<int> overlappedHorses = GetBindedHorses(player_number);
-
         for (int i = 0; i < overlappedHorses.Count; i++)
         {
-            Yut.text = "윷을 엎으시겠습니까?";
-            Debug.Log("playernumber: " + player_number);
-            Debug.Log("index: " + overlappedHorses[i]);
-            bindedHorseIndex = overlappedHorses[i];
-            yes.gameObject.SetActive(true);
-            no.gameObject.SetActive(true);
+            if (player_number == i) continue;
+            if (users[turn][player_number].nowPosition == users[turn][i].nowPosition &&
+                users[turn][i].goal != true)
+            {
+                Yut.text = "윷을 업으시겠습니까?";
+                Debug.Log("playernumber: " + player_number);
+                Debug.Log("index: " + i);
+                bindedHorseIndex = i;
+                yes.gameObject.SetActive(true);
+                no.gameObject.SetActive(true);
+            }
         }
-
-        AdjustPositionByStacking(player_number, overlappedHorses);
     }
 
     //묶기 선택시 BindedHorse, is_bind 업데이트
     private void BindYes()
     {
+        List<int> overlappedHorses = GetBindedHorses(player_number);
         if (bindedHorseIndex < 0) return;
 
         yes.gameObject.SetActive(false);
@@ -803,15 +815,17 @@ public class stone : MonoBehaviour
             users[turn][horseIndex].is_bind = true;
             users[turn][horseIndex].BindedeHorse = new List<int>(allBindedHorses);
             users[turn][horseIndex].BindedeHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
-        }
-        chooseBindCalled = true;
+        }     
         bindedHorseIndex = -1;
+        AdjustPositionByStacking(player_number, overlappedHorses);
+        chooseBindCalled = true;
     }
-
     private void BindNo()
     {
+        Debug.Log("BindNo called");
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
+        bindedHorseIndex = -1;
         chooseBindCalled = true;
     }
     //묶인 말 이동후 묶인 말들 정보 동기화
@@ -830,7 +844,7 @@ public class stone : MonoBehaviour
             users[turn][bindedIndex].goal = mainHorse.goal;
         }
     }
-    //묶일 말들 동시 파괴
+    //묶인 말들 동시 파괴
     public void DestroyBindedHorses(int mainHorseIndex)
     {
         List<int> bindedHorses = users[turn][mainHorseIndex].BindedeHorse;
@@ -869,22 +883,9 @@ public class stone : MonoBehaviour
     void AdjustPositionByStacking(int currentPlayer, List<int> overlappedHorses)
     {
         Vector3 basePosition = users[turn][currentPlayer].player.transform.position;
-
-        // 현재 말의 위치는 기본 위치에 따라 y축을 조정합니다.
-        users[turn][currentPlayer].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * overlappedHorses.Count, 0);
-
         for (int i = 0; i < overlappedHorses.Count; i++)
         {
-            // 겹치는 다른 말들의 위치도 y축을 기반으로 조정합니다.
             users[turn][overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
         }
-    }
-
-    Vector3 CalculatePosition(Vector3 center, float distance, float angleInDegrees)
-    {
-        float angleInRadians = angleInDegrees * Mathf.Deg2Rad;
-        float x = center.x + distance * Mathf.Cos(angleInRadians);
-        float z = center.z + distance * Mathf.Sin(angleInRadians);
-        return new Vector3(x, center.y, z);
     }
 }
