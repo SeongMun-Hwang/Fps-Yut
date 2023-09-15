@@ -45,7 +45,7 @@ public class stone : MonoBehaviour
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
     }
-
+    int chance = 0;
     bool isMoving;
     int turn = 0;
     int sum = 0;
@@ -487,14 +487,15 @@ public class stone : MonoBehaviour
     }
     IEnumerator Move(int chosed_step)
     {
-        //if (turn == 0)
-        //{
-        //    enemy = 1;
-        //}
-        //else
-        //{
-        //    enemy = 0;
-        //}
+        users[turn][player_number].lastPosition = users[turn][player_number].nowPosition;
+        if (turn == 0)
+        {
+            enemy = 1;
+        }
+        else
+        {
+            enemy = 0;
+        }
         SetOutline(users[turn][player_number].player);
         yield return new WaitForSeconds(1f);
         Yut.text = "";
@@ -504,7 +505,6 @@ public class stone : MonoBehaviour
         }
         isMoving = true;
 
-        users[turn][player_number].lastPosition = users[turn][player_number].routePosition;
 
         while (chosed_step > 0)
         {
@@ -517,10 +517,9 @@ public class stone : MonoBehaviour
                 break;
             }
 
-            users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-            users[turn][player_number].routePosition++;
+            //users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
             //백도 예외 처리
-            if (isBackdo == true && steps.Count < 2)
+            if (isBackdo == true)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -528,7 +527,6 @@ public class stone : MonoBehaviour
                 {
                     NowpositionSum += users[turn][i].nowPosition;
                 }
-                Debug.Log("NowpositionSum: " + NowpositionSum);
                 if (NowpositionSum == 0)
                 {
                     Yut.fontSize = 20f;
@@ -540,7 +538,6 @@ public class stone : MonoBehaviour
                     isBackdo = false;
                     ChangeTurn();
                     steps.RemoveAt(choose_step);
-                    users[turn][player_number].routePosition = 0;
                     yield break;
                 }
                 else
@@ -552,16 +549,13 @@ public class stone : MonoBehaviour
             {
                 NormalRoute(chosed_step); //일반이동
             }
+            if (isBackdo == true) { isBackdo = false; }
+            else { users[turn][player_number].routePosition++; }
 
 
             if (users[turn][player_number].routePosition < currentRoute.childNodeList.Count)
             {
                 users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
-            }
-            else
-            {
-                // 처리 방법이 필요한 경우 여기에 코드를 추가. 예를 들면, 오류 메시지를 출력하거나 다른 루틴을 실행.
-                Debug.LogError("routePosition is out of range!");
             }
 
             while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
@@ -586,19 +580,13 @@ public class stone : MonoBehaviour
         steps_button_Text[choose_step].text = "";
         UpdateYutChoice();
 
-        //FpsfightTrigger();
         isMoving = false;
         sum = 0;
         Debug.Log("move all");
-
-        //윷, 모 나왔을 시 턴 유지, 아니면 변경
-        //if (chance > 0)
-        //{
-        //    chance--;
-        //}
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
         Debug.Log(turn + "의 턴 " + player_number + "번째 말의 현재 위치 : " + users[turn][player_number].nowPosition + " 이전 위치 : " + users[turn][player_number].lastPosition);
         BindHorse();
+        FpsfightTrigger();
         if (bindedHorseIndex != -1)
         {
             yield return new WaitUntil(() => chooseBindCalled);
@@ -607,13 +595,17 @@ public class stone : MonoBehaviour
         SynchronizeBindedHorses(player_number);
         player_number = 0;
 
-        //ChangeTurn();
-        //턴 변경 없이 이동 테스트 시
-        if (steps.Count == 0)
+        if (chance == 0 && steps.Count()==0)
         {
-            isYutThrown = false;
-            choose_step = 0;
+            ChangeTurn();
         }
+        else if (chance>0){ chance--; }
+        //턴 변경 없이 이동 테스트 시
+        //if (steps.Count == 0)
+        //{
+        //    isYutThrown = false;
+        //    choose_step = 0;
+        //}
     }
     //이동 선택지 업데이트
     private void UpdateYutChoice()
@@ -643,12 +635,14 @@ public class stone : MonoBehaviour
             if (users[turn][player_number].nowPosition == users[enemy][i].nowPosition)
             {
                 //미니 게임 없이 말을 먹을 때의 동작
-                //Debug.Log("encounter");
-                //reset_player(ref users[enemy][i], objectPrefab[enemy]);
-                //chance++;
-
+                Debug.Log("encounter");
+                reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                chance++;
+                Debug.Log("chance : " + chance);
+                isYutThrown = false;
+                choose_step = 0;
                 //Fpsfight 진행
-                SceneManager.LoadScene("Fpsfight");
+                //SceneManager.LoadScene("Fpsfight");
             }
         }
     }
@@ -691,7 +685,6 @@ public class stone : MonoBehaviour
             users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
         }
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-        isBackdo = false;
     }
     private void NormalRoute(int chosed_step)
     {
