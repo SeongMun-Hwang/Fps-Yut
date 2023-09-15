@@ -519,7 +519,6 @@ public class stone : MonoBehaviour
 
             users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
             users[turn][player_number].routePosition++;
-
             //백도 예외 처리
             if (isBackdo == true && steps.Count < 2)
             {
@@ -529,6 +528,7 @@ public class stone : MonoBehaviour
                 {
                     NowpositionSum += users[turn][i].nowPosition;
                 }
+                Debug.Log("NowpositionSum: " + NowpositionSum);
                 if (NowpositionSum == 0)
                 {
                     Yut.fontSize = 20f;
@@ -540,6 +540,7 @@ public class stone : MonoBehaviour
                     isBackdo = false;
                     ChangeTurn();
                     steps.RemoveAt(choose_step);
+                    users[turn][player_number].routePosition = 0;
                     yield break;
                 }
                 else
@@ -564,8 +565,10 @@ public class stone : MonoBehaviour
             }
 
             while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
+
             chosed_step--;
             users[turn][player_number].nowPosition++;
+            
 
             //상대방 말을 지나갈때
             //DefenseGameTrigger(chosed_step);
@@ -593,21 +596,8 @@ public class stone : MonoBehaviour
         //{
         //    chance--;
         //}
-
-        //if (steps.Count == 0)
-        //{
-        //    if (turn == 0) { turn = 1; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-        //    else if (turn == 1) { turn = 0; choose_step = 0; isYutThrown = false; clear_stepsButton(); }
-        //    Yut.text = "player " + (turn + 1) + " turn!";
-        //}
-        if (steps.Count == 0)
-        {
-            Debug.Log("작동");
-            isYutThrown = false;
-            choose_step = 0;
-        }
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-        Debug.Log(turn + "의 턴 " + player_number + "번째 말의 현재 위치 : " + users[turn][player_number].nowPosition + "이전 위치 : " + users[turn][player_number].lastPosition);
+        Debug.Log(turn + "의 턴 " + player_number + "번째 말의 현재 위치 : " + users[turn][player_number].nowPosition + " 이전 위치 : " + users[turn][player_number].lastPosition);
         BindHorse();
         if (bindedHorseIndex != -1)
         {
@@ -616,6 +606,14 @@ public class stone : MonoBehaviour
         }
         SynchronizeBindedHorses(player_number);
         player_number = 0;
+
+        //ChangeTurn();
+        //턴 변경 없이 이동 테스트 시
+        if (steps.Count == 0)
+        {
+            isYutThrown = false;
+            choose_step = 0;
+        }
     }
     //이동 선택지 업데이트
     private void UpdateYutChoice()
