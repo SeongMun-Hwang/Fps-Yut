@@ -582,12 +582,7 @@ public class stone : MonoBehaviour
 
         steps_button_Text[choose_step].text = "";
         UpdateYutChoice();
-        BindHorse();
-        if (bindedHorseIndex != -1)
-        {
-            yield return new WaitUntil(() => chooseBindCalled);
-            chooseBindCalled = false;
-        }
+
         //FpsfightTrigger();
         isMoving = false;
         sum = 0;
@@ -611,9 +606,16 @@ public class stone : MonoBehaviour
             isYutThrown = false;
             choose_step = 0;
         }
+        users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+        Debug.Log(turn + "의 턴 " + player_number + "번째 말의 현재 위치 : " + users[turn][player_number].nowPosition + "이전 위치 : " + users[turn][player_number].lastPosition);
+        BindHorse();
+        if (bindedHorseIndex != -1)
+        {
+            yield return new WaitUntil(() => chooseBindCalled);
+            chooseBindCalled = false;
+        }
+        SynchronizeBindedHorses(player_number);
         player_number = 0;
-
-        users[turn][player_number].lastPosition = users[turn][player_number].nowPosition;
     }
     //이동 선택지 업데이트
     private void UpdateYutChoice()
@@ -747,10 +749,6 @@ public class stone : MonoBehaviour
             }
             return isMovingPlayer;
         }
-        if (users[turn][player_number].is_bind)
-        {
-            SynchronizeBindedHorses(player_number);
-        }
         return false;
     }
     void ChangeTurn()
@@ -822,7 +820,6 @@ public class stone : MonoBehaviour
     }
     private void BindNo()
     {
-        Debug.Log("BindNo called");
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
         bindedHorseIndex = -1;
