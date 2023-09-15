@@ -731,11 +731,15 @@ public class stone : MonoBehaviour
     {
         if (users[turn][player_number].player != null)
         {
-            // 현재 y 좌표를 저장합니다.
-            float currentY = users[turn][player_number].player.transform.position.y;
+            // 현재 위치에서 x, z 값을 가져오고 y 값은 변경하지 않습니다.
+            Vector3 startPos = users[turn][player_number].player.transform.position;
+            Vector3 newGoal = new Vector3(goal.x, startPos.y, goal.z);
 
-            Vector3 newGoal = new Vector3(goal.x, currentY, goal.z);
-            bool isMovingPlayer = newGoal != (users[turn][player_number].player.transform.position = Vector3.MoveTowards(users[turn][player_number].player.transform.position, newGoal, 8f * Time.deltaTime));
+            bool isMovingPlayer = Vector3.Distance(newGoal, startPos) > 0.001f; // 이동할 필요가 있는지 확인
+            if (isMovingPlayer)
+            {
+                users[turn][player_number].player.transform.position = Vector3.MoveTowards(startPos, newGoal, 8f * Time.deltaTime);
+            }
 
             if (users[turn][player_number].is_bind)
             {
@@ -743,7 +747,9 @@ public class stone : MonoBehaviour
                 {
                     if (users[turn][bindedIndex].player != null)
                     {
-                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(users[turn][bindedIndex].player.transform.position, newGoal, 8f * Time.deltaTime);
+                        Vector3 bindedStartPos = users[turn][bindedIndex].player.transform.position;
+                        Vector3 bindedGoal = new Vector3(goal.x, bindedStartPos.y, goal.z);
+                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(bindedStartPos, bindedGoal, 8f * Time.deltaTime);
                     }
                 }
             }
@@ -751,6 +757,7 @@ public class stone : MonoBehaviour
         }
         return false;
     }
+
     void ChangeTurn()
     {
         if (turn == 0)
