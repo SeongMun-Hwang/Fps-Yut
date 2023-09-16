@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/start_Menu/start_Menu.unity
     guid: 2318865388918a34b92695613ddf7f20
-  - enabled: 1
+  - enabled: 0
     path: Assets/Assets_smHwang/Scenes/YutPlay.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
