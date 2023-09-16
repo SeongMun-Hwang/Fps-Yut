@@ -68,6 +68,10 @@ public class stone : MonoBehaviour
     private int selectedButtonIndex = -1;
     private bool chooseBindCalled = false;
     string DelayFunctionText;
+    //타이머
+    public TextMeshProUGUI timerText; // 타이머 값을 표시할 Text 컴포넌트 참조
+    public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
+    private float timeLeft;
     // 플레이어 테두리 업데이트
     void SetOutline(GameObject player)
     {
@@ -86,12 +90,25 @@ public class stone : MonoBehaviour
     }
     private void Update()
     {
+        if (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            UpdateTimerText();
+        }
+        else
+        {
+            if (!isYutThrown)
+            {
+                ChangeTurn();
+            }
+        }
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
     }
     void Start()
     {
+        timeLeft = startTime;
         Yut.text = "시작!";       
         DelayFunctionText= "player "+ (turn + 1) + " turn!";
         StartCoroutine(YieldReturnDelay(1.0f,DelayFunctionText));
@@ -801,6 +818,7 @@ public class stone : MonoBehaviour
             choose_step = 0;
             isYutThrown = false;
             clear_stepsButton();
+            timeLeft = 60.0f;
         }
         else if (turn == 1)
         {
@@ -808,6 +826,7 @@ public class stone : MonoBehaviour
             choose_step = 0;
             isYutThrown = false;
             clear_stepsButton();
+            timeLeft = 60.0f;
         }
         Yut.text = "player " + (turn + 1) + " turn!";
     }
@@ -933,5 +952,11 @@ public class stone : MonoBehaviour
         yield return new WaitForSeconds(time);
         Yut.text = text;
         DelayFunctionText = "";
+    }
+    void UpdateTimerText()
+    {
+        int minutes = (int)timeLeft / 60;
+        int seconds = (int)timeLeft % 60;
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
