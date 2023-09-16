@@ -199,26 +199,42 @@ public class stone : MonoBehaviour
     {
         Debug.Log("윷 지정 : 도");
         UpdateThrowResult(1, "도");
-        isYutThrown = true;
+        if (chance == 0)
+        {
+            isYutThrown = true;
+        }
+        else { chance--; }
     }
     public void throw_back_do()
     {
         Debug.Log("윷 지정 : 백도");
         UpdateThrowResult(1, "백도");
         isBackdo = true;
-        isYutThrown = true;
+        if (chance == 0)
+        {
+            isYutThrown = true;
+        }
+        else { chance--; }
     }
     public void throw_gae()
     {
         Debug.Log("윷 지정 : 개");
         UpdateThrowResult(2, "개");
-        isYutThrown = true;
+        if (chance == 0)
+        {
+            isYutThrown = true;
+        }
+        else { chance--; }
     }
     public void throw_girl()
     {
         Debug.Log("윷 지정 : 걸");
         UpdateThrowResult(3, "걸");
-        isYutThrown = true;
+        if (chance == 0)
+        {
+            isYutThrown = true;
+        }
+        else { chance--; }
     }
     public void throw_yut()
     {
@@ -544,13 +560,13 @@ public class stone : MonoBehaviour
                 {
                     BackdoRoute(); //백도이동
                 }
+                isBackdo = false;
             }
             else
             {
+                users[turn][player_number].routePosition++;
                 NormalRoute(chosed_step); //일반이동
             }
-            if (isBackdo == true) { isBackdo = false; }
-            else { users[turn][player_number].routePosition++; }
 
 
             if (users[turn][player_number].routePosition < currentRoute.childNodeList.Count)
