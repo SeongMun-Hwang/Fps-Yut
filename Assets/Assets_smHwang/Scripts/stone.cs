@@ -26,6 +26,7 @@ public class stone : MonoBehaviour
     public Button yes;
     public Button no;
     public TextMeshProUGUI[] steps_button_Text;
+    public TextMeshProUGUI Goal_Status;
     public struct user
     {
         public GameObject player;
@@ -105,13 +106,14 @@ public class stone : MonoBehaviour
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
+        GoalCounter(users);
     }
     void Start()
     {
         timeLeft = startTime;
-        Yut.text = "시작!";       
-        DelayFunctionText= "player "+ (turn + 1) + " turn!";
-        StartCoroutine(YieldReturnDelay(1.0f,DelayFunctionText));
+        Yut.text = "시작!";
+        DelayFunctionText = "player " + (turn + 1) + " turn!";
+        StartCoroutine(YieldReturnDelay(1.0f, DelayFunctionText));
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
         yes.onClick.AddListener(BindYes);
@@ -338,7 +340,7 @@ public class stone : MonoBehaviour
     space : 윷던지기*/
     void choose_Player()
     {
-        if (steps.Count > 1 && isYutThrown==true)
+        if (steps.Count > 1 && isYutThrown == true)
         {
             if (isMoving)
             {
@@ -625,8 +627,8 @@ public class stone : MonoBehaviour
             users[turn][player_number].nowPosition++;
 
 
-            //상대방 말을 지나갈때
-            //DefenseGameTrigger(chosed_step);
+            //상대방 말을 지나갈때//DefenseGameTrigger(chosed_step);
+
 
             yield return new WaitForSeconds(0.1f);
             while (isFight == true)
@@ -697,7 +699,7 @@ public class stone : MonoBehaviour
             {
                 //미니 게임 없이 말을 먹을 때의 동작
                 Debug.Log("encounter");
-                chance += (users[enemy][i].BindedHorse.Count+1);
+                chance += (users[enemy][i].BindedHorse.Count + 1);
                 reset_player(ref users[enemy][i], objectPrefab[enemy]);
                 Yut.text = chance + " 번의 기회를 추가 획득!";
                 isYutThrown = false;
@@ -765,7 +767,8 @@ public class stone : MonoBehaviour
         {
             users[turn][player_number].routePosition = 15;
         }
-        if (users[turn][player_number].nowPosition == 24 && chosed_step >= 1)
+        if (users[turn][player_number].nowPosition == 24 &&
+            users[turn][player_number].lastPosition == 24 && chosed_step >= 1)
         {
             users[turn][player_number].routePosition = 15;
 
@@ -958,5 +961,22 @@ public class stone : MonoBehaviour
         int minutes = (int)timeLeft / 60;
         int seconds = (int)timeLeft % 60;
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    public void GoalCounter(user[][] users)
+    {
+        int[] countArray = new int[2];
+
+        for (int i = 0; i < 2; i++)
+        {
+            foreach (var user in users[i])
+            {
+                if (!user.goal)
+                {
+                    countArray[i]++;
+                }
+            }
+        }
+        Goal_Status.text = "플레이어1 남은 말: "+countArray[0]+
+            "\n플레이어2 남은 말: "+countArray[1];
     }
 }
