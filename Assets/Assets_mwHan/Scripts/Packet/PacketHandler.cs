@@ -7,6 +7,12 @@ using UnityEngine;
 
 class PacketHandler
 {
+	public static void S_RoomListHandler(PacketSession session, IMessage packet)
+	{
+		S_RoomList roomListPacket = packet as S_RoomList;
+
+	}
+
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
@@ -17,6 +23,16 @@ class PacketHandler
 	{
 		S_LeaveGame leaveGameHandler = packet as S_LeaveGame;
 		Managers.Object.RemoveMyPlayer();
+	}
+
+	public static void S_ThrowYutHandler(PacketSession session, IMessage packet)
+    {
+		S_ThrowYut throwYutHandler = packet as S_ThrowYut;
+    }
+
+	public static void S_StartGameHandler(PacketSession session, IMessage packet)
+	{
+		S_StartGame startGameHandler = packet as S_StartGame;
 	}
 
 	public static void S_SpawnHandler(PacketSession session, IMessage packet)
