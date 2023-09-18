@@ -12,15 +12,19 @@ public class ChangeScene : MonoBehaviour
     }
     private void Start()
     {
-        Screen.SetResolution(640, 480, false);
+        //Screen.SetResolution(640, 480, false);
     }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene("start_Menu");
         if (Input.GetKeyDown(KeyCode.F2))
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene("YutPlay");
         if (Input.GetKeyDown(KeyCode.F3))
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene("Fpsfight");
+        if (Input.GetKeyDown(KeyCode.F4))
+            SceneManager.LoadScene("Defense_Game");
+        if (Input.GetKeyDown(KeyCode.F5))
+            SceneManager.LoadScene("setting");
     }
 }
