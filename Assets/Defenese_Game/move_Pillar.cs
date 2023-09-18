@@ -88,26 +88,6 @@ public class move_Pillar : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            SceneManager.LoadScene(0);
-        }
-        else if (Input.GetKeyDown(KeyCode.F2))
-        {
-            SceneManager.LoadScene(1);
-        }
-        else if (Input.GetKeyDown(KeyCode.F3))
-        {
-            SceneManager.LoadScene("Fpsfight");
-        }
-        else if (Input.GetKeyDown(KeyCode.F4))
-        {
-            SceneManager.LoadScene("Defense_Game");
-        }
-        else if (Input.GetKeyDown(KeyCode.F5))
-        {
-            SceneManager.LoadScene("setting");
-        }
         foreach (GameObject pillar in pillars)
         {
             //충돌판정
@@ -219,8 +199,6 @@ public class move_Pillar : MonoBehaviour
             }
         }
     }
-
-
     void FixedUpdate()
     {
         if (launch && !hasLaunched)

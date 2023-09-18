@@ -14,9 +14,10 @@ static class Constants
     public const int HorseNumber = 4;
     public const float STACK_HEIGHT = 1f;
 }
-
 public class stone : MonoBehaviour
 {
+    public UI uiScript;
+
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
     public TextMeshProUGUI Yut;
@@ -26,20 +27,7 @@ public class stone : MonoBehaviour
     public Button yes;
     public Button no;
     public TextMeshProUGUI[] steps_button_Text;
-    public TextMeshProUGUI Goal_Status;
-    public struct user
-    {
-        public GameObject player;
-        public int routePosition;
-        public int nowPosition;
-        public int lastPosition;
-        public Vector3 nextPos;
-        public Vector3 player_start_position;
-        public bool goal;
-        public bool is_destroyed;
-        public bool is_bind;
-        public List<int> BindedHorse;
-    };
+    //public TextMeshProUGUI Goal_Status;
 
     public List<int> steps = new List<int>();
     private async Task DelayAsync(float seconds)
@@ -106,7 +94,7 @@ public class stone : MonoBehaviour
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
-        GoalCounter(users);
+        uiScript.GoalCounter(users);
     }
     void Start()
     {
@@ -961,22 +949,5 @@ public class stone : MonoBehaviour
         int minutes = (int)timeLeft / 60;
         int seconds = (int)timeLeft % 60;
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-    }
-    public void GoalCounter(user[][] users)
-    {
-        int[] countArray = new int[2];
-
-        for (int i = 0; i < 2; i++)
-        {
-            foreach (var user in users[i])
-            {
-                if (!user.goal)
-                {
-                    countArray[i]++;
-                }
-            }
-        }
-        Goal_Status.text = "플레이어1 남은 말: "+countArray[0]+
-            "\n플레이어2 남은 말: "+countArray[1];
     }
 }
