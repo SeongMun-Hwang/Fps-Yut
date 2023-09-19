@@ -16,9 +16,10 @@ static class Constants
 }
 public class stone : MonoBehaviour
 {
-    //스크립트
+    /************스크립트***********/
     public UI UIScript;
     public MoveScript MoveScript;
+    /*******************************/
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
@@ -79,6 +80,7 @@ public class stone : MonoBehaviour
     }
     private void Update()
     {
+        MoveScript.GetData(turn, player_number, users);
         if (timeLeft > 0)
         {
             timeLeft -= Time.deltaTime;
@@ -409,6 +411,7 @@ public class stone : MonoBehaviour
             }
         }
     }
+    //버튼에 연결돼있음 날리면 안됨
     public void move_Player()
     {
         if (isYutThrown)
@@ -590,14 +593,14 @@ public class stone : MonoBehaviour
                 }
                 else
                 {
-                    MoveScript.BackdoRoute(turn,player_number,users); //백도이동
+                    MoveScript.BackdoRoute(); //백도이동
                 }
                 isBackdo = false;
             }
             else
             {
                 users[turn][player_number].routePosition++;
-                MoveScript.NormalRoute(chosed_step,turn,player_number,users); //일반이동
+                MoveScript.NormalRoute(chosed_step); //일반이동
             }
 
 
@@ -606,13 +609,14 @@ public class stone : MonoBehaviour
                 users[turn][player_number].nextPos = currentRoute.childNodeList[users[turn][player_number].routePosition].position;
             }
 
-            while (MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
+            while (MoveScript.MoveToNextNode(users[turn][player_number].nextPos)) { yield return null; }
 
             chosed_step--;
             users[turn][player_number].nowPosition++;
 
 
-            //상대방 말을 지나갈때//DefenseGameTrigger(chosed_step);
+            //상대방 말을 지나갈때
+            //DefenseGameTrigger(chosed_step);
 
 
             yield return new WaitForSeconds(0.1f);
@@ -641,7 +645,6 @@ public class stone : MonoBehaviour
             chooseBindCalled = false;
         }
         SynchronizeBindedHorses(player_number);
-        player_number = 0;
 
         if (chance == 0 && steps.Count() == 0)
         {
@@ -709,39 +712,7 @@ public class stone : MonoBehaviour
                 }
             }
         }
-    }
-    
-    //플레이어 이동함수
-    bool MoveToNextNode(Vector3 goal)
-    {
-        if (users[turn][player_number].player != null)
-        {
-            // 현재 위치에서 x, z 값을 가져오고 y 값은 변경하지 않습니다.
-            Vector3 startPos = users[turn][player_number].player.transform.position;
-            Vector3 newGoal = new Vector3(goal.x, startPos.y, goal.z);
-
-            bool isMovingPlayer = Vector3.Distance(newGoal, startPos) > 0.001f; // 이동할 필요가 있는지 확인
-            if (isMovingPlayer)
-            {
-                users[turn][player_number].player.transform.position = Vector3.MoveTowards(startPos, newGoal, 8f * Time.deltaTime);
-            }
-
-            if (users[turn][player_number].is_bind)
-            {
-                foreach (int bindedIndex in users[turn][player_number].BindedHorse)
-                {
-                    if (users[turn][bindedIndex].player != null)
-                    {
-                        Vector3 bindedStartPos = users[turn][bindedIndex].player.transform.position;
-                        Vector3 bindedGoal = new Vector3(goal.x, bindedStartPos.y, goal.z);
-                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(bindedStartPos, bindedGoal, 8f * Time.deltaTime);
-                    }
-                }
-            }
-            return isMovingPlayer;
-        }
-        return false;
-    }
+    } 
 
     void ChangeTurn()
     {
@@ -761,6 +732,7 @@ public class stone : MonoBehaviour
             clear_stepsButton();
             timeLeft = 60.0f;
         }
+        player_number = 0;
         Yut.text = "player " + (turn + 1) + " turn!";
     }
     private void BindHorse()
