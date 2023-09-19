@@ -16,27 +16,27 @@ static class Constants
 }
 public class stone : MonoBehaviour
 {
-    public UI uiScript;
-
+    //스크립트
+    public UI UIScript;
+    public MoveScript MoveScript;
+    public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
-    public TextMeshProUGUI Yut;
     public GameObject[] red_team;
     public GameObject[] blue_team;
     public Button[] steps_button;
     public Button yes;
     public Button no;
     public TextMeshProUGUI[] steps_button_Text;
-    //public TextMeshProUGUI Goal_Status;
 
     public List<int> steps = new List<int>();
     private async Task DelayAsync(float seconds)
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
     }
+    int turn = 0;
     int chance = 0;
     bool isMoving;
-    int turn = 0;
     int sum = 0;
     float time;
     bool isFight = false;
@@ -56,11 +56,11 @@ public class stone : MonoBehaviour
     Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
     private int selectedButtonIndex = -1;
     private bool chooseBindCalled = false;
-    string DelayFunctionText;
     //타이머
     public TextMeshProUGUI timerText; // 타이머 값을 표시할 Text 컴포넌트 참조
     public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
     private float timeLeft;
+    
     // 플레이어 테두리 업데이트
     void SetOutline(GameObject player)
     {
@@ -94,14 +94,12 @@ public class stone : MonoBehaviour
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
-        uiScript.GoalCounter(users);
+        UIScript.GoalCounter(users);
     }
     void Start()
     {
+        UIScript.StartText(turn);
         timeLeft = startTime;
-        Yut.text = "시작!";
-        DelayFunctionText = "player " + (turn + 1) + " turn!";
-        StartCoroutine(YieldReturnDelay(1.0f, DelayFunctionText));
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
         yes.onClick.AddListener(BindYes);
@@ -337,7 +335,6 @@ public class stone : MonoBehaviour
             else
             {
                 Yut.text = "얼마나 이동할 지 선택하세요!";
-                //StartCoroutine(YieldReturnDelay(1.0f, DelayFunctionText));
             }
         }
         if (isMoving == false)
@@ -593,14 +590,14 @@ public class stone : MonoBehaviour
                 }
                 else
                 {
-                    BackdoRoute(); //백도이동
+                    MoveScript.BackdoRoute(turn,player_number,users); //백도이동
                 }
                 isBackdo = false;
             }
             else
             {
                 users[turn][player_number].routePosition++;
-                NormalRoute(chosed_step); //일반이동
+                MoveScript.NormalRoute(chosed_step,turn,player_number,users); //일반이동
             }
 
 
@@ -713,62 +710,7 @@ public class stone : MonoBehaviour
             }
         }
     }
-    private void BackdoRoute()
-    {
-        if (users[turn][player_number].nowPosition == 20)
-        {
-            users[turn][player_number].routePosition = 5;
-        }
-        else if (users[turn][player_number].nowPosition == 25)
-        {
-            users[turn][player_number].routePosition = 10;
-        }
-        else if (users[turn][player_number].nowPosition == 15 && users[turn][player_number].lastPosition == 24)
-        {
-            users[turn][player_number].routePosition = 24;
-        }
-        else if (users[turn][player_number].nowPosition == 1)
-        {
-            users[turn][player_number].routePosition = 30;
-        }
-        else
-        {
-            users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
-        }
-        users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
-    }
-    private void NormalRoute(int chosed_step)
-    {
-        if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
-        {
-            users[turn][player_number].routePosition = 20;
-        }
-        else if (users[turn][player_number].lastPosition == 10 && users[turn][player_number].nowPosition == 10)
-        {
-            users[turn][player_number].routePosition = 25;
-        }
-        else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
-        {
-            users[turn][player_number].routePosition = 28;
-        }
-        else if (users[turn][player_number].lastPosition == 24 && users[turn][player_number].nowPosition == 24)
-        {
-            users[turn][player_number].routePosition = 15;
-        }
-        if (users[turn][player_number].nowPosition == 24 &&
-            users[turn][player_number].lastPosition == 24 && chosed_step >= 1)
-        {
-            users[turn][player_number].routePosition = 15;
-
-        }
-        if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
-        {
-            if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && chosed_step >= 1)
-            {
-                users[turn][player_number].routePosition = 30;
-            }
-        }
-    }
+    
     //플레이어 이동함수
     bool MoveToNextNode(Vector3 goal)
     {
@@ -937,12 +879,6 @@ public class stone : MonoBehaviour
         {
             users[turn][overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
         }
-    }
-    IEnumerator YieldReturnDelay(float time, String text)
-    {
-        yield return new WaitForSeconds(time);
-        Yut.text = text;
-        DelayFunctionText = "";
     }
     void UpdateTimerText()
     {

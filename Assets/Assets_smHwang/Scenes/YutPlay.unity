@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3132,6 +3132,7 @@ GameObject:
   - component: {fileID: 658787158}
   - component: {fileID: 658787159}
   - component: {fileID: 658787160}
+  - component: {fileID: 658787161}
   m_Layer: 0
   m_Name: stone
   m_TagString: Untagged
@@ -3166,7 +3167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b7acb6c0cd0a79468aebbe4a3cb7036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiScript: {fileID: 658787160}
+  UIScript: {fileID: 658787160}
+  MoveScript: {fileID: 658787161}
+  Yut: {fileID: 1776707962}
   currentRoute: {fileID: 196885769}
   yutSound:
   - {fileID: 739863744}
@@ -3174,7 +3177,6 @@ MonoBehaviour:
   - {fileID: 805761114}
   - {fileID: 1409385109}
   - {fileID: 1733140602}
-  Yut: {fileID: 1776707962}
   red_team:
   - {fileID: 1079773329}
   - {fileID: 1085726276}
@@ -3218,6 +3220,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Goal_Status: {fileID: 1618175816}
+  Yut: {fileID: 1776707962}
+--- !u!114 &658787161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658787157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb79b2631f69f24fb1a7d0003f900ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &666031935
 GameObject:
   m_ObjectHideFlags: 0
@@ -5942,9 +5957,9 @@ RectTransform:
   m_Father: {fileID: 572905274}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 400, y: 175}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1409385107
