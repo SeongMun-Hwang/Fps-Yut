@@ -13,6 +13,10 @@ public class MoveScript : MonoBehaviour
         player_number = p_num;
         users = u;
     }
+    void Start()
+    {
+        turn = YutGameManager.Instance.GetTurn();
+    }
     //백도 이동 예외 처리
     public void BackdoRoute()
     {
