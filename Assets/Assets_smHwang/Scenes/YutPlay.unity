@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3182,16 +3182,6 @@ MonoBehaviour:
   - {fileID: 805761114}
   - {fileID: 1409385109}
   - {fileID: 1733140602}
-  red_team:
-  - {fileID: 1079773329}
-  - {fileID: 1085726276}
-  - {fileID: 716365862}
-  - {fileID: 693637093}
-  blue_team:
-  - {fileID: 1525493212}
-  - {fileID: 1677843937}
-  - {fileID: 288508795}
-  - {fileID: 2071326698}
   steps_button:
   - {fileID: 400549285}
   - {fileID: 2130405708}
@@ -3210,8 +3200,7 @@ MonoBehaviour:
   objectPrefab:
   - {fileID: 2070411140}
   - {fileID: 2025427989}
-  timerText: {fileID: 1487471723}
-  startTime: 60
+  isYutThrown: 0
 --- !u!114 &658787160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3224,8 +3213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f99c47e5b9b5524aab211a634a3cef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stone: {fileID: 658787159}
   Goal_Status: {fileID: 1618175816}
   Yut: {fileID: 1776707962}
+  timerText: {fileID: 1487471723}
+  timeLeft: 0
+  startTime: 60
 --- !u!114 &658787161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4893,6 +4886,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bdbb5248771df04ab8d80e92ad2d032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  red_team:
+  - {fileID: 1079773329}
+  - {fileID: 1085726276}
+  - {fileID: 716365862}
+  - {fileID: 693637093}
+  blue_team:
+  - {fileID: 1525493212}
+  - {fileID: 1677843937}
+  - {fileID: 288508795}
+  - {fileID: 2071326698}
+  UIScript: {fileID: 0}
 --- !u!1 &1008608000
 GameObject:
   m_ObjectHideFlags: 0

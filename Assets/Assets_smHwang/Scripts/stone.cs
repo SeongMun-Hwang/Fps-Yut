@@ -17,8 +17,7 @@ public class stone : MonoBehaviour
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
-    public GameObject[] red_team;
-    public GameObject[] blue_team;
+
     public Button[] steps_button;
     public Button yes;
     public Button no;
@@ -29,28 +28,29 @@ public class stone : MonoBehaviour
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
     }
-    int chance = 0;
+    //bool 변수
     bool isMoving;
-    int sum = 0;
-    float time;
+    bool isBackdo = false;
+    private bool chooseBindCalled = false;
     bool isFight = false;
-    user[][] users;
+    public bool isYutThrown = false;
+
+    int chance = 0;
+    int sum = 0;
     int enemy;
     public GameObject[] objectPrefab;
-    bool isBackdo = false;
     int choose_step = 0;
-    public bool isYutThrown = false;
     //오브젝트 테두리
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
     Color original_Edge = Color.white;
     Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
     private int selectedButtonIndex = -1;
-    private bool chooseBindCalled = false;
-    //타이머
-    
+
+    user[][] users;
 
     private void Update()
     {
+        users = YutGameManager.Instance.GetUsers();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
         choose_Player();
         check_Winner();
@@ -65,9 +65,6 @@ public class stone : MonoBehaviour
         no.gameObject.SetActive(false);
         yes.onClick.AddListener(BindYes);
         no.onClick.AddListener(BindNo);
-        users = new user[Constants.PlayerNumber][];
-        users[0] = new user[Constants.HorseNumber];
-        users[1] = new user[Constants.HorseNumber];
 
         for (int i = 0; i < steps_button.Length; i++)
         {
@@ -78,26 +75,6 @@ public class stone : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
-        }
-        //users 초기화
-
-        for (int j = 0; j < Constants.PlayerNumber; j++)
-        {
-            for (int i = 0; i < Constants.HorseNumber; i++)
-            {
-                users[0][i].player = red_team[i];
-                users[1][i].player = blue_team[i];
-                users[j][i].player_start_position = users[j][i].player.transform.position;
-                users[j][i].is_destroyed = false;
-                users[j][i].is_bind = false;
-                users[j][i].BindedHorse = new List<int>();
-            }
-        }
-
-
-        for (int i = 0; i < Constants.HorseNumber; i++)
-        {
-            Debug.Log("user" + i + ": " + users[0][i].nowPosition);
         }
         for (int i = 0; i < 5; i++)
         {
