@@ -7,6 +7,9 @@ using System;
 
 public class UI : MonoBehaviour
 {
+    //스크립트
+    public stone stone;
+
     public TextMeshProUGUI Goal_Status;
     public TextMeshProUGUI Yut;
     string DelayFunctionText;
@@ -14,14 +17,17 @@ public class UI : MonoBehaviour
     private GameObject lastSelectedPlayer;
     private Material originalMaterial;
     private Material _outlineMaterial;
-
+    //타이머
+    public TextMeshProUGUI timerText;
+    public float timeLeft;
+    public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
     public void StartText(int turn)
     {
         Yut.text = "시작!";
         DelayFunctionText = "player " + (turn + 1) + " turn!";
         StartCoroutine(YieldReturnDelay(1.0f, DelayFunctionText));
+        timeLeft = startTime;
     }
-
     public void GoalCounter(user[][] users)
     {
         int[] countArray = new int[2];
@@ -65,4 +71,26 @@ public class UI : MonoBehaviour
     {
         _outlineMaterial = OutlineMaterial;
     }
+    public void UpdateTimerText()
+    {
+        int minutes = (int)timeLeft / 60;
+        int seconds = (int)timeLeft % 60;
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    public void timer()
+    {
+        if (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            UpdateTimerText();
+        }
+        else
+        {
+            if (!stone.isYutThrown)
+            {
+                stone.ChangeTurn();
+            }
+        }
+    }
+
 }

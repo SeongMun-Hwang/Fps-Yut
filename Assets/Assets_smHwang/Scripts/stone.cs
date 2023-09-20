@@ -39,7 +39,7 @@ public class stone : MonoBehaviour
     public GameObject[] objectPrefab;
     bool isBackdo = false;
     int choose_step = 0;
-    bool isYutThrown = false;
+    public bool isYutThrown = false;
     //오브젝트 테두리
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
     Color original_Edge = Color.white;
@@ -47,35 +47,20 @@ public class stone : MonoBehaviour
     private int selectedButtonIndex = -1;
     private bool chooseBindCalled = false;
     //타이머
-    public TextMeshProUGUI timerText; // 타이머 값을 표시할 Text 컴포넌트 참조
-    public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
-    private float timeLeft;
     
 
     private void Update()
     {
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
-        if (timeLeft > 0)
-        {
-            timeLeft -= Time.deltaTime;
-            UpdateTimerText();
-        }
-        else
-        {
-            if (!isYutThrown)
-            {
-                ChangeTurn();
-            }
-        }
         choose_Player();
         check_Winner();
         AutoSelectClosestPlayerInArray();
         UIScript.GoalCounter(users);
+        UIScript.timer();
     }
     void Start()
     {
         UIScript.StartText(YutGameManager.Instance.GetTurn());
-        timeLeft = startTime;
         yes.gameObject.SetActive(false);
         no.gameObject.SetActive(false);
         yes.onClick.AddListener(BindYes);
@@ -688,7 +673,7 @@ public class stone : MonoBehaviour
         }
     } 
 
-    void ChangeTurn()
+    public void ChangeTurn()
     {
         if (YutGameManager.Instance.GetTurn() == 0)
         {
@@ -696,7 +681,7 @@ public class stone : MonoBehaviour
             choose_step = 0;
             isYutThrown = false;
             clear_stepsButton();
-            timeLeft = 60.0f;
+            UIScript.timeLeft = 60.0f;
         }
         else if (YutGameManager.Instance.GetTurn() == 1)
         {
@@ -704,7 +689,7 @@ public class stone : MonoBehaviour
             choose_step = 0;
             isYutThrown = false;
             clear_stepsButton();
-            timeLeft = 60.0f;
+            UIScript.timeLeft = 60.0f;
         }
         YutGameManager.Instance.SetPlayerNumber(0);
         Yut.text = "player " + (YutGameManager.Instance.GetTurn() + 1) + " turn!";
@@ -825,11 +810,5 @@ public class stone : MonoBehaviour
         {
             users[YutGameManager.Instance.GetTurn()][overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
         }
-    }
-    void UpdateTimerText()
-    {
-        int minutes = (int)timeLeft / 60;
-        int seconds = (int)timeLeft % 60;
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

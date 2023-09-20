@@ -16,6 +16,9 @@ public class YutGameManager : MonoBehaviour
     private int turn = 0;
     private int player_number;
     private user[][] users;
+    //스크립트
+    public UI UIScript;
+
 
     private void Awake()
     {
@@ -29,7 +32,6 @@ public class YutGameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void SetTurnAndPlayerNumber(int t, int p_num, user[][] u)
     {
         turn = t;
