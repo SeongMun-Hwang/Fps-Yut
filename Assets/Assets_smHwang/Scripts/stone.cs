@@ -41,9 +41,6 @@ public class stone : MonoBehaviour
     int choose_step = 0;
     bool isYutThrown = false;
     //오브젝트 테두리
-    Material originalMaterial;
-    Material outlineMaterial;
-    GameObject lastSelectedPlayer;
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
     Color original_Edge = Color.white;
     Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
@@ -54,22 +51,7 @@ public class stone : MonoBehaviour
     public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
     private float timeLeft;
     
-    // 플레이어 테두리 업데이트
-    void SetOutline(GameObject player)
-    {
-        if (lastSelectedPlayer != null)
-        {
-            lastSelectedPlayer.GetComponent<Renderer>().material = originalMaterial;
-        }
 
-        if (player != null)
-        {
-            originalMaterial = player.GetComponent<Renderer>().material;
-            player.GetComponent<Renderer>().material = outlineMaterial;
-        }
-
-        lastSelectedPlayer = player;
-    }
     private void Update()
     {
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
@@ -136,7 +118,7 @@ public class stone : MonoBehaviour
         {
             yutSound[i].mute = true;
         }
-        outlineMaterial = Resources.Load<Material>("OutlineMaterial");
+        UIScript.SetOutlineMaterial(Resources.Load<Material>("OutlineMaterial"));
     }
     //윷던지기 랜덤 함수
     public void throwYut()
@@ -255,25 +237,25 @@ public class stone : MonoBehaviour
     {
         YutGameManager.Instance.SetPlayerNumber(0);
         check_player();
-        SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void two()
     {
         YutGameManager.Instance.SetPlayerNumber(1);
         check_player();
-        SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void three()
     {
         YutGameManager.Instance.SetPlayerNumber(2);
         check_player();
-        SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void four()
     {
         YutGameManager.Instance.SetPlayerNumber(3);
         check_player();
-        SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void check_player()
     {
@@ -488,7 +470,7 @@ public class stone : MonoBehaviour
             if (closestPlayerNumber != -1)
             {
                 YutGameManager.Instance.SetPlayerNumber(closestPlayerNumber);
-                SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+                UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
             }
         }
     }
@@ -541,7 +523,7 @@ public class stone : MonoBehaviour
         {
             enemy = 0;
         }
-        SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
         yield return new WaitForSeconds(1f);
         Yut.text = "";
         if (isMoving)

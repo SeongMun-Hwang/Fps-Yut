@@ -10,6 +10,10 @@ public class UI : MonoBehaviour
     public TextMeshProUGUI Goal_Status;
     public TextMeshProUGUI Yut;
     string DelayFunctionText;
+    //메터리얼
+    private GameObject lastSelectedPlayer;
+    private Material originalMaterial;
+    private Material _outlineMaterial;
 
     public void StartText(int turn)
     {
@@ -40,5 +44,25 @@ public class UI : MonoBehaviour
         yield return new WaitForSeconds(time);
         Yut.text = text;
         DelayFunctionText = "";
+    }
+    // 플레이어 테두리 업데이트
+    public void SetOutline(GameObject player)
+    {
+        if (lastSelectedPlayer != null)
+        {
+            lastSelectedPlayer.GetComponent<Renderer>().material = originalMaterial;
+        }
+
+        if (player != null)
+        {
+            originalMaterial = player.GetComponent<Renderer>().material;
+            player.GetComponent<Renderer>().material = _outlineMaterial;
+        }
+
+        lastSelectedPlayer = player;
+    }
+    public void SetOutlineMaterial(Material OutlineMaterial)
+    {
+        _outlineMaterial = OutlineMaterial;
     }
 }
