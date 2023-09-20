@@ -3182,25 +3182,15 @@ MonoBehaviour:
   - {fileID: 805761114}
   - {fileID: 1409385109}
   - {fileID: 1733140602}
-  steps_button:
-  - {fileID: 400549285}
-  - {fileID: 2130405708}
-  - {fileID: 1808772286}
-  - {fileID: 1903856789}
-  - {fileID: 2028555288}
   yes: {fileID: 1732412069}
   no: {fileID: 2079120481}
-  steps_button_Text:
-  - {fileID: 23266177}
-  - {fileID: 1530951847}
-  - {fileID: 1509212778}
-  - {fileID: 1854658184}
-  - {fileID: 932443828}
-  steps: 
+  isMoving: 0
+  isBackdo: 0
+  isFight: 0
+  isYutThrown: 0
   objectPrefab:
   - {fileID: 2070411140}
   - {fileID: 2025427989}
-  isYutThrown: 0
 --- !u!114 &658787160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3219,6 +3209,21 @@ MonoBehaviour:
   timerText: {fileID: 1487471723}
   timeLeft: 0
   startTime: 60
+  steps_button:
+  - {fileID: 400549285}
+  - {fileID: 2130405708}
+  - {fileID: 1808772286}
+  - {fileID: 1903856789}
+  - {fileID: 2028555288}
+  steps_button_Text:
+  - {fileID: 23266177}
+  - {fileID: 1530951847}
+  - {fileID: 1509212778}
+  - {fileID: 1854658184}
+  - {fileID: 932443828}
+  selectedButtonIndex: -1
+  steps: 
+  choose_step: 0
 --- !u!114 &658787161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4896,7 +4901,6 @@ MonoBehaviour:
   - {fileID: 1677843937}
   - {fileID: 288508795}
   - {fileID: 2071326698}
-  UIScript: {fileID: 0}
 --- !u!1 &1008608000
 GameObject:
   m_ObjectHideFlags: 0

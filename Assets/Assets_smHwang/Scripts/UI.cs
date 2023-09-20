@@ -9,7 +9,7 @@ public class UI : MonoBehaviour
 {
     //스크립트
     public stone stone;
-
+    //텍스트
     public TextMeshProUGUI Goal_Status;
     public TextMeshProUGUI Yut;
     string DelayFunctionText;
@@ -21,6 +21,42 @@ public class UI : MonoBehaviour
     public TextMeshProUGUI timerText;
     public float timeLeft;
     public float startTime = 60.0f; // 타이머의 시작 시간 (60초)
+    //버튼
+    Color original_Edge = Color.white;
+    Color highligted_Edge = new Color(255f / 255f, 0f / 255f, 255f / 255f);
+    public Button[] steps_button;
+    public TextMeshProUGUI[] steps_button_Text;
+    public int selectedButtonIndex = -1;
+    public List<int> steps = new List<int>();
+    public int choose_step = 0;
+
+    private void Start()
+    {
+        for (int i = 0; i < steps_button.Length; i++)
+        {
+            int index = i; // 이유: 클로저 때문에 바깥 변수를 직접 쓰면 마지막 값이 고정될 수 있음
+            steps_button[i].onClick.AddListener(() => choose_steps(index));
+        }
+        //steps_button_Text 연결
+        for (int i = 0; i < 5; i++)
+        {
+            steps_button_Text[i] = steps_button[i].GetComponentInChildren<TextMeshProUGUI>();
+        }
+    }
+    private void Update()
+    {
+        if (steps.Count > 1 && stone.isYutThrown == true)
+        {
+            if (stone.isMoving)
+            {
+                Yut.text = "";
+            }
+            else
+            {
+                Yut.text = "얼마나 이동할 지 선택하세요!";
+            }
+        }
+    }
     public void StartText(int turn)
     {
         Yut.text = "시작!";
@@ -51,7 +87,7 @@ public class UI : MonoBehaviour
         Yut.text = text;
         DelayFunctionText = "";
     }
-    // 플레이어 테두리 업데이트
+    // 플레이어 오브젝트
     public void SetOutline(GameObject player)
     {
         if (lastSelectedPlayer != null)
@@ -71,6 +107,7 @@ public class UI : MonoBehaviour
     {
         _outlineMaterial = OutlineMaterial;
     }
+    //타이머
     public void UpdateTimerText()
     {
         int minutes = (int)timeLeft / 60;
@@ -92,5 +129,145 @@ public class UI : MonoBehaviour
             }
         }
     }
+    //이동 선택 버튼
+    public void UpdateButtonColors()
+    {
+        for (int i = 0; i < steps_button.Length; i++)
+        {
+            Image buttonImage = steps_button[i].GetComponent<Image>();
+            if (i == selectedButtonIndex)
+            {
+                buttonImage.color = highligted_Edge;
+            }
+            else
+            {
+                buttonImage.color = original_Edge;
+            }
+        }
+    }
+    public void clear_stepsButton()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            steps_button_Text[i].text = "";
+            steps_button[i].image.color = original_Edge;
+        }
+    }
+    public void choose_steps(int buttonIndex)
+    {
+        if (buttonIndex >= 0 && buttonIndex < steps.Count && steps[buttonIndex] != null)
+        {
+            choose_step = buttonIndex;
+            Debug.Log(buttonIndex);
+            if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
+            {
+                selectedButtonIndex = buttonIndex;
+                UpdateButtonColors();
+            }
+        }
+    }
+    public void UpdateYutChoice()
+    {
+        for (int i = choose_step; i < steps.Count; i++)
+        {
+            steps_button_Text[i].text = steps_button_Text[i + 1].text;
+        }
+        if (steps.Count < steps_button_Text.Length)
+        {
+            steps_button_Text[steps.Count].text = "";
+        }
+        if (choose_step == steps.Count)
+        {
+            choose_step--;
+        }
+        foreach (int i in steps)
+        {
+            Debug.Log(i);
+        }
+    }
+    public void SetSteps(int value)
+    {
+        steps.Add(value);
+        match_Yut(value);
+    }
+    public void ChooseMove()
+    {
+        //이동할 steps left/right arrow로 선택            
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Yut.text = "";
+            if (choose_step > 0)
+            {
+                choose_step--;
+            }
+            Debug.Log("steps=" + steps[choose_step]);
+            foreach (int i in steps)
+            {
+                match_Yut(i);
+            }
+            Yut.text = "Available" + Yut.text + "\nyou choose";
+            selectedButtonIndex = choose_step;
+            UpdateButtonColors();
+            match_Yut(steps[choose_step]);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Yut.text = "";
+            if (choose_step < steps.Count - 1)
+            {
+                choose_step++;
+            }
+            Debug.Log("steps=" + steps[choose_step]);
+            foreach (int i in steps)
+            {
+                match_Yut(i);
+            }
+            Yut.text = "Available" + Yut.text + "\nyou choose";
+            selectedButtonIndex = choose_step;
+            UpdateButtonColors();
+            match_Yut(steps[choose_step]);
+        }
+    }
+    void match_Yut(int i)
+    {
+        switch (i)
+        {
+            case 1:
+                if (stone.isBackdo)
+                {
+                    steps_button_Text[steps.Count - 1].text = "백도";
+                    Yut.text = " 백도";
+                }
+                else
+                {
+                    steps_button_Text[steps.Count - 1].text = "도";
+                    Yut.text = " 도";
+                }
+                break;
+            case 2:
+                steps_button_Text[steps.Count - 1].text = "개";
+                Yut.text = " 개";
+                break;
+            case 3:
+                steps_button_Text[steps.Count - 1].text = "걸";
+                Yut.text = " 걸";
+                break;
+            case 4:
+                steps_button_Text[steps.Count - 1].text = "윷";
+                Yut.text = " 윷";
+                break;
+            case 5:
+                steps_button_Text[steps.Count - 1].text = "모";
+                Yut.text = " 모";
+                break;
+        }
+    }
+    public int GetStep()
+    {
+        return steps[choose_step];
+    }
+    public void SetStep()
+    {
 
+    }
 }
