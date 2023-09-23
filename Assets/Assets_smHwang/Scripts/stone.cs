@@ -200,7 +200,7 @@ public class stone : MonoBehaviour
     }
     public void check_player()
     {
-        if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].is_destroyed == true)
+        if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].goal == true)
         {
             Yut.text = "player already goaled!";
         }
@@ -225,7 +225,6 @@ public class stone : MonoBehaviour
         u.lastPosition = 0;
         u.nextPos = Vector3.zero;
         u.goal = false;
-        u.is_destroyed = false;
 
         if (u.is_bind)
         {
@@ -606,7 +605,6 @@ public class stone : MonoBehaviour
         foreach (int bindedIndex in bindedHorses)
         {
             Destroy(users[YutGameManager.Instance.GetTurn()][bindedIndex].player);
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].is_destroyed = true;
             SetUserToGoal(ref users[YutGameManager.Instance.GetTurn()][bindedIndex]);
         }
     }
@@ -615,7 +613,6 @@ public class stone : MonoBehaviour
     {
         u.nextPos = Vector3.zero; // 다음 위치가 필요 없음
         u.goal = true;
-        u.is_destroyed = true;
         u.is_bind = false;
         u.BindedHorse?.Clear();
     }

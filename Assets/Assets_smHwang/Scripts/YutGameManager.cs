@@ -46,7 +46,6 @@ public class YutGameManager : MonoBehaviour
                 users[0][i].player = red_team[i];
                 users[1][i].player = blue_team[i];
                 users[j][i].player_start_position = users[j][i].player.transform.position;
-                users[j][i].is_destroyed = false;
                 users[j][i].is_bind = false;
                 users[j][i].BindedHorse = new List<int>();
             }

@@ -11,7 +11,6 @@ public struct user
     public Vector3 nextPos;
     public Vector3 player_start_position;
     public bool goal;
-    public bool is_destroyed;
     public bool is_bind;
     public List<int> BindedHorse;
 }
