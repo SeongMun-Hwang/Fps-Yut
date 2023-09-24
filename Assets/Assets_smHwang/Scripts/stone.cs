@@ -480,6 +480,7 @@ public class stone : MonoBehaviour
                 chance += (users[enemy][i].BindedHorse.Count + 1);
                 reset_player(ref users[enemy][i], objectPrefab[enemy]);
                 Yut.text = chance + " 번의 기회를 추가 획득!";
+                UIScript.choose_step = 0;
                 isYutThrown = false;
                 //Fpsfight 진행
                 //SceneManager.LoadScene("Fpsfight");

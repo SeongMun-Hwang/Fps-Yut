@@ -4,9 +4,23 @@ using UnityEngine;
 
 public class MoveScript : MonoBehaviour
 {
+    private const int BACKDO_POSITION1 = 20;
+    private const int BACKDO_POSITION2 = 25;
+    private const int SPECIAL_POSITION1 = 5;
+
+    private const int FIRST_CORNER = 5;
+    private const int SECOND_CORNER = 10;
+    private const int THIRD_CORNER = 15;
+    private const int GOAL = 30;
+    private const int FIRST_FORK = 20;
+    private const int SECOND_FORK = 25;
+    private const int CENTER_STRAIGHT = 24;
+    private const int CENTER_FORK = 28;
+
+    private user[][] users;
     private int turn;
     private int player_number;
-    private user[][] users;
+
     public void GetData(int t, int p_num, user[][] u)
     {
         turn = t;
@@ -16,25 +30,26 @@ public class MoveScript : MonoBehaviour
     void Start()
     {
         turn = YutGameManager.Instance.GetTurn();
+        player_number = YutGameManager.Instance.GetPlayerNumber();
     }
     //백도 이동 예외 처리
     public void BackdoRoute()
     {
-        if (users[turn][player_number].nowPosition == 20)
+        if (users[turn][player_number].nowPosition == FIRST_FORK)
         {
-            users[turn][player_number].routePosition = 5;
+            users[turn][player_number].routePosition = FIRST_CORNER;
         }
-        else if (users[turn][player_number].nowPosition == 25)
+        else if (users[turn][player_number].nowPosition == SECOND_FORK)
         {
-            users[turn][player_number].routePosition = 10;
+            users[turn][player_number].routePosition = SECOND_CORNER;
         }
-        else if (users[turn][player_number].nowPosition == 15 && users[turn][player_number].lastPosition == 24)
+        else if (users[turn][player_number].nowPosition == THIRD_CORNER && users[turn][player_number].lastPosition == CENTER_STRAIGHT)
         {
-            users[turn][player_number].routePosition = 24;
+            users[turn][player_number].routePosition = CENTER_STRAIGHT;
         }
         else if (users[turn][player_number].nowPosition == 1)
         {
-            users[turn][player_number].routePosition = 30;
+            users[turn][player_number].routePosition = GOAL;
         }
         else
         {
@@ -43,36 +58,36 @@ public class MoveScript : MonoBehaviour
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
     }
     //정상 이동 예외처리
-    public void NormalRoute(int chosed_step)
+    public void NormalRoute(int LeftStep)
     {
-        if (users[turn][player_number].lastPosition == 5 && users[turn][player_number].nowPosition == 5)
+        if (users[turn][player_number].lastPosition == FIRST_CORNER && users[turn][player_number].nowPosition == FIRST_CORNER)
         {
-            users[turn][player_number].routePosition = 20;
+            users[turn][player_number].routePosition = FIRST_FORK;
         }
-        else if (users[turn][player_number].lastPosition == 10 && users[turn][player_number].nowPosition == 10)
+        else if (users[turn][player_number].lastPosition == SECOND_CORNER && users[turn][player_number].nowPosition == SECOND_CORNER)
         {
-            users[turn][player_number].routePosition = 25;
+            users[turn][player_number].routePosition = SECOND_FORK;
         }
         else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
         {
-            users[turn][player_number].routePosition = 28;
+            users[turn][player_number].routePosition = CENTER_FORK;
         }
-        else if (users[turn][player_number].lastPosition == 24 && users[turn][player_number].nowPosition == 24)
+        else if (users[turn][player_number].lastPosition == CENTER_STRAIGHT && users[turn][player_number].nowPosition == CENTER_STRAIGHT)
         {
-            users[turn][player_number].routePosition = 15;
+            users[turn][player_number].routePosition = THIRD_CORNER;
         }
-        if (users[turn][player_number].nowPosition == 24 &&
-           ( users[turn][player_number].lastPosition <= 24 && users[turn][player_number].lastPosition >= 20)
-           && users[turn][player_number].lastPosition != 22 && chosed_step >= 1)
+        if (users[turn][player_number].nowPosition == CENTER_STRAIGHT &&
+           ( users[turn][player_number].lastPosition <= CENTER_STRAIGHT && users[turn][player_number].lastPosition >= FIRST_FORK)
+           && users[turn][player_number].lastPosition != 22 && LeftStep >= 1)
         {
-            users[turn][player_number].routePosition = 15;
+            users[turn][player_number].routePosition = THIRD_CORNER;
 
         }
-        if ((users[turn][player_number].lastPosition >= 15 && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
+        if ((users[turn][player_number].lastPosition >= THIRD_CORNER && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
         {
-            if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && chosed_step >= 1)
+            if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && LeftStep >= 1)
             {
-                users[turn][player_number].routePosition = 30;
+                users[turn][player_number].routePosition = GOAL;
             }
         }
     }
@@ -85,7 +100,7 @@ public class MoveScript : MonoBehaviour
             Vector3 startPos = users[turn][player_number].player.transform.position;
             Vector3 newGoal = new Vector3(goal.x, startPos.y, goal.z);
 
-            bool isMovingPlayer = Vector3.Distance(newGoal, startPos) > 0.001f; // 이동할 필요가 있는지 확인
+            bool isMovingPlayer = (newGoal - startPos).sqrMagnitude > 0.001f * 0.001f;
             if (isMovingPlayer)
             {
                 users[turn][player_number].player.transform.position = Vector3.MoveTowards(startPos, newGoal, 8f * Time.deltaTime);
