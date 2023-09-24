@@ -346,7 +346,7 @@ public class stone : MonoBehaviour
 
 
     //말 버튼 초기화
-    IEnumerator Move(int chosed_step)
+    IEnumerator Move(int LeftStep)
     {
         users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition;
         if (YutGameManager.Instance.GetTurn() == 0)
@@ -367,9 +367,9 @@ public class stone : MonoBehaviour
         isMoving = true;
 
 
-        while (chosed_step > 0)
+        while (LeftStep > 0)
         {
-            if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition == 30 && chosed_step > 0)
+            if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition == 30 && LeftStep > 0)
             {
                 Debug.Log("Goal");
                 DestroyBindedHorses(YutGameManager.Instance.GetPlayerNumber());
@@ -392,7 +392,7 @@ public class stone : MonoBehaviour
                 {
                     Yut.text = "이동할 수 있는 말이 없습니다!";
                     yield return new WaitForSeconds(1f);
-                    chosed_step = 0;
+                    LeftStep = 0;
                     isMoving = false;
                     isBackdo = false;
                     ChangeTurn();
@@ -408,7 +408,7 @@ public class stone : MonoBehaviour
             else
             {
                 users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                MoveScript.NormalRoute(chosed_step); //일반이동
+                MoveScript.NormalRoute(LeftStep); //일반이동
             }
 
 
@@ -419,12 +419,12 @@ public class stone : MonoBehaviour
 
             while (MoveScript.MoveToNextNode(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nextPos)) { yield return null; }
 
-            chosed_step--;
+            LeftStep--;
             users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition++;
 
 
             //상대방 말을 지나갈때
-            //DefenseGameTrigger(chosed_step);
+            //DefenseGameTrigger(LeftStep);
 
 
             yield return new WaitForSeconds(0.1f);
@@ -487,13 +487,13 @@ public class stone : MonoBehaviour
         }
     }
     //DefenseGame 트리거
-    private IEnumerator DefenseGameTrigger(int chosed_step)
+    private IEnumerator DefenseGameTrigger(int LeftStep)
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition == users[enemy][i].nowPosition)
             {
-                if (chosed_step > 0)
+                if (LeftStep > 0)
                 {
                     Yut.text = "To pass, Win!";
                     yield return new WaitForSeconds(1f);
