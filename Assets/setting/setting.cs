@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,15 +8,21 @@ using UnityEngine.SceneManagement;
 
 public class setting : MonoBehaviour
 {
+    public stone stone;
     public TMP_Dropdown resolutionDropdown;
-    public AudioSource audioSource;
     public Slider volumeSlider;
-
+    public AudioSource[] audioSources;
+    public AudioClip[] myClips;
+    private int EffectSoundIndex=0;
     private void Start()
     {
+        for (int i = 0; i < myClips.Length; i++)
+        {
+            audioSources[i].clip = myClips[i];
+        }
         resolutionDropdown.onValueChanged.AddListener(ChangeResolution);
         volumeSlider.onValueChanged.AddListener(SetVolume); // 슬라이더 값 변경 시 볼륨 조절
-        volumeSlider.value = audioSource.volume;
+        volumeSlider.value = audioSources[0].volume;
     }
 
     public void SetResolution_full()
@@ -65,10 +72,16 @@ public class setting : MonoBehaviour
     }
     public void SetVolume(float volume)
     {
-        audioSource.volume = volume;
+        for(int i = 0; i < myClips.Length; i++)
+        {
+            audioSources[i].volume = volume;
+        }
     }
     public void testSound()
     {
-        audioSource.Play();
+        Debug.Log(EffectSoundIndex);
+        audioSources[EffectSoundIndex].Play();
+        if (EffectSoundIndex == 4) { EffectSoundIndex = 0; }
+        else { EffectSoundIndex++; }
     }
 }

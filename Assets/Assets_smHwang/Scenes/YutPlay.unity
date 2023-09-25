@@ -2942,7 +2942,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3d2034117bac0364fb0c98a89336963b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: df0129d12abadab44a8a3b6f9db17a85, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
@@ -3174,6 +3174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIScript: {fileID: 658787160}
   MoveScript: {fileID: 658787161}
+  SettingScript: {fileID: 0}
   Yut: {fileID: 1776707962}
   currentRoute: {fileID: 196885769}
   yutSound:
@@ -4169,7 +4170,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3d2034117bac0364fb0c98a89336963b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 864d44f53b03cf64b8d4909c861aca5d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
@@ -6030,7 +6031,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3d2034117bac0364fb0c98a89336963b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8da77344e93b56e4fac451f8080c6ddc, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
@@ -7820,7 +7821,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3d2034117bac0364fb0c98a89336963b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: aae6af7b8d93d0148b49253473846829, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.1
   m_Pitch: 1
