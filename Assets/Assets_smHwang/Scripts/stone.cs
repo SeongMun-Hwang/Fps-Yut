@@ -13,6 +13,7 @@ public class stone : MonoBehaviour
     /************스크립트***********/
     public UI UIScript;
     public MoveScript MoveScript;
+    public setting SettingScript;
     /*******************************/
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
@@ -98,9 +99,9 @@ public class stone : MonoBehaviour
                     throw_yut();
                     break;
             }
-
-            yutSound[sum].mute = false;
-            yutSound[sum].Play();
+            int RandomSound = UnityEngine.Random.Range(0, 5);
+            yutSound[RandomSound].mute = false;
+            yutSound[RandomSound].Play();
         }
     }
     //윷 던지기 함수
