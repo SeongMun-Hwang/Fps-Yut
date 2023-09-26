@@ -109,7 +109,8 @@ public class stone : MonoBehaviour
     {
         if (!isYutThrown)
         {
-            UIScript.SetSteps(value);
+            Debug.Log("before : " + isBackdo);
+            UIScript.SetSteps(value,isBackdo);
             if (value == 4 || value == 5)
             {
                 await DelayAsync(0.5f);
@@ -136,8 +137,9 @@ public class stone : MonoBehaviour
     public void throw_back_do()
     {
         Debug.Log("À· ÁöÁ¤ : ¹éµµ");
-        UpdateThrowResult(1);
         isBackdo = true;
+        UpdateThrowResult(1);
+        Debug.Log("stone : "+isBackdo);
         if (chance == 0)
         {
             isYutThrown = true;
@@ -413,7 +415,7 @@ public class stone : MonoBehaviour
             else
             {
                 users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                int route = MoveScript.NormalRoute(LeftStep);
+                int route = MoveScript.NormalRoute();
                 if (route!=-1)
                 {
                     users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = route;

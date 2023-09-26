@@ -29,6 +29,7 @@ public class UI : MonoBehaviour
     public int selectedButtonIndex = -1;
     public List<int> steps = new List<int>();
     public int choose_step = 0;
+    private bool _isBackdo;
 
     private void Start()
     {
@@ -45,6 +46,7 @@ public class UI : MonoBehaviour
     }
     private void Update()
     {
+        ChooseMove();
         if (steps.Count > 1 && stone.isYutThrown == true)
         {
             if (stone.isMoving)
@@ -185,9 +187,12 @@ public class UI : MonoBehaviour
             Debug.Log(i);
         }
     }
-    public void SetSteps(int value)
+    public void SetSteps(int value, bool isBackdo)
     {
         steps.Add(value);
+        _isBackdo = isBackdo;
+        Debug.Log("_isBackdo : " + _isBackdo);
+        Debug.Log("isBackdo : " + isBackdo);
         match_Yut(value);
     }
     public void ChooseMove()
@@ -230,10 +235,11 @@ public class UI : MonoBehaviour
     }
     void match_Yut(int i)
     {
+        Debug.Log(_isBackdo);
         switch (i)
         {
             case 1:
-                if (stone.isBackdo)
+                if (_isBackdo)
                 {
                     steps_button_Text[steps.Count - 1].text = "백도";
                     Yut.text = " 백도";
@@ -265,9 +271,5 @@ public class UI : MonoBehaviour
     public int GetStep()
     {
         return steps[choose_step];
-    }
-    public void SetStep()
-    {
-
     }
 }
