@@ -4,13 +4,10 @@ using UnityEngine;
 
 public class MoveScript : MonoBehaviour
 {
-    private const int BACKDO_POSITION1 = 20;
-    private const int BACKDO_POSITION2 = 25;
-    private const int SPECIAL_POSITION1 = 5;
-
     private const int FIRST_CORNER = 5;
     private const int SECOND_CORNER = 10;
     private const int THIRD_CORNER = 15;
+    private const int CENTER = 22;
     private const int GOAL = 30;
     private const int FIRST_FORK = 20;
     private const int SECOND_FORK = 25;
@@ -58,37 +55,50 @@ public class MoveScript : MonoBehaviour
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
     }
     //정상 이동 예외처리
-    public void NormalRoute(int LeftStep)
+    public int NormalRoute(int LeftStep)
     {
-        if (users[turn][player_number].lastPosition == FIRST_CORNER && users[turn][player_number].nowPosition == FIRST_CORNER)
+        //if(users[turn][player_number].lastPosition== users[turn][player_number].nowPosition)
+        //{
+        //    switch (users[turn][player_number].nowPosition)
+        //    {
+        //        case FIRST_CORNER:
+        //            users[turn][player_number].routePosition = FIRST_FORK;
+        //            break;
+        //        case SECOND_CORNER:
+        //            users[turn][player_number].routePosition = SECOND_FORK;
+        //            break;
+        //        case CENTER:
+        //            users[turn][player_number].routePosition = CENTER_FORK;
+        //            break;
+        //    }
+        //}
+        if (users[turn][player_number].nowPosition == FIRST_CORNER && users[turn][player_number].lastPosition == FIRST_CORNER)
         {
-            users[turn][player_number].routePosition = FIRST_FORK;
+            return FIRST_FORK;
         }
-        else if (users[turn][player_number].lastPosition == SECOND_CORNER && users[turn][player_number].nowPosition == SECOND_CORNER)
+        else if (users[turn][player_number].nowPosition == SECOND_CORNER && users[turn][player_number].lastPosition == SECOND_CORNER)
         {
-            users[turn][player_number].routePosition = SECOND_FORK;
+            return SECOND_FORK;
         }
-        else if (users[turn][player_number].lastPosition == 22 && users[turn][player_number].nowPosition == 22) //center
+        else if (users[turn][player_number].nowPosition == CENTER && users[turn][player_number].lastPosition==CENTER) //center
         {
-            users[turn][player_number].routePosition = CENTER_FORK;
+            return CENTER_FORK;
         }
-        else if (users[turn][player_number].lastPosition == CENTER_STRAIGHT && users[turn][player_number].nowPosition == CENTER_STRAIGHT)
+        else if (users[turn][player_number].nowPosition==24)
         {
-            users[turn][player_number].routePosition = THIRD_CORNER;
+            return THIRD_CORNER;
         }
-        if (users[turn][player_number].nowPosition == CENTER_STRAIGHT &&
-           ( users[turn][player_number].lastPosition <= CENTER_STRAIGHT && users[turn][player_number].lastPosition >= FIRST_FORK)
-           && users[turn][player_number].lastPosition != 22 && LeftStep >= 1)
+        else if (users[turn][player_number].nowPosition == 29)
         {
-            users[turn][player_number].routePosition = THIRD_CORNER;
-
+            return GOAL;
         }
-        if ((users[turn][player_number].lastPosition >= THIRD_CORNER && users[turn][player_number].lastPosition <= 19) || (users[turn][player_number].lastPosition >= 28 && users[turn][player_number].lastPosition <= 29))
+        else if (users[turn][player_number].nowPosition == 19)
         {
-            if ((users[turn][player_number].nowPosition == 19 || users[turn][player_number].nowPosition == 29) && LeftStep >= 1)
-            {
-                users[turn][player_number].routePosition = GOAL;
-            }
+            return GOAL;
+        }
+        else
+        {
+            return -1;
         }
     }
     //플레이어 이동함수
