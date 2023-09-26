@@ -17,7 +17,6 @@ public class MoveScript : MonoBehaviour
     private user[][] users;
     private int turn;
     private int player_number;
-
     public void GetData(int t, int p_num, user[][] u)
     {
         turn = t;
@@ -55,51 +54,47 @@ public class MoveScript : MonoBehaviour
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
     }
     //정상 이동 예외처리
-    public int NormalRoute(int LeftStep)
+    public int NormalRoute()
     {
-        //if(users[turn][player_number].lastPosition== users[turn][player_number].nowPosition)
-        //{
-        //    switch (users[turn][player_number].nowPosition)
-        //    {
-        //        case FIRST_CORNER:
-        //            users[turn][player_number].routePosition = FIRST_FORK;
-        //            break;
-        //        case SECOND_CORNER:
-        //            users[turn][player_number].routePosition = SECOND_FORK;
-        //            break;
-        //        case CENTER:
-        //            users[turn][player_number].routePosition = CENTER_FORK;
-        //            break;
-        //    }
-        //}
-        if (users[turn][player_number].nowPosition == FIRST_CORNER && users[turn][player_number].lastPosition == FIRST_CORNER)
+        int position = users[turn][player_number].nowPosition;
+        int lastPosition = users[turn][player_number].lastPosition;
+
+        int result = -1; // default value
+
+        switch (position)
         {
-            return FIRST_FORK;
+            case FIRST_CORNER:
+                if (lastPosition == FIRST_CORNER)
+                {
+                    result = FIRST_FORK;
+                }
+                break;
+
+            case SECOND_CORNER:
+                if (lastPosition == SECOND_CORNER)
+                {
+                    result = SECOND_FORK;
+                }
+                break;
+
+            case CENTER:
+                if (lastPosition == CENTER)
+                {
+                    result = CENTER_FORK;
+                }
+                break;
+
+            case 24:
+                result = THIRD_CORNER;
+                break;
+
+            case 29:
+            case 19:
+                result = GOAL;
+                break;
         }
-        else if (users[turn][player_number].nowPosition == SECOND_CORNER && users[turn][player_number].lastPosition == SECOND_CORNER)
-        {
-            return SECOND_FORK;
-        }
-        else if (users[turn][player_number].nowPosition == CENTER && users[turn][player_number].lastPosition==CENTER) //center
-        {
-            return CENTER_FORK;
-        }
-        else if (users[turn][player_number].nowPosition==24)
-        {
-            return THIRD_CORNER;
-        }
-        else if (users[turn][player_number].nowPosition == 29)
-        {
-            return GOAL;
-        }
-        else if (users[turn][player_number].nowPosition == 19)
-        {
-            return GOAL;
-        }
-        else
-        {
-            return -1;
-        }
+
+        return result;
     }
     //플레이어 이동함수
     public bool MoveToNextNode(Vector3 goal)
