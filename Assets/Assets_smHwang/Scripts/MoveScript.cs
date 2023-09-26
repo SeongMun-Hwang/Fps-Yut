@@ -22,7 +22,6 @@ public class MoveScript : MonoBehaviour
         turn = t;
         player_number = p_num;
         users = u;
-        Debug.Log("현재 턴 : " + turn + " 현재 말 : " + player_number);
     }
     void Start()
     {

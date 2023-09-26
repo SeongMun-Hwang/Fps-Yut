@@ -47,7 +47,6 @@ public class stone : MonoBehaviour
         users = YutGameManager.Instance.GetUsers();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
         choose_Player();
-        check_Winner();
         AutoSelectClosestPlayerInArray();
         UIScript.GoalCounter(users);
         UIScript.timer();
@@ -431,7 +430,6 @@ public class stone : MonoBehaviour
                 }
             }
 
-
             if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition < currentRoute.childNodeList.Count)
             {
                 users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nextPos = currentRoute.childNodeList[users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition].position;
@@ -471,7 +469,8 @@ public class stone : MonoBehaviour
             chooseBindCalled = false;
         }
         SynchronizeBindedHorses(YutGameManager.Instance.GetPlayerNumber());
-
+        //턴 변경전 승자 체크
+        check_Winner();
         if (chance == 0 && UIScript.steps.Count() == 0)
         {
             ChangeTurn();
@@ -484,7 +483,6 @@ public class stone : MonoBehaviour
         //    choose_step = 0;
         //}
     }
-    //이동 선택지 업데이트
 
     //Fps Fight 트리거
     private void FpsfightTrigger()
