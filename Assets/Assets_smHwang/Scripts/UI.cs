@@ -206,14 +206,9 @@ public class UI : MonoBehaviour
                 choose_step--;
             }
             Debug.Log("steps=" + steps[choose_step]);
-            foreach (int i in steps)
-            {
-                match_Yut(i);
-            }
             Yut.text = "Available" + Yut.text + "\nyou choose";
             selectedButtonIndex = choose_step;
             UpdateButtonColors();
-            match_Yut(steps[choose_step]);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
@@ -223,19 +218,13 @@ public class UI : MonoBehaviour
                 choose_step++;
             }
             Debug.Log("steps=" + steps[choose_step]);
-            foreach (int i in steps)
-            {
-                match_Yut(i);
-            }
             Yut.text = "Available" + Yut.text + "\nyou choose";
             selectedButtonIndex = choose_step;
             UpdateButtonColors();
-            match_Yut(steps[choose_step]);
         }
     }
     void match_Yut(int i)
     {
-        Debug.Log(_isBackdo);
         switch (i)
         {
             case 1:
