@@ -218,25 +218,28 @@ public class stone : MonoBehaviour
     //플레이어 말 재생성
     public void reset_player(ref user u, GameObject playerPrefab)
     {
-        Quaternion prevRotation = u.player.transform.rotation;
-        clear_player(ref u);
-        u.player = Instantiate(playerPrefab);
-        u.routePosition = 0;
-        u.nowPosition = 0;
-        u.lastPosition = 0;
-        u.nextPos = Vector3.zero;
-        u.goal = false;
-
-        if (u.is_bind)
+        if (!u.goal)
         {
-            u.is_bind = false;
-            foreach (int bindedHorseIndex in u.BindedHorse)
+            Quaternion prevRotation = u.player.transform.rotation;
+            clear_player(ref u);
+            u.player = Instantiate(playerPrefab);
+            u.routePosition = 0;
+            u.nowPosition = 0;
+            u.lastPosition = 0;
+            u.nextPos = Vector3.zero;
+            u.goal = false;
+
+            if (u.is_bind)
             {
-                reset_player(ref users[enemy][bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                u.is_bind = false;
+                foreach (int bindedHorseIndex in u.BindedHorse)
+                {
+                    reset_player(ref users[enemy][bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                }
+                u.BindedHorse.Clear();
             }
-            u.BindedHorse.Clear();
+            u.player.transform.position = u.player_start_position;
         }
-        u.player.transform.position = u.player_start_position;
     }
     /*키보드 입력으로 말 선택
      1~4 : 말 선택
@@ -406,10 +409,23 @@ public class stone : MonoBehaviour
                 }
                 isBackdo = false;
             }
+            //NormalRoute
             else
             {
                 users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                MoveScript.NormalRoute(LeftStep); //일반이동
+                int route = MoveScript.NormalRoute(LeftStep);
+                if (route!=-1)
+                {
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = route;
+                    Debug.Log("routePosition : "+users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition);
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = route;
+                    Debug.Log("nowPosition : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
+                }
+                else
+                {
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition++;
+                    Debug.Log("nowPosition : "+users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
+                }
             }
 
 
@@ -421,8 +437,6 @@ public class stone : MonoBehaviour
             while (MoveScript.MoveToNextNode(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nextPos)) { yield return null; }
 
             LeftStep--;
-            users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition++;
-
 
             //상대방 말을 지나갈때
             //DefenseGameTrigger(LeftStep);
@@ -476,15 +490,18 @@ public class stone : MonoBehaviour
         {
             if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition == users[enemy][i].nowPosition)
             {
-                //미니 게임 없이 말을 먹을 때의 동작
-                Debug.Log("encounter");
-                chance += (users[enemy][i].BindedHorse.Count + 1);
-                reset_player(ref users[enemy][i], objectPrefab[enemy]);
-                Yut.text = chance + " 번의 기회를 추가 획득!";
-                UIScript.choose_step = 0;
-                isYutThrown = false;
-                //Fpsfight 진행
-                //SceneManager.LoadScene("Fpsfight");
+                if (!users[enemy][i].goal)
+                {
+                    //미니 게임 없이 말을 먹을 때의 동작
+                    Debug.Log("encounter");
+                    chance += (users[enemy][i].BindedHorse.Count + 1);
+                    reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    Yut.text = chance + " 번의 기회를 추가 획득!";
+                    UIScript.choose_step = 0;
+                    isYutThrown = false;
+                    //Fpsfight 진행
+                    //SceneManager.LoadScene("Fpsfight");
+                }
             }
         }
     }
