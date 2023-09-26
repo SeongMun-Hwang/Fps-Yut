@@ -22,6 +22,7 @@ public class MoveScript : MonoBehaviour
         turn = t;
         player_number = p_num;
         users = u;
+        Debug.Log("현재 턴 : " + turn + " 현재 말 : " + player_number);
     }
     void Start()
     {
@@ -29,38 +30,38 @@ public class MoveScript : MonoBehaviour
         player_number = YutGameManager.Instance.GetPlayerNumber();
     }
     //백도 이동 예외 처리
-    public void BackdoRoute()
+    public int BackdoRoute()
     {
-        if (users[turn][player_number].nowPosition == FIRST_FORK)
+        int position = users[turn][player_number].nowPosition;
+        int lastPosition = users[turn][player_number].lastPosition;
+        int result = -1;
+        switch (position)
         {
-            users[turn][player_number].routePosition = FIRST_CORNER;
-        }
-        else if (users[turn][player_number].nowPosition == SECOND_FORK)
-        {
-            users[turn][player_number].routePosition = SECOND_CORNER;
-        }
-        else if (users[turn][player_number].nowPosition == THIRD_CORNER && users[turn][player_number].lastPosition == CENTER_STRAIGHT)
-        {
-            users[turn][player_number].routePosition = CENTER_STRAIGHT;
-        }
-        else if (users[turn][player_number].nowPosition == 1)
-        {
-            users[turn][player_number].routePosition = GOAL;
-        }
-        else
-        {
-            users[turn][player_number].routePosition = users[turn][player_number].nowPosition - 1;
+            case FIRST_FORK:
+                result = FIRST_CORNER;
+                break;
+            case SECOND_FORK:
+                result = SECOND_CORNER;
+                break;
+            case THIRD_CORNER:
+                if (lastPosition == THIRD_CORNER) { result = CENTER_STRAIGHT; }
+                break;
+            case 1:
+                result = GOAL;
+                break;
+            default:
+                result = position + result;
+                break;
         }
         users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+        return result;
     }
     //정상 이동 예외처리
     public int NormalRoute()
     {
         int position = users[turn][player_number].nowPosition;
         int lastPosition = users[turn][player_number].lastPosition;
-
         int result = -1; // default value
-
         switch (position)
         {
             case FIRST_CORNER:
