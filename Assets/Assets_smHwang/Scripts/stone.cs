@@ -386,7 +386,7 @@ public class stone : MonoBehaviour
 
             //users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition;
             //백도 예외 처리
-            if (isBackdo == true)
+            if (isBackdo == true && UIScript.GetStep()==1)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -407,7 +407,8 @@ public class stone : MonoBehaviour
                 }
                 else
                 {
-                    MoveScript.BackdoRoute(); //백도이동
+                    int BackdoRoute = MoveScript.BackdoRoute(); //백도이동
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = BackdoRoute;
                 }
                 isBackdo = false;
             }
@@ -415,12 +416,12 @@ public class stone : MonoBehaviour
             else
             {
                 users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                int route = MoveScript.NormalRoute();
-                if (route!=-1)
+                int NormalRoute = MoveScript.NormalRoute();
+                if (NormalRoute!=-1)
                 {
-                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = route;
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = NormalRoute;
                     Debug.Log("routePosition : "+users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition);
-                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = route;
+                    users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = NormalRoute;
                     Debug.Log("nowPosition : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
                 }
                 else
