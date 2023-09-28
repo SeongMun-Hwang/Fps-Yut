@@ -11,6 +11,17 @@ class PacketHandler
 	{
 		S_RoomList roomListPacket = packet as S_RoomList;
 
+		// Scene에서 LobbyButton GameObject를 찾아서 사용
+		LobbyButton lobbyButton = GameObject.FindObjectOfType<LobbyButton>();
+
+		if (lobbyButton != null)
+		{
+			lobbyButton.DrawRoomButtons(roomListPacket);
+		}
+		else
+		{
+			Debug.LogError("LobbyButton not found in the scene.");
+		}
 	}
 
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
@@ -96,5 +107,3 @@ class PacketHandler
 		pc.RotInfo = rotationPacket.RotInfo;
 	}
 }
-
-
