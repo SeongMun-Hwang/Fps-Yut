@@ -8,6 +8,7 @@ public struct user
     public int routePosition;
     public int nowPosition;
     public int lastPosition;
+    public List<int> FinalPosition;
     public Vector3 nextPos;
     public Vector3 player_start_position;
     public bool goal;

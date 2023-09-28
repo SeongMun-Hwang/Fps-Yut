@@ -9,6 +9,7 @@ public class UI : MonoBehaviour
 {
     //스크립트
     public stone stone;
+    public MoveScript MoveScript;
     //텍스트
     public TextMeshProUGUI Goal_Status;
     public TextMeshProUGUI Yut;
@@ -157,7 +158,8 @@ public class UI : MonoBehaviour
     }
     public void choose_steps(int buttonIndex)
     {
-        if (buttonIndex >= 0 && buttonIndex < steps.Count && steps[buttonIndex] != null)
+        user[][] users = YutGameManager.Instance.GetUsers();
+        if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
             Debug.Log(buttonIndex);
@@ -165,6 +167,8 @@ public class UI : MonoBehaviour
             {
                 selectedButtonIndex = buttonIndex;
                 UpdateButtonColors();
+                int finalDestination = CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], steps[choose_step], _isBackdo);
+                Debug.Log("finalposition : " + finalDestination);
             }
         }
     }
@@ -260,5 +264,40 @@ public class UI : MonoBehaviour
     public int GetStep()
     {
         return steps[choose_step];
+    }
+
+    int CalculateFinalPosition(user user, int stepsLeft, bool isBackdo)
+    {
+        int finalPosition = user.nowPosition;
+
+        while (stepsLeft > 0)
+        {
+            // 백도 예외 처리
+            if (isBackdo && stepsLeft == 1)
+            {
+                finalPosition = MoveScript.BackdoRoute();
+                isBackdo = false;
+            }
+            else
+            {
+                finalPosition++;
+                int NormalRoute = MoveScript.NormalRoute();
+
+                if (NormalRoute != -1)
+                {
+                    finalPosition = NormalRoute;
+                }
+            }
+
+            // 경로를 벗어나는지 확인
+            if (finalPosition >= stone.currentRoute.childNodeList.Count)
+            {
+                finalPosition = stone.currentRoute.childNodeList.Count - 1; // 경로의 끝
+            }
+
+            stepsLeft--;
+        }
+        Debug.Log("FinalPosition : " + finalPosition);
+        return finalPosition;
     }
 }

@@ -3205,6 +3205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stone: {fileID: 658787159}
+  MoveScript: {fileID: 658787161}
   Goal_Status: {fileID: 1618175816}
   Yut: {fileID: 1776707962}
   timerText: {fileID: 1487471723}
