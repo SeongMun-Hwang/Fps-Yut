@@ -31,7 +31,9 @@ public class UI : MonoBehaviour
     public List<int> steps = new List<int>();
     public int choose_step = 0;
     private bool _isBackdo;
-
+    //최종위치 표시
+    public int finalDestination;
+    public GameObject instance;
     private void Start()
     {
         for (int i = 0; i < steps_button.Length; i++)
@@ -58,6 +60,10 @@ public class UI : MonoBehaviour
             {
                 Yut.text = "얼마나 이동할 지 선택하세요!";
             }
+        }
+        if (stone.isMoving)
+        {
+            Destroy(instance);
         }
     }
     public void StartText(int turn)
@@ -167,8 +173,10 @@ public class UI : MonoBehaviour
             {
                 selectedButtonIndex = buttonIndex;
                 UpdateButtonColors();
-                int finalDestination = CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], steps[choose_step], _isBackdo);
+                finalDestination = CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], steps[choose_step], _isBackdo);
                 Debug.Log("finalposition : " + finalDestination);
+                Destroy(instance); //이전 위치 제거
+                if (!stone.isMoving) { ShowFinalDestination(); }
             }
         }
     }
@@ -299,5 +307,32 @@ public class UI : MonoBehaviour
         }
         Debug.Log("FinalPosition : " + finalPosition);
         return finalPosition;
+    }
+    void ShowFinalDestination()
+    {
+        int turn = YutGameManager.Instance.GetTurn(); // Assuming you have a way to get the current turn.
+
+        Transform targetNode = stone.currentRoute.childNodeList[finalDestination];
+        Vector3 targetPosition = targetNode.position;
+
+        // y 좌표 높이기
+        targetPosition.y += 0.5f;
+
+        instance = Instantiate(stone.objectPrefab[turn], targetPosition, Quaternion.identity);
+        //투명도 수정
+        Renderer rend = instance.GetComponent<Renderer>();
+        if (rend != null)
+        {
+            if (turn == 0)
+            {
+                Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
+                rend.material.color = newColor;
+            }
+            else if (turn == 1)
+            {
+                Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
+                rend.material.color = newColor;
+            }
+        }
     }
 }
