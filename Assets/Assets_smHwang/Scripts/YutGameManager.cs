@@ -73,6 +73,10 @@ public class YutGameManager : MonoBehaviour
     {
         return users;
     }
+    public user GetNowUser()
+    {
+        return users[turn][player_number];
+    }
     public void SetTurn(int newTurn)
     {
         turn = newTurn;

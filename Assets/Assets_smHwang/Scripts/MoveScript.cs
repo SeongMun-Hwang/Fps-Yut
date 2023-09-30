@@ -56,10 +56,10 @@ public class MoveScript : MonoBehaviour
         return result;
     }
     //정상 이동 예외처리
-    public int NormalRoute()
+    public int NormalRoute(int position,int lastPosition)
     {
-        int position = users[turn][player_number].nowPosition;
-        int lastPosition = users[turn][player_number].lastPosition;
+        //int position = users[turn][player_number].nowPosition;
+        //int lastPosition = users[turn][player_number].lastPosition;
         int result = -1; // default value
         switch (position)
         {

@@ -272,16 +272,17 @@ public class UI : MonoBehaviour
         return steps[choose_step];
     }
 
-    public void CalculateFinalPosition(user user, bool isBackdo)
+    public void CalculateFinalPosition(bool isBackdo)
     {
+        user user = YutGameManager.Instance.GetNowUser();
         foreach (var stepsLeft in steps)
         {
-            int tempStepsLeft = stepsLeft;  // 현재 반복에서 사용할 stepsLeft 값
+            int tempStepsLeft = stepsLeft;
             int finalPosition = user.nowPosition;
 
             while (tempStepsLeft > 0)
             {
-                // 백도 예외 처리
+                int NormalRoute;
                 if (isBackdo && tempStepsLeft == 1)
                 {
                     finalPosition = MoveScript.BackdoRoute();
@@ -289,22 +290,25 @@ public class UI : MonoBehaviour
                 }
                 else
                 {
-                    finalPosition++;
-                    int NormalRoute = MoveScript.NormalRoute();
-
+                    NormalRoute = MoveScript.NormalRoute(user.nowPosition,finalPosition);
+                    Debug.Log(NormalRoute);
                     if (NormalRoute != -1)
                     {
                         finalPosition = NormalRoute;
+                        tempStepsLeft--;
+                    }
+                    else if(NormalRoute==-1)
+                    {
+                        finalPosition++;
+                        tempStepsLeft--;
                     }
                 }
-
                 // 경로를 벗어나는지 확인
                 if (finalPosition >= stone.currentRoute.childNodeList.Count)
                 {
                     finalPosition = stone.currentRoute.childNodeList.Count - 1; // 경로의 끝
                 }
 
-                tempStepsLeft--;
             }
             user.FinalPosition.Add(finalPosition);
         }
@@ -313,10 +317,9 @@ public class UI : MonoBehaviour
     public void ShowFinalDestination()
     {
         int turn = YutGameManager.Instance.GetTurn();
-        int player_number = YutGameManager.Instance.GetPlayerNumber();
-        user[][] users = YutGameManager.Instance.GetUsers();
+        user users = YutGameManager.Instance.GetNowUser();
 
-        foreach (var destination in users[turn][player_number].FinalPosition)
+        foreach (var destination in users.FinalPosition)
         {
             Transform targetNode = stone.currentRoute.childNodeList[destination];
             Vector3 targetPosition = targetNode.position;

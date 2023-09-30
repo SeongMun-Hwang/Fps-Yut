@@ -250,9 +250,10 @@ public class stone : MonoBehaviour
         if (isMoving == false) {
             if (isYutThrown)
             {
-                users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].FinalPosition.Clear();
-                UIScript.CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], isBackdo);
-            }     
+                user user = YutGameManager.Instance.GetNowUser();
+                user.FinalPosition.Clear();
+                UIScript.CalculateFinalPosition(isBackdo);
+            }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 UIScript.DestoryPredictedPosition();
@@ -422,8 +423,9 @@ public class stone : MonoBehaviour
             //NormalRoute
             else
             {
-                users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                int NormalRoute = MoveScript.NormalRoute();
+                user user = YutGameManager.Instance.GetNowUser();
+                user.routePosition++;
+                int NormalRoute = MoveScript.NormalRoute(user.nowPosition,user.lastPosition);
                 if (NormalRoute!=-1)
                 {
                     users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = NormalRoute;
@@ -469,6 +471,7 @@ public class stone : MonoBehaviour
         Debug.Log("move all");
         users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition;
         Debug.Log(YutGameManager.Instance.GetTurn() + "의 턴 " + YutGameManager.Instance.GetPlayerNumber() + "번째 말의 현재 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition + " 이전 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition);
+        users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition;
         BindHorse();
         FpsfightTrigger();
         if (bindedHorseIndex != -1)
