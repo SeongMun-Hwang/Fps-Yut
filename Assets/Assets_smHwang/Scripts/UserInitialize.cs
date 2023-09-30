@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct user
+public class user
 {
     public GameObject player;
     public int routePosition;

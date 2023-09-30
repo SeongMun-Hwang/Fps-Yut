@@ -32,8 +32,9 @@ public class UI : MonoBehaviour
     public int choose_step = 0;
     private bool _isBackdo;
     //최종위치 표시
-    public int finalDestination;
     public GameObject instance;
+    List<GameObject> DestiantionObject = new List<GameObject>();
+
     private void Start()
     {
         for (int i = 0; i < steps_button.Length; i++)
@@ -61,9 +62,10 @@ public class UI : MonoBehaviour
                 Yut.text = "얼마나 이동할 지 선택하세요!";
             }
         }
+        //이동하면 모든 예상 위치 오브젝트 파괴
         if (stone.isMoving)
         {
-            Destroy(instance);
+            DestoryPredictedPosition();
         }
     }
     public void StartText(int turn)
@@ -173,10 +175,6 @@ public class UI : MonoBehaviour
             {
                 selectedButtonIndex = buttonIndex;
                 UpdateButtonColors();
-                finalDestination = CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], steps[choose_step], _isBackdo);
-                Debug.Log("finalposition : " + finalDestination);
-                Destroy(instance); //이전 위치 제거
-                if (!stone.isMoving) { ShowFinalDestination(); }
             }
         }
     }
@@ -274,65 +272,81 @@ public class UI : MonoBehaviour
         return steps[choose_step];
     }
 
-    int CalculateFinalPosition(user user, int stepsLeft, bool isBackdo)
+    public void CalculateFinalPosition(user user, bool isBackdo)
     {
-        int finalPosition = user.nowPosition;
-
-        while (stepsLeft > 0)
+        foreach (var stepsLeft in steps)
         {
-            // 백도 예외 처리
-            if (isBackdo && stepsLeft == 1)
-            {
-                finalPosition = MoveScript.BackdoRoute();
-                isBackdo = false;
-            }
-            else
-            {
-                finalPosition++;
-                int NormalRoute = MoveScript.NormalRoute();
+            int tempStepsLeft = stepsLeft;  // 현재 반복에서 사용할 stepsLeft 값
+            int finalPosition = user.nowPosition;
 
-                if (NormalRoute != -1)
+            while (tempStepsLeft > 0)
+            {
+                // 백도 예외 처리
+                if (isBackdo && tempStepsLeft == 1)
                 {
-                    finalPosition = NormalRoute;
+                    finalPosition = MoveScript.BackdoRoute();
+                    isBackdo = false;
+                }
+                else
+                {
+                    finalPosition++;
+                    int NormalRoute = MoveScript.NormalRoute();
+
+                    if (NormalRoute != -1)
+                    {
+                        finalPosition = NormalRoute;
+                    }
+                }
+
+                // 경로를 벗어나는지 확인
+                if (finalPosition >= stone.currentRoute.childNodeList.Count)
+                {
+                    finalPosition = stone.currentRoute.childNodeList.Count - 1; // 경로의 끝
+                }
+
+                tempStepsLeft--;
+            }
+            user.FinalPosition.Add(finalPosition);
+        }
+    }
+
+    public void ShowFinalDestination()
+    {
+        int turn = YutGameManager.Instance.GetTurn();
+        int player_number = YutGameManager.Instance.GetPlayerNumber();
+        user[][] users = YutGameManager.Instance.GetUsers();
+
+        foreach (var destination in users[turn][player_number].FinalPosition)
+        {
+            Transform targetNode = stone.currentRoute.childNodeList[destination];
+            Vector3 targetPosition = targetNode.position;
+
+            targetPosition.y += 0.5f;
+
+            GameObject instantiatedObj = Instantiate(stone.objectPrefab[turn], targetPosition, Quaternion.identity);
+            DestiantionObject.Add(instantiatedObj);
+            Renderer rend = instantiatedObj.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                if (turn == 0)
+                {
+                    Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
+                    rend.material.color = newColor;
+                }
+                else if (turn == 1)
+                {
+                    Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
+                    rend.material.color = newColor;
                 }
             }
-
-            // 경로를 벗어나는지 확인
-            if (finalPosition >= stone.currentRoute.childNodeList.Count)
-            {
-                finalPosition = stone.currentRoute.childNodeList.Count - 1; // 경로의 끝
-            }
-
-            stepsLeft--;
         }
-        Debug.Log("FinalPosition : " + finalPosition);
-        return finalPosition;
     }
-    void ShowFinalDestination()
+    public void DestoryPredictedPosition()
     {
-        int turn = YutGameManager.Instance.GetTurn(); // Assuming you have a way to get the current turn.
-
-        Transform targetNode = stone.currentRoute.childNodeList[finalDestination];
-        Vector3 targetPosition = targetNode.position;
-
-        // y 좌표 높이기
-        targetPosition.y += 0.5f;
-
-        instance = Instantiate(stone.objectPrefab[turn], targetPosition, Quaternion.identity);
-        //투명도 수정
-        Renderer rend = instance.GetComponent<Renderer>();
-        if (rend != null)
+        foreach (var obj in DestiantionObject)
         {
-            if (turn == 0)
-            {
-                Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
-                rend.material.color = newColor;
-            }
-            else if (turn == 1)
-            {
-                Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
-                rend.material.color = newColor;
-            }
+            Destroy(obj);
         }
+        DestiantionObject.Clear();
     }
 }

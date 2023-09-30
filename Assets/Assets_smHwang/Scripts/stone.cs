@@ -247,28 +247,36 @@ public class stone : MonoBehaviour
     space : 윷던지기*/
     void choose_Player()
     {       
-        if (isMoving == false)
-        {
+        if (isMoving == false) {
+            if (isYutThrown)
+            {
+                users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].FinalPosition.Clear();
+                UIScript.CalculateFinalPosition(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()], isBackdo);
+            }     
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
+                UIScript.DestoryPredictedPosition();
                 one();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
+                UIScript.DestoryPredictedPosition();
                 two();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
+                UIScript.DestoryPredictedPosition();
                 three();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
+                UIScript.DestoryPredictedPosition();
                 four();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
@@ -282,7 +290,7 @@ public class stone : MonoBehaviour
             {
                 throwYut();
             }
-            
+            UIScript.ShowFinalDestination();
         }
     }
     //버튼에 연결돼있음 날리면 안됨
