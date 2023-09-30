@@ -291,7 +291,6 @@ public class UI : MonoBehaviour
                 else
                 {
                     NormalRoute = MoveScript.NormalRoute(user.nowPosition,finalPosition);
-                    Debug.Log(NormalRoute);
                     if (NormalRoute != -1)
                     {
                         finalPosition = NormalRoute;
@@ -346,6 +345,7 @@ public class UI : MonoBehaviour
     }
     public void DestoryPredictedPosition()
     {
+        Debug.Log("destroy destination");
         foreach (var obj in DestiantionObject)
         {
             Destroy(obj);
