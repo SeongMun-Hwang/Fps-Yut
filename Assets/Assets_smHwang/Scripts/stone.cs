@@ -32,7 +32,7 @@ public class stone : MonoBehaviour
     private bool chooseBindCalled = false;
     public bool isFight = false;
     public bool isYutThrown = false;
-
+    bool shownDestination = false;
     int chance = 0;
     int sum = 0;
     int enemy;
@@ -46,7 +46,7 @@ public class stone : MonoBehaviour
     {
         users = YutGameManager.Instance.GetUsers();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
-        choose_Player();
+        if (isYutThrown) { choose_Player(); }
         AutoSelectClosestPlayerInArray();
         UIScript.GoalCounter(users);
         UIScript.timer();
@@ -102,6 +102,8 @@ public class stone : MonoBehaviour
             yutSound[RandomSound].mute = false;
             yutSound[RandomSound].Play();
         }
+        UIScript.CalculateFinalPosition(isBackdo);
+        UIScript.ShowFinalDestination();
     }
     //윷 던지기 함수
     private async void UpdateThrowResult(int value)
@@ -109,7 +111,7 @@ public class stone : MonoBehaviour
         if (!isYutThrown)
         {
             Debug.Log("before : " + isBackdo);
-            UIScript.SetSteps(value,isBackdo);
+            UIScript.SetSteps(value, isBackdo);
             if (value == 4 || value == 5)
             {
                 await DelayAsync(0.5f);
@@ -138,7 +140,7 @@ public class stone : MonoBehaviour
         Debug.Log("윷 지정 : 백도");
         isBackdo = true;
         UpdateThrowResult(1);
-        Debug.Log("stone : "+isBackdo);
+        Debug.Log("stone : " + isBackdo);
         if (chance == 0)
         {
             isYutThrown = true;
@@ -246,29 +248,43 @@ public class stone : MonoBehaviour
      1~4 : 말 선택
     space : 윷던지기*/
     void choose_Player()
-    {       
+    {
         if (isMoving == false)
         {
+            if (isYutThrown)
+            {
+                user user = YutGameManager.Instance.GetNowUser();
+                user.FinalPosition.Clear();
+                UIScript.CalculateFinalPosition(isBackdo);
+            }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
+                UIScript.DestoryPredictedPosition();
+                shownDestination = false;
                 one();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
+                UIScript.DestoryPredictedPosition();
+                shownDestination = false;
                 two();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
+                UIScript.DestoryPredictedPosition();
+                shownDestination = false;
                 three();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
+                UIScript.DestoryPredictedPosition();
+                shownDestination = false;
                 four();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
                 Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
@@ -282,7 +298,12 @@ public class stone : MonoBehaviour
             {
                 throwYut();
             }
-            
+            if (!shownDestination)
+            {
+                UIScript.CalculateFinalPosition(isBackdo);
+                UIScript.ShowFinalDestination();
+                shownDestination = true;
+            }
         }
     }
     //버튼에 연결돼있음 날리면 안됨
@@ -385,7 +406,7 @@ public class stone : MonoBehaviour
 
             //users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition;
             //백도 예외 처리
-            if (isBackdo == true && UIScript.GetStep()==1)
+            if (isBackdo == true && UIScript.GetStep() == 1)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -414,19 +435,20 @@ public class stone : MonoBehaviour
             //NormalRoute
             else
             {
-                users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition++;
-                int NormalRoute = MoveScript.NormalRoute();
-                if (NormalRoute!=-1)
+                user user = YutGameManager.Instance.GetNowUser();
+                user.routePosition++;
+                int NormalRoute = MoveScript.NormalRoute(user.nowPosition, user.lastPosition);
+                if (NormalRoute != -1)
                 {
                     users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition = NormalRoute;
-                    Debug.Log("routePosition : "+users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition);
+                    Debug.Log("routePosition : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition);
                     users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = NormalRoute;
                     Debug.Log("nowPosition : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
                 }
                 else
                 {
                     users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition++;
-                    Debug.Log("nowPosition : "+users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
+                    Debug.Log("nowPosition : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
                 }
             }
 
@@ -461,6 +483,7 @@ public class stone : MonoBehaviour
         Debug.Log("move all");
         users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition;
         Debug.Log(YutGameManager.Instance.GetTurn() + "의 턴 " + YutGameManager.Instance.GetPlayerNumber() + "번째 말의 현재 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition + " 이전 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition);
+        users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition;
         BindHorse();
         FpsfightTrigger();
         if (bindedHorseIndex != -1)
@@ -471,17 +494,12 @@ public class stone : MonoBehaviour
         SynchronizeBindedHorses(YutGameManager.Instance.GetPlayerNumber());
         //턴 변경전 승자 체크
         check_Winner();
+
         if (chance == 0 && UIScript.steps.Count() == 0)
         {
             ChangeTurn();
         }
         else if (chance > 0) { chance--; }
-        //턴 변경 없이 이동 테스트 시
-        //if (steps.Count == 0)
-        //{
-        //    isYutThrown = false;
-        //    choose_step = 0;
-        //}
     }
 
     //Fps Fight 트리거
@@ -521,7 +539,7 @@ public class stone : MonoBehaviour
                 }
             }
         }
-    } 
+    }
 
     public void ChangeTurn()
     {

@@ -9,6 +9,7 @@ public class UI : MonoBehaviour
 {
     //스크립트
     public stone stone;
+    public MoveScript MoveScript;
     //텍스트
     public TextMeshProUGUI Goal_Status;
     public TextMeshProUGUI Yut;
@@ -30,6 +31,9 @@ public class UI : MonoBehaviour
     public List<int> steps = new List<int>();
     public int choose_step = 0;
     private bool _isBackdo;
+    //최종위치 표시
+    public GameObject instance;
+    List<GameObject> DestiantionObject = new List<GameObject>();
 
     private void Start()
     {
@@ -57,6 +61,11 @@ public class UI : MonoBehaviour
             {
                 Yut.text = "얼마나 이동할 지 선택하세요!";
             }
+        }
+        //이동하면 모든 예상 위치 오브젝트 파괴
+        if (stone.isMoving)
+        {
+            DestoryPredictedPosition();
         }
     }
     public void StartText(int turn)
@@ -157,7 +166,8 @@ public class UI : MonoBehaviour
     }
     public void choose_steps(int buttonIndex)
     {
-        if (buttonIndex >= 0 && buttonIndex < steps.Count && steps[buttonIndex] != null)
+        user[][] users = YutGameManager.Instance.GetUsers();
+        if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
             Debug.Log(buttonIndex);
@@ -260,5 +270,86 @@ public class UI : MonoBehaviour
     public int GetStep()
     {
         return steps[choose_step];
+    }
+
+    public void CalculateFinalPosition(bool isBackdo)
+    {
+        user user = YutGameManager.Instance.GetNowUser();
+        foreach (var stepsLeft in steps)
+        {
+            int tempStepsLeft = stepsLeft;
+            int finalPosition = user.nowPosition;
+
+            while (tempStepsLeft > 0)
+            {
+                int NormalRoute;
+                if (isBackdo && tempStepsLeft == 1)
+                {
+                    finalPosition = MoveScript.BackdoRoute();
+                    isBackdo = false;
+                }
+                else
+                {
+                    NormalRoute = MoveScript.NormalRoute(user.nowPosition,finalPosition);
+                    if (NormalRoute != -1)
+                    {
+                        finalPosition = NormalRoute;
+                        tempStepsLeft--;
+                    }
+                    else if(NormalRoute==-1)
+                    {
+                        finalPosition++;
+                        tempStepsLeft--;
+                    }
+                }
+                // 경로를 벗어나는지 확인
+                if (finalPosition >= stone.currentRoute.childNodeList.Count)
+                {
+                    finalPosition = stone.currentRoute.childNodeList.Count - 1; // 경로의 끝
+                }
+
+            }
+            user.FinalPosition.Add(finalPosition);
+        }
+    }
+
+    public void ShowFinalDestination()
+    {
+        int turn = YutGameManager.Instance.GetTurn();
+        user users = YutGameManager.Instance.GetNowUser();
+
+        foreach (var destination in users.FinalPosition)
+        {
+            Transform targetNode = stone.currentRoute.childNodeList[destination];
+            Vector3 targetPosition = targetNode.position;
+
+            targetPosition.y += 0.5f;
+
+            GameObject instantiatedObj = Instantiate(stone.objectPrefab[turn], targetPosition, Quaternion.identity);
+            DestiantionObject.Add(instantiatedObj);
+            Renderer rend = instantiatedObj.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                if (turn == 0)
+                {
+                    Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
+                    rend.material.color = newColor;
+                }
+                else if (turn == 1)
+                {
+                    Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
+                    rend.material.color = newColor;
+                }
+            }
+        }
+    }
+    public void DestoryPredictedPosition()
+    {
+        Debug.Log("destroy destination");
+        foreach (var obj in DestiantionObject)
+        {
+            Destroy(obj);
+        }
+        DestiantionObject.Clear();
     }
 }

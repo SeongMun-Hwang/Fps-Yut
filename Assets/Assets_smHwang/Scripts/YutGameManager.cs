@@ -48,6 +48,7 @@ public class YutGameManager : MonoBehaviour
                 users[j][i].player_start_position = users[j][i].player.transform.position;
                 users[j][i].is_bind = false;
                 users[j][i].BindedHorse = new List<int>();
+                users[j][i].FinalPosition = new List<int>();
             }
         }
     }
@@ -71,6 +72,10 @@ public class YutGameManager : MonoBehaviour
     public user[][] GetUsers()
     {
         return users;
+    }
+    public user GetNowUser()
+    {
+        return users[turn][player_number];
     }
     public void SetTurn(int newTurn)
     {
