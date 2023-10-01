@@ -33,7 +33,7 @@ public class UI : MonoBehaviour
     private bool _isBackdo;
     //최종위치 표시
     public GameObject instance;
-    List<GameObject> DestiantionObject = new List<GameObject>();
+    public List<GameObject> DestiantionObject = new List<GameObject>();
 
     private void Start()
     {
@@ -65,7 +65,7 @@ public class UI : MonoBehaviour
         //이동하면 모든 예상 위치 오브젝트 파괴
         if (stone.isMoving)
         {
-            DestoryPredictedPosition();
+            DestroyDestination();
         }
     }
     public void StartText(int turn)
@@ -272,7 +272,7 @@ public class UI : MonoBehaviour
         return steps[choose_step];
     }
 
-    public void CalculateFinalPosition(bool isBackdo)
+    public void CalculateDestination(bool isBackdo)
     {
         user user = YutGameManager.Instance.GetNowUser();
         foreach (var stepsLeft in steps)
@@ -313,7 +313,7 @@ public class UI : MonoBehaviour
         }
     }
 
-    public void ShowFinalDestination()
+    public void ShowDestination()
     {
         int turn = YutGameManager.Instance.GetTurn();
         user users = YutGameManager.Instance.GetNowUser();
@@ -343,7 +343,7 @@ public class UI : MonoBehaviour
             }
         }
     }
-    public void DestoryPredictedPosition()
+    public void DestroyDestination()
     {
         Debug.Log("destroy destination");
         foreach (var obj in DestiantionObject)
@@ -351,5 +351,9 @@ public class UI : MonoBehaviour
             Destroy(obj);
         }
         DestiantionObject.Clear();
+    }
+    public List<GameObject> GetGameObjects()
+    {
+        return DestiantionObject;
     }
 }

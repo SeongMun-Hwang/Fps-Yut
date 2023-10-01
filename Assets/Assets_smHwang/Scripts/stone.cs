@@ -102,8 +102,8 @@ public class stone : MonoBehaviour
             yutSound[RandomSound].mute = false;
             yutSound[RandomSound].Play();
         }
-        UIScript.CalculateFinalPosition(isBackdo);
-        UIScript.ShowFinalDestination();
+        UIScript.CalculateDestination(isBackdo);
+        UIScript.ShowDestination();
     }
     //윷 던지기 함수
     private async void UpdateThrowResult(int value)
@@ -255,11 +255,11 @@ public class stone : MonoBehaviour
             {
                 user user = YutGameManager.Instance.GetNowUser();
                 user.FinalPosition.Clear();
-                UIScript.CalculateFinalPosition(isBackdo);
+                UIScript.CalculateDestination(isBackdo);
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                UIScript.DestoryPredictedPosition();
+                UIScript.DestroyDestination();
                 shownDestination = false;
                 one();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
@@ -267,7 +267,7 @@ public class stone : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                UIScript.DestoryPredictedPosition();
+                UIScript.DestroyDestination();
                 shownDestination = false;
                 two();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
@@ -275,7 +275,7 @@ public class stone : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                UIScript.DestoryPredictedPosition();
+                UIScript.DestroyDestination();
                 shownDestination = false;
                 three();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
@@ -283,7 +283,7 @@ public class stone : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                UIScript.DestoryPredictedPosition();
+                UIScript.DestroyDestination();
                 shownDestination = false;
                 four();
                 Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
@@ -300,8 +300,8 @@ public class stone : MonoBehaviour
             }
             if (!shownDestination)
             {
-                UIScript.CalculateFinalPosition(isBackdo);
-                UIScript.ShowFinalDestination();
+                UIScript.CalculateDestination(isBackdo);
+                UIScript.ShowDestination();
                 shownDestination = true;
             }
         }
@@ -474,7 +474,6 @@ public class stone : MonoBehaviour
         }
 
         UIScript.steps.RemoveAt(UIScript.choose_step);
-
         UIScript.steps_button_Text[UIScript.choose_step].text = "";
         UIScript.UpdateYutChoice();
 
@@ -500,6 +499,7 @@ public class stone : MonoBehaviour
             ChangeTurn();
         }
         else if (chance > 0) { chance--; }
+        UIScript.DestroyDestination();
     }
 
     //Fps Fight 트리거
