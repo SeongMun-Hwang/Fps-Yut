@@ -63,16 +63,30 @@ public class LobbyButton : MonoBehaviour
             return;
         }
 
-        foreach (RoomInfo roomInfo in roomInfos.RoomInfos)
+        for (int i = 0; i < roomInfos.RoomInfos.Count; i++)
         {
+            Debug.Log("id : " + roomInfos.RoomInfos[i].RoomId);
+            Debug.Log("name : " + roomInfos.RoomInfos[i].Roomname);
+        }
+
+
+        for (int i = 0; i < roomInfos.RoomInfos.Count; i++)
+        {
+            RoomInfo room = roomInfos.RoomInfos[i];
             GameObject buttonGO = Instantiate(buttonPrefab, buttonParent);
             Button button = buttonGO.GetComponent<Button>();
 
-            button.GetComponentInChildren<TextMeshProUGUI>().text = roomInfo.Roomname;
+            button.GetComponentInChildren<TextMeshProUGUI>().text = room.Roomname;
 
-            button.onClick.AddListener(() => OnButtonClick(roomInfo)); // 클릭 이벤트 리스너 등록
+            // 클릭 이벤트 리스너 등록
+            button.onClick.AddListener(() =>
+            {
+                EnterRoomButton(room);
+            });
+
             buttons.Add(buttonGO);
         }
+
     }
 
     // 생성된 버튼들을 삭제하는 함수
@@ -87,10 +101,14 @@ public class LobbyButton : MonoBehaviour
     }
 
     // 버튼이 클릭되었을 때 호출되는 함수
-    private void OnButtonClick(RoomInfo roomInfo)
+    private void EnterRoomButton(RoomInfo roomInfo)
     {
         // 클릭된 버튼에 대한 동작 구현
         Debug.Log("Clicked on room: " + roomInfo.Roomname);
         Debug.Log("Room Id : " + roomInfo.RoomId);
+
+        //C_EnterRoom enterroomPacket = new C_EnterRoom();
+        //enterroomPacket.RoomId = roomInfo.RoomId;
+        //Managers.Network.Send(enterroomPacket);
     }
 }

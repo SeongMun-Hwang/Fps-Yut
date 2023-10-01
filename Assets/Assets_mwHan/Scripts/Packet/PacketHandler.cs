@@ -11,8 +11,15 @@ class PacketHandler
 	{
 		S_RoomList roomListPacket = packet as S_RoomList;
 
+		for (int i = 0; i < roomListPacket.RoomInfos.Count; i++)
+		{
+			int val = i;
+			Debug.Log("id : " + roomListPacket.RoomInfos[val].RoomId);
+			Debug.Log("name : " + roomListPacket.RoomInfos[val].Roomname);
+		}
+
 		// Scene에서 LobbyButton GameObject를 찾아서 사용
-		LobbyButton lobbyButton = GameObject.FindObjectOfType<LobbyButton>();
+		LobbyButton lobbyButton = Object.FindObjectOfType<LobbyButton>();
 
 		if (lobbyButton != null)
 		{
