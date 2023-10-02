@@ -34,16 +34,24 @@ public class UI : MonoBehaviour
     //최종위치 표시
     public GameObject instance;
     public List<GameObject> DestiantionObject = new List<GameObject>();
-  
-    private void SetUI()
+    //턴 변경 시 액션
+    private void ChangeTurnUI()
     {
         choose_step = 0;
         timeLeft = 60.0f;
         clear_stepsButton();
     }
+    //목적지 보여주기 액션
+    private void DestinationUI()
+    {
+        DestroyDestination();
+        CalculateDestination(stone.GetBackdo());
+        ShowDestination();
+    }
     private void Start()
     {
-        stone.OnChangeTurnAction = SetUI;
+        stone.OnChangeTurnAction = ChangeTurnUI;
+        stone.ShowDestination = DestinationUI;
         for (int i = 0; i < steps_button.Length; i++)
         {
             int index = i; // 이유: 클로저 때문에 바깥 변수를 직접 쓰면 마지막 값이 고정될 수 있음
@@ -357,10 +365,9 @@ public class UI : MonoBehaviour
         {
             Destroy(obj);
         }
+        user user = YutGameManager.Instance.GetNowUser();
+        user.FinalPosition.Clear();
         DestiantionObject.Clear();
-    }
-    public List<GameObject> GetGameObjects()
-    {
-        return DestiantionObject;
+        Debug.Log("list length : " + DestiantionObject.Count);
     }
 }
