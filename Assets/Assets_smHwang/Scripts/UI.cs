@@ -34,9 +34,16 @@ public class UI : MonoBehaviour
     //최종위치 표시
     public GameObject instance;
     public List<GameObject> DestiantionObject = new List<GameObject>();
-
+  
+    private void SetUI()
+    {
+        choose_step = 0;
+        timeLeft = 60.0f;
+        clear_stepsButton();
+    }
     private void Start()
     {
+        stone.OnChangeTurnAction = SetUI;
         for (int i = 0; i < steps_button.Length; i++)
         {
             int index = i; // 이유: 클로저 때문에 바깥 변수를 직접 쓰면 마지막 값이 고정될 수 있음

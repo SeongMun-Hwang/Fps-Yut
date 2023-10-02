@@ -368,10 +368,6 @@ public class stone : MonoBehaviour
             }
         }
     }
-
-
-
-    //말 버튼 초기화
     IEnumerator Move(int LeftStep)
     {
         users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].lastPosition = users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition;
@@ -540,27 +536,22 @@ public class stone : MonoBehaviour
             }
         }
     }
-
+    public Action OnChangeTurnAction;
     public void ChangeTurn()
     {
         if (YutGameManager.Instance.GetTurn() == 0)
         {
             YutGameManager.Instance.SetTurn(1);
-            UIScript.choose_step = 0;
             isYutThrown = false;
-            UIScript.clear_stepsButton();
-            UIScript.timeLeft = 60.0f;
         }
         else if (YutGameManager.Instance.GetTurn() == 1)
         {
             YutGameManager.Instance.SetTurn(0);
-            UIScript.choose_step = 0;
             isYutThrown = false;
-            UIScript.clear_stepsButton();
-            UIScript.timeLeft = 60.0f;
         }
         YutGameManager.Instance.SetPlayerNumber(0);
         Yut.text = "player " + (YutGameManager.Instance.GetTurn() + 1) + " turn!";
+        OnChangeTurnAction.Invoke();     
     }
     private void BindHorse()
     {
