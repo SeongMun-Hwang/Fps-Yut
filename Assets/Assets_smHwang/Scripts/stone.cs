@@ -14,7 +14,11 @@ public class stone : MonoBehaviour
     public UI UIScript;
     public MoveScript MoveScript;
     public setting SettingScript;
+    /**************액션**************/
+    public Action OnChangeTurnAction;
+    public Action ShowDestination;
     /*******************************/
+
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
@@ -102,8 +106,11 @@ public class stone : MonoBehaviour
             yutSound[RandomSound].mute = false;
             yutSound[RandomSound].Play();
         }
-        UIScript.CalculateDestination(isBackdo);
-        UIScript.ShowDestination();
+        ShowDestination.Invoke();
+    }
+    public bool GetBackdo()
+    {
+        return isBackdo;
     }
     //윷 던지기 함수
     private async void UpdateThrowResult(int value)
@@ -495,7 +502,7 @@ public class stone : MonoBehaviour
             ChangeTurn();
         }
         else if (chance > 0) { chance--; }
-        UIScript.DestroyDestination();
+        ShowDestination.Invoke();
     }
 
     //Fps Fight 트리거
@@ -536,7 +543,6 @@ public class stone : MonoBehaviour
             }
         }
     }
-    public Action OnChangeTurnAction;
     public void ChangeTurn()
     {
         if (YutGameManager.Instance.GetTurn() == 0)
