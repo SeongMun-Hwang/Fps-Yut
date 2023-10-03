@@ -25,6 +25,8 @@ public class ChangeScene : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F4))
             SceneManager.LoadScene("Defense_Game");
         if (Input.GetKeyDown(KeyCode.F5))
-            SceneManager.LoadScene("setting");
+            SceneManager.LoadScene("setting");        
+        if (Input.GetKeyDown(KeyCode.F6))
+            SceneManager.LoadScene("roomscene");
     }
 }
