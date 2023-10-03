@@ -191,6 +191,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 previousPosition;
     private Quaternion previousRotation;
 
+    private bool ismoving = false;
+    private bool isrotating = false;
+
     #region Sigleton
     private static PlayerController instance;
     public static PlayerController Instance
@@ -231,7 +234,7 @@ public class PlayerController : MonoBehaviour
 
         applySpeed = Speed;
 
-        InvokeRepeating("ForceMoveAndRot", 0.2f, 0.2f);
+        //InvokeRepeating("ForceMoveAndRot", 1f, 1f);
     }
 
     protected void Update() // 프레임마다 실행
@@ -243,15 +246,18 @@ public class PlayerController : MonoBehaviour
                 //Move();
 
                 // 서버로부터 전송받은 position과 rotation을 보간하여 자연스럽게 이동 및 회전
-                if (!PosInfo.Equals(previousPosition))
+                if (!PosInfo.Equals(previousPosition) && !ismoving)
                 {
+                    ismoving = true;
                     StartCoroutine(MoveToPosition(PosInfo));
                 }
 
-                if (!RotInfo.Equals(previousRotation))
+                if (!RotInfo.Equals(previousRotation) && !isrotating)
                 {
+                    isrotating = true;
                     StartCoroutine(RotateToRotation(RotInfo));
                 }
+
                 IsGround();
             }
             else
@@ -276,48 +282,86 @@ public class PlayerController : MonoBehaviour
             previousRotation = PlayerRot;
         }
     }
-
     IEnumerator MoveToPosition(PositionInfo targetPosition)
     {
-        float elapsedTime = 0f;
-        float duration = 0.2f; // 0.2초 동안 보간
-
-        Vector3 startPosition = transform.position;
+        float duration = 0.2f;
         Vector3 target = new Vector3(targetPosition.PosX, targetPosition.PosY, targetPosition.PosZ);
+        Vector3 startPosition = transform.position;
+        float startTime = Time.time;
 
-        while (elapsedTime < duration)
+        while (Time.time < startTime + duration)
         {
-            // 보간된 위치로 이동
-            transform.position = Vector3.Lerp(startPosition, target, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
+            float t = (Time.time - startTime) / duration;
+            transform.position = Vector3.Lerp(startPosition, target, t);
             yield return null;
         }
 
-        // 최종 위치로 이동
         transform.position = target;
+        ismoving = false;
     }
 
     IEnumerator RotateToRotation(RotationInfo targetRotation)
     {
-        float elapsedTime = 0f;
-        float duration = 0.2f; // 0.2초 동안 보간
-
-        Quaternion startRotation = transform.rotation;
+        float duration = 0.2f;
         Quaternion target = new Quaternion(targetRotation.RotX, targetRotation.RotY, targetRotation.RotZ, targetRotation.RotW);
+        Quaternion startRotation = transform.rotation;
+        float startTime = Time.time;
 
-        while (elapsedTime < duration)
+        while (Time.time < startTime + duration)
         {
-            // 보간된 회전값으로 회전
-            transform.rotation = Quaternion.Slerp(startRotation, target, elapsedTime / duration);
-
-            elapsedTime += Time.deltaTime;
+            float t = (Time.time - startTime) / duration;
+            transform.rotation = Quaternion.Slerp(startRotation, target, t);
             yield return null;
         }
 
-        // 최종 회전값으로 회전
         transform.rotation = target;
+        isrotating = false;
     }
+
+    //IEnumerator MoveToPosition(PositionInfo targetPosition)
+    //{
+    //    float elapsedTime = 0f;
+    //    float duration = 0.2f; // 0.2초 동안 보간
+
+    //    Vector3 target = new Vector3(targetPosition.PosX, targetPosition.PosY, targetPosition.PosZ);
+
+    //    while (elapsedTime < duration)
+    //    {
+    //        //보간된 위치로 이동
+    //        transform.position = Vector3.Lerp(transform.position, target, elapsedTime / duration);
+
+    //        yield return null;
+
+    //        elapsedTime += Time.deltaTime;
+    //    }
+
+    //    //최종 위치로 이동
+    //    transform.position = target;
+    //    ismoving = false;
+    //}
+
+    //IEnumerator RotateToRotation(RotationInfo targetRotation)
+    //{
+    //    float elapsedTime = 0f;
+    //    float duration = 0.2f; // 0.2초 동안 보간
+
+    //    Quaternion target = new Quaternion(targetRotation.RotX, targetRotation.RotY, targetRotation.RotZ, targetRotation.RotW);
+
+    //    while (elapsedTime < duration)
+    //    {
+    //        보간된 회전값으로 회전
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, target, elapsedTime / duration);
+
+
+    //        yield return null;
+
+    //        elapsedTime += Time.deltaTime;
+    //    }
+
+    //    최종 회전값으로 회전
+    //    transform.rotation = target;
+    //    isrotating = false;
+    //}
 
     protected void Move()
     {
@@ -401,7 +445,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("OutBottom"))
         {
             TakeDamage(Hp);
-            Dodie();
+            //Dodie();
         }
     }
     IEnumerator OnDamage()

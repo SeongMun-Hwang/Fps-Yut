@@ -11,16 +11,23 @@ public class MyPlayerController : PlayerController
     [SerializeField]
     protected float lookSensitivity; // 카메라 민감도
 
-    public bool _canAttack;
-
     // Start is called before the first frame update
     new void Start()
     {
+        //{
+        //    C_EnterRoom enterroomPacket = new C_EnterRoom();
+        //    enterroomPacket.RoomId = 1;
+        //    Managers.Network.Send(enterroomPacket);
+        //}
+
         myRigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         weaponController = GetComponentInChildren<WeaponController>();
         weaponController.owner = gameObject;
+
+        Speed = 10f;
+        RunSpeed = 20f;
 
         applySpeed = Speed;
 
@@ -93,7 +100,6 @@ public class MyPlayerController : PlayerController
     private void GetAttackKey()
     {
         doAttack = Input.GetMouseButtonDown(0);
-        Debug.Log(doAttack);
     }
 
     protected void Move(Vector3 targetPosition)

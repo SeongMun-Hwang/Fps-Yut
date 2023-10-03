@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class LobbyButton : MonoBehaviour
@@ -42,6 +43,8 @@ public class LobbyButton : MonoBehaviour
         C_MakeRoom makeRoomPacket = new C_MakeRoom();
         makeRoomPacket.RoomName = roomName;
         Managers.Network.Send(makeRoomPacket);
+
+        SceneManager.LoadScene("Fpsfight");
 
         Debug.Log(roomName);
     }
@@ -107,8 +110,10 @@ public class LobbyButton : MonoBehaviour
         Debug.Log("Clicked on room: " + roomInfo.Roomname);
         Debug.Log("Room Id : " + roomInfo.RoomId);
 
-        //C_EnterRoom enterroomPacket = new C_EnterRoom();
-        //enterroomPacket.RoomId = roomInfo.RoomId;
-        //Managers.Network.Send(enterroomPacket);
+        C_EnterRoom enterroomPacket = new C_EnterRoom();
+        enterroomPacket.RoomId = roomInfo.RoomId;
+        Managers.Network.Send(enterroomPacket);
+
+        SceneManager.LoadScene("Fpsfight");
     }
 }
