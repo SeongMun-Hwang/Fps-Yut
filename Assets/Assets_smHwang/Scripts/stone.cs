@@ -23,9 +23,6 @@ public class stone : MonoBehaviour
     public Yut_Field currentRoute;
     public AudioSource[] yutSound;
 
-    public Button yes;
-    public Button no;
-
     private async Task DelayAsync(float seconds)
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
@@ -58,10 +55,6 @@ public class stone : MonoBehaviour
     void Start()
     {
         UIScript.StartText(YutGameManager.Instance.GetTurn());
-        yes.gameObject.SetActive(false);
-        no.gameObject.SetActive(false);
-        yes.onClick.AddListener(BindYes);
-        no.onClick.AddListener(BindNo);
         for (int i = 0; i < 5; i++)
         {
             yutSound[i].mute = true;
@@ -441,9 +434,8 @@ public class stone : MonoBehaviour
             //NormalRoute
             else
             {
-                user user = YutGameManager.Instance.GetNowUser();
-                user.routePosition++;
-                int NormalRoute = MoveScript.NormalRoute(user.nowPosition, user.lastPosition);
+                nowUser.routePosition++;
+                int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition);
                 if (NormalRoute != -1)
                 {
                     nowUser.routePosition = NormalRoute;
@@ -574,50 +566,33 @@ public class stone : MonoBehaviour
             {
                 Debug.Log(YutGameManager.Instance.GetTurn() + "의 현재 윷의 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
                 Debug.Log(YutGameManager.Instance.GetTurn() + "의 겹치는 윷의 위치 : " + users[YutGameManager.Instance.GetTurn()][i].nowPosition);
-                Yut.text = "윷을 업으시겠습니까?";
                 bindedHorseIndex = i;
-                yes.gameObject.SetActive(true);
-                no.gameObject.SetActive(true);
+                List<int> overlappedHorses = GetBindedHorses(YutGameManager.Instance.GetPlayerNumber());
+                if (bindedHorseIndex < 0) return;
+
+
+                // 바인딩되어 있는 모든 말들의 리스트 생성
+                List<int> allBindedHorses = new List<int>();
+                allBindedHorses.Add(YutGameManager.Instance.GetPlayerNumber());
+                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].BindedHorse);
+                allBindedHorses.Add(bindedHorseIndex);
+                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][bindedHorseIndex].BindedHorse);
+
+                // 중복 항목 제거
+                allBindedHorses = allBindedHorses.Distinct().ToList();
+
+                // 모든 관련된 말들에 바인딩 정보 업데이트
+                foreach (int horseIndex in allBindedHorses)
+                {
+                    users[YutGameManager.Instance.GetTurn()][horseIndex].is_bind = true;
+                    users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse = new List<int>(allBindedHorses);
+                    users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
+                }
+                bindedHorseIndex = -1;
+                AdjustPositionByStacking(YutGameManager.Instance.GetPlayerNumber(), overlappedHorses);
+                chooseBindCalled = true;
             }
         }
-    }
-
-    //묶기 선택시 BindedHorse, is_bind 업데이트
-    private void BindYes()
-    {
-        List<int> overlappedHorses = GetBindedHorses(YutGameManager.Instance.GetPlayerNumber());
-        if (bindedHorseIndex < 0) return;
-
-        yes.gameObject.SetActive(false);
-        no.gameObject.SetActive(false);
-
-        // 바인딩되어 있는 모든 말들의 리스트 생성
-        List<int> allBindedHorses = new List<int>();
-        allBindedHorses.Add(YutGameManager.Instance.GetPlayerNumber());
-        allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].BindedHorse);
-        allBindedHorses.Add(bindedHorseIndex);
-        allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][bindedHorseIndex].BindedHorse);
-
-        // 중복 항목 제거
-        allBindedHorses = allBindedHorses.Distinct().ToList();
-
-        // 모든 관련된 말들에 바인딩 정보 업데이트
-        foreach (int horseIndex in allBindedHorses)
-        {
-            users[YutGameManager.Instance.GetTurn()][horseIndex].is_bind = true;
-            users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse = new List<int>(allBindedHorses);
-            users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
-        }
-        bindedHorseIndex = -1;
-        AdjustPositionByStacking(YutGameManager.Instance.GetPlayerNumber(), overlappedHorses);
-        chooseBindCalled = true;
-    }
-    private void BindNo()
-    {
-        yes.gameObject.SetActive(false);
-        no.gameObject.SetActive(false);
-        bindedHorseIndex = -1;
-        chooseBindCalled = true;
     }
     //묶인 말 이동후 묶인 말들 정보 동기화
     public void SynchronizeBindedHorses(int mainHorseIndex)
