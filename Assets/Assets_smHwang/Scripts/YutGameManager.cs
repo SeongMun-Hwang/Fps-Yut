@@ -6,7 +6,7 @@ public static class Constants
 {
     public const int PlayerNumber = 2;
     public const int HorseNumber = 4;
-    public const float STACK_HEIGHT = 1f;
+    public const float STACK_HEIGHT = 1.2f;
 }
 
 public class YutGameManager : MonoBehaviour

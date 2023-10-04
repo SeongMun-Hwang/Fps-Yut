@@ -52,6 +52,7 @@ public class UI : MonoBehaviour
     {
         stone.OnChangeTurnAction = ChangeTurnUI;
         stone.ShowDestination = DestinationUI;
+        StartText(YutGameManager.Instance.GetTurn());
         for (int i = 0; i < steps_button.Length; i++)
         {
             int index = i; // 이유: 클로저 때문에 바깥 변수를 직접 쓰면 마지막 값이 고정될 수 있음
@@ -65,6 +66,8 @@ public class UI : MonoBehaviour
     }
     private void Update()
     {
+        timer();
+        GoalCounter(YutGameManager.Instance.GetUsers());
         ChooseMove();
         if (steps.Count > 1 && stone.isYutThrown == true)
         {
@@ -368,6 +371,5 @@ public class UI : MonoBehaviour
         user user = YutGameManager.Instance.GetNowUser();
         user.FinalPosition.Clear();
         DestiantionObject.Clear();
-        Debug.Log("list length : " + DestiantionObject.Count);
     }
 }
