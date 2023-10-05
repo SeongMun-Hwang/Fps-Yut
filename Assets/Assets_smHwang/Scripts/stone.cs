@@ -180,25 +180,21 @@ public class stone : MonoBehaviour
     {
         YutGameManager.Instance.SetPlayerNumber(0);
         check_player();
-        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void two()
     {
         YutGameManager.Instance.SetPlayerNumber(1);
         check_player();
-        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void three()
     {
         YutGameManager.Instance.SetPlayerNumber(2);
         check_player();
-        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void four()
     {
         YutGameManager.Instance.SetPlayerNumber(3);
         check_player();
-        UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
     }
     public void check_player()
     {
@@ -247,7 +243,7 @@ public class stone : MonoBehaviour
     space : 윷던지기*/
     void choose_Player()
     {
-        if (isMoving == false)
+        if (!isMoving)
         {
             if (isYutThrown)
             {
@@ -371,7 +367,6 @@ public class stone : MonoBehaviour
         int turn = YutGameManager.Instance.GetTurn();
         int player_number = YutGameManager.Instance.GetPlayerNumber();
         user nowUser = YutGameManager.Instance.GetNowUser();
-        nowUser.lastPosition = nowUser.nowPosition;
         if (turn == 0)
         {
             enemy = 1;
@@ -380,7 +375,6 @@ public class stone : MonoBehaviour
         {
             enemy = 0;
         }
-        UIScript.SetOutline(nowUser.player);
         yield return new WaitForSeconds(1f);
         Yut.text = "";
         if (isMoving)
@@ -419,7 +413,6 @@ public class stone : MonoBehaviour
                     isMoving = false;
                     isBackdo = false;
                     ChangeTurn();
-                    UIScript.steps.RemoveAt(UIScript.choose_step);
                     yield break;
                 }
                 else
@@ -459,7 +452,6 @@ public class stone : MonoBehaviour
 
             //상대방 말을 지나갈때
             //DefenseGameTrigger(LeftStep);
-
 
             yield return new WaitForSeconds(0.1f);
             while (isFight == true)
@@ -634,6 +626,7 @@ public class stone : MonoBehaviour
         u.is_bind = false;
         u.BindedHorse?.Clear();
     }
+    //말 업을 때 위치 조정
     void AdjustPositionByStacking(int currentPlayer, List<int> overlappedHorses)
     {
         Vector3 basePosition = users[YutGameManager.Instance.GetTurn()][currentPlayer].player.transform.position;

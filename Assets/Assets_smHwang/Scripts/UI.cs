@@ -76,6 +76,7 @@ public class UI : MonoBehaviour
         timer();
         GoalCounter(YutGameManager.Instance.GetUsers());
         ChooseMove();
+        SetOutline(YutGameManager.Instance.GetNowUser().player);
         if (steps.Count > 1 && stone.isYutThrown == true)
         {
             if (stone.isMoving)
@@ -188,6 +189,7 @@ public class UI : MonoBehaviour
             steps_button_Text[i].text = "";
             steps_button[i].image.color = original_Edge;
         }
+        steps.Clear();
     }
     public void choose_steps(int buttonIndex)
     {
