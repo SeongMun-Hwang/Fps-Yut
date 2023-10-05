@@ -79,12 +79,22 @@ public class move_Pillar : MonoBehaviour
                 float posZ = positions[Random.Range(0, positions.Length)];
                 newPosition = new Vector3(posX, ob.transform.position.y, posZ);
 
-            } while (Mathf.Approximately(newPosition.x, prevPosition.x) || Mathf.Approximately(newPosition.z, prevPosition.z));
+            } while (IsAdjacentDiagonally(newPosition, prevPosition) ||
+                     Mathf.Approximately(newPosition.x, prevPosition.x) ||
+                     Mathf.Approximately(newPosition.z, prevPosition.z));
 
             ob.transform.position = newPosition;
             prevPosition = newPosition;
         }
     }
+    bool IsAdjacentDiagonally(Vector3 pos1, Vector3 pos2)
+    {
+        return (pos1.x - pos2.x == 15f && pos1.z - pos2.z == 15f) ||   // top-right
+               (pos1.x - pos2.x == -15f && pos1.z - pos2.z == 15f) ||  // top-left
+               (pos1.x - pos2.x == 15f && pos1.z - pos2.z == -15f) ||  // bottom-right
+               (pos1.x - pos2.x == -15f && pos1.z - pos2.z == -15f);   // bottom-left
+    }
+
 
     void Update()
     {
