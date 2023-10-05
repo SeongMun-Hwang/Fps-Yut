@@ -17,6 +17,7 @@ public class stone : MonoBehaviour
     /**************¾×¼Ç**************/
     public Action OnChangeTurnAction;
     public Action ShowDestination;
+    public Action UpdateSteps;
     /*******************************/
 
     public TextMeshProUGUI Yut;
@@ -468,10 +469,7 @@ public class stone : MonoBehaviour
             }
         }
 
-        UIScript.steps.RemoveAt(UIScript.choose_step);
-        UIScript.steps_button_Text[UIScript.choose_step].text = "";
-        UIScript.UpdateYutChoice();
-
+        UpdateSteps.Invoke();
         isMoving = false;
         sum = 0;
         Debug.Log("move all");

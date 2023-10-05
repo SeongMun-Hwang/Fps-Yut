@@ -48,10 +48,17 @@ public class UI : MonoBehaviour
         CalculateDestination(stone.GetBackdo());
         ShowDestination();
     }
+    private void _UpdateSteps()
+    {
+        steps.RemoveAt(choose_step);
+        steps_button_Text[choose_step].text = "";
+        UpdateYutChoice();
+    }
     private void Start()
     {
         stone.OnChangeTurnAction = ChangeTurnUI;
         stone.ShowDestination = DestinationUI;
+        stone.UpdateSteps = _UpdateSteps;
         StartText(YutGameManager.Instance.GetTurn());
         for (int i = 0; i < steps_button.Length; i++)
         {
