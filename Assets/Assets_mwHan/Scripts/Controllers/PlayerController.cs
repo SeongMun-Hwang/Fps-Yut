@@ -66,9 +66,6 @@ public class PlayerController : MonoBehaviour
                 return;
 
             PlayerPos = new Vector3(value.PosX, value.PosY, value.PosZ);
-            //MoveDir = new Vector2(value.MoveDirX, value.MoveDirZ);
-            MoveDirX = value.MoveDirX;
-            MoveDirZ = value.MoveDirZ;
         }
     }
 
@@ -87,27 +84,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private float _moveDirX;
     public float MoveDirX
     {
-        get { return PosInfo.MoveDirX; }
+        get { return _moveDirX; }
         set
         {
-            if (PosInfo.MoveDirX == value)
+            if (_moveDirX == value)
                 return;
 
-            PosInfo.MoveDirX = value;
+            _moveDirX = value;
         }
     }
 
+    private float _moveDirZ;
     public float MoveDirZ
     {
-        get { return PosInfo.MoveDirZ; }
+        get { return _moveDirZ; }
         set
         {
-            if (PosInfo.MoveDirZ == value)
+            if (_moveDirZ == value)
                 return;
 
-            PosInfo.MoveDirZ = value;
+            _moveDirZ = value;
         }
     }
 
@@ -122,8 +121,6 @@ public class PlayerController : MonoBehaviour
                 return;
 
             PlayerRot = new Quaternion(value.RotX, value.RotY, value.RotZ, value.RotW);
-            CameraRotationY = value.CameraRotY;
-            CameraRotationX = value.CameraRotX;
         }
     }
 
@@ -143,27 +140,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private float _cameraRotY;
     public float CameraRotationY
     {
-        get { return RotInfo.CameraRotY; }
+        get { return _cameraRotY; }
         set
         {
-            if (RotInfo.CameraRotY == value)
+            if (_cameraRotY == value)
                 return;
 
-            RotInfo.CameraRotY = value;
+            _cameraRotY = value;
         }
     }
 
+    private float _cameraRotX;
     public float CameraRotationX
     {
-        get { return RotInfo.CameraRotX; }
+        get { return _cameraRotX; }
         set
         {
-            if (RotInfo.CameraRotX == value)
+            if (_cameraRotX == value)
                 return;
 
-            RotInfo.CameraRotX = value;
+            _cameraRotX = value;
         }
     }
 
@@ -318,51 +317,6 @@ public class PlayerController : MonoBehaviour
         isrotating = false;
     }
 
-    //IEnumerator MoveToPosition(PositionInfo targetPosition)
-    //{
-    //    float elapsedTime = 0f;
-    //    float duration = 0.2f; // 0.2초 동안 보간
-
-    //    Vector3 target = new Vector3(targetPosition.PosX, targetPosition.PosY, targetPosition.PosZ);
-
-    //    while (elapsedTime < duration)
-    //    {
-    //        //보간된 위치로 이동
-    //        transform.position = Vector3.Lerp(transform.position, target, elapsedTime / duration);
-
-    //        yield return null;
-
-    //        elapsedTime += Time.deltaTime;
-    //    }
-
-    //    //최종 위치로 이동
-    //    transform.position = target;
-    //    ismoving = false;
-    //}
-
-    //IEnumerator RotateToRotation(RotationInfo targetRotation)
-    //{
-    //    float elapsedTime = 0f;
-    //    float duration = 0.2f; // 0.2초 동안 보간
-
-    //    Quaternion target = new Quaternion(targetRotation.RotX, targetRotation.RotY, targetRotation.RotZ, targetRotation.RotW);
-
-    //    while (elapsedTime < duration)
-    //    {
-    //        보간된 회전값으로 회전
-    //        transform.rotation = Quaternion.Slerp(transform.rotation, target, elapsedTime / duration);
-
-
-    //        yield return null;
-
-    //        elapsedTime += Time.deltaTime;
-    //    }
-
-    //    최종 회전값으로 회전
-    //    transform.rotation = target;
-    //    isrotating = false;
-    //}
-
     protected void Move()
     {
         Vector3 _moveHorizontal = transform.right * MoveDirX; // transform은 유니티 창 기본 컴퍼넌트.  기본 (1,0,0)
@@ -411,43 +365,69 @@ public class PlayerController : MonoBehaviour
         // 실제 유니티 내부에 회전은 quaternion 사용함. 우리가 구한 vector(euler)를 quaternion으로 바꿔주는 과정
     }
 
-    private void OnTriggerEnter(Collider other)
+    public virtual void PlayerAttacked(PositionInfo knockbackDir, float knockbackForce)
     {
-        WeaponController weaponController = other.GetComponent<WeaponController>();
-        if (other.CompareTag("Weapon") && weaponController.Owner != gameObject) // 무기에 맞으면
+        if (!isDamage) // 무적시간이 아니면
         {
-            if (!isDamage) // 무적시간이 아니면
-            {
-                float knockbackForce = weaponController.KnockbackForce;
+            isKnockedBack = true; // 맞은 상태
+            knockbackTimer = weaponController.KnockbackTime;
 
-                isKnockedBack = true; // 맞은 상태
-                knockbackTimer = weaponController.KnockbackTime;
+            // 망치 방향으로 밀어내기
+            Vector3 pushDirection;
+            pushDirection.x = knockbackDir.PosX;
+            pushDirection.y = 0;
+            pushDirection.z = knockbackDir.PosZ;
+            pushDirection *= knockbackForce;
+            pushDirection.y = knockbackDir.PosY;
+            myRigid.AddForce(pushDirection, ForceMode.Impulse);
 
-                // 망치 방향으로 밀어내기
-                Vector3 pushDirection = transform.position - other.transform.position;
-                pushDirection.Normalize();
-                pushDirection *= knockbackForce;
-                pushDirection.y = weaponController.KnockbackForceY;
-                myRigid.AddForce(pushDirection, ForceMode.Impulse);
+            Debug.Log($"KnockbackForce = {knockbackForce}");
+            TakeDamage(1); // 데미지 입음
 
-                Debug.Log($"KnockbackForce = {knockbackForce}");
-                TakeDamage(1); // 데미지 입음
-
-                if (Hp <= 0) Dodie();
-                StartCoroutine(OnDamage());
-                Debug.Log("피격됨");
-            }
+            if (Hp <= 0) Dodie();
+            StartCoroutine(OnDamage());
+            Debug.Log("피격됨");
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("OutBottom"))
-        {
-            TakeDamage(Hp);
-            //Dodie();
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    WeaponController weaponController = other.GetComponent<WeaponController>();
+    //    if (other.CompareTag("Weapon") && weaponController.Owner != gameObject) // 무기에 맞으면
+    //    {
+    //        if (!isDamage) // 무적시간이 아니면
+    //        {
+    //            float knockbackForce = weaponController.KnockbackForce;
+
+    //            isKnockedBack = true; // 맞은 상태
+    //            knockbackTimer = weaponController.KnockbackTime;
+
+    //            // 망치 방향으로 밀어내기
+    //            Vector3 pushDirection = transform.position - other.transform.position;
+    //            pushDirection.Normalize();
+    //            pushDirection *= knockbackForce;
+    //            pushDirection.y = weaponController.KnockbackForceY;
+    //            myRigid.AddForce(pushDirection, ForceMode.Impulse);
+
+    //            Debug.Log($"KnockbackForce = {knockbackForce}");
+    //            TakeDamage(1); // 데미지 입음
+
+    //            if (Hp <= 0) Dodie();
+    //            StartCoroutine(OnDamage());
+    //            Debug.Log("피격됨");
+    //        }
+    //    }
+    //}
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("OutBottom"))
+    //    {
+    //        TakeDamage(Hp);
+    //        //Dodie();
+    //    }
+    //}
+
     IEnumerator OnDamage()
     {
         isDamage = true;
@@ -485,8 +465,6 @@ public class PlayerController : MonoBehaviour
         if (onHealthChangedCallback != null)
             onHealthChangedCallback.Invoke();
     }
-
-
 
     private void Dodie() // 피가 다 닳아서 죽음
     {
