@@ -203,22 +203,13 @@ public class stone : MonoBehaviour
             Yut.text = "player already goaled!";
         }
     }
-    //플레이어 말 삭제
-    void clear_player(ref user u)
-    {
-        if (u.player != null)
-        {
-            Destroy(u.player);
-            u.player = null;
-        }
-    }
     //플레이어 말 재생성
     public void reset_player(ref user u, GameObject playerPrefab)
     {
         if (!u.goal)
         {
             Quaternion prevRotation = u.player.transform.rotation;
-            clear_player(ref u);
+            Destroy(u.player);
             u.player = Instantiate(playerPrefab);
             u.routePosition = 0;
             u.nowPosition = 0;
