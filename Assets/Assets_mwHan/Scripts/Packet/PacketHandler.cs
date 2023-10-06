@@ -37,9 +37,9 @@ class PacketHandler
 	}
 
 	public static void S_ThrowYutHandler(PacketSession session, IMessage packet)
-    {
+	{
 		S_ThrowYut throwYutHandler = packet as S_ThrowYut;
-    }
+	}
 
 	public static void S_StartGameHandler(PacketSession session, IMessage packet)
 	{
@@ -95,12 +95,68 @@ class PacketHandler
 		}
 
 		PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-        {
-			Debug.Log("GetComponent 실패함 RotationHandler");
+		if (pc == null)
+		{
 			return;
-        }
+		}
 
 		pc.RotInfo = rotationPacket.RotInfo;
+	}
+
+	public static void S_DoAttackHandler(PacketSession session, IMessage packet)
+    {
+		S_DoAttack atkPacket = packet as S_DoAttack;
+
+		GameObject go = Managers.Object.FindById(atkPacket.ObjectId);
+		if (go == null)
+		{
+			Debug.Log("FindById 실패");
+			return;
+		}
+
+		PlayerController pc = go.GetComponent<PlayerController>();
+		if (pc != null)
+		{
+			pc.doAttack = true;
+			return;
+		}
+	}
+
+	public static void S_PlayerAttackedHandler(PacketSession session, IMessage packet)
+	{
+		S_PlayerAttacked attackedPacket = packet as S_PlayerAttacked;
+
+		GameObject go = Managers.Object.FindById(attackedPacket.ObjectId);
+		if (go == null)
+		{
+			Debug.Log("FindById 실패");
+			return;
+		}
+
+		PlayerController pc = go.GetComponent<PlayerController>();
+		if (pc != null)
+		{
+			pc.PlayerAttacked(attackedPacket.AttackedDirection, attackedPacket.AttackForce);
+			return;
+		}
+	}
+
+	public static void S_DieHandler(PacketSession session, IMessage packet)
+    {
+		S_Die diePacket = packet as S_Die;
+
+		GameObject go = Managers.Object.FindById(diePacket.ObjectId);
+		if (go == null)
+		{
+			Debug.Log("FindById 실패");
+			return;
+		}
+
+		PlayerController pc = go.GetComponent<PlayerController>();
+		if (pc != null)
+        {
+			Debug.Log("Die");
+			return;
+        }
 	}
 }

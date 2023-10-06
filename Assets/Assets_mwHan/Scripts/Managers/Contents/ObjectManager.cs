@@ -62,21 +62,6 @@ public class ObjectManager
 		return go;
 	}
 
-	//public GameObject Find(Vector3Int cellPos)
-	//{
-	//    foreach (GameObject obj in _objects.Values)
-	//    {
-	//        CreatureController cc = obj.GetComponent<CreatureController>();
-	//        if (cc == null)
-	//            continue;
-
-	//        if (cc.CellPos == cellPos)
-	//            return obj;
-	//    }
-
-	//    return null;
-	//}
-
 	public GameObject Find(Func<GameObject, bool> condition)
     {
         foreach (GameObject obj in _objects.Values)

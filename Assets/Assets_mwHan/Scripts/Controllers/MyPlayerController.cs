@@ -65,6 +65,8 @@ public class MyPlayerController : PlayerController
             if (doAttack)
             {
                 doAttack = false;
+                C_DoAttack atkPacket = new C_DoAttack();
+                Managers.Network.Send(atkPacket);
                 weaponController.Attack();
             }
             //base.Update();

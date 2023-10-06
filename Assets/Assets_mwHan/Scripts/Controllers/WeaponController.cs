@@ -64,21 +64,4 @@ public class WeaponController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         trailEffect.enabled = false;
     }
-
-    //protected bool IsOwner()
-    //{
-    //    // 현재 무기의 소유자인지 확인하는 로직을 구현합니다.
-    //    // 예시로 owner 변수를 사용하여 비교하도록 작성하였습니다.
-    //    // 실제로는 무기와 소유자 사이의 관계를 어떻게 정의했는지에 따라 구현 방식이 달라질 수 있습니다.
-    //    GameObject currentPlayer = GameManager.instance.GetPlayer(); // 현재 플레이어를 가져옵니다.
-
-    //    if (currentPlayer != null && currentPlayer == owner)
-    //    {
-    //        return true; // 현재 플레이어가 무기의 소유자인 경우
-    //    }
-    //    else
-    //    {
-    //        return false; // 현재 플레이어가 무기의 소유자가 아닌 경우
-    //    }
-    //}
 }
