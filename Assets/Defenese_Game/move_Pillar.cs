@@ -19,6 +19,8 @@ public class move_Pillar : MonoBehaviour
     public TextMeshProUGUI status_text;
     int count = 0;
     int round = 1;
+    public float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
+    public Vector3 prevPosition = Vector3.zero;
 
     private struct PillarState
     {
@@ -63,28 +65,19 @@ public class move_Pillar : MonoBehaviour
             isStopped[i] = false;
         }
 
-        float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
-        Vector3 prevPosition = Vector3.zero;
+        
 
         //장애물 위치 랜덤 생성
-        foreach (GameObject ob in obstacle)
-        {
-            Vector3 newPosition;
-            do
-            {
-                //x축 랜덤
-                float posX = positions[Random.Range(0, positions.Length)];
-
-                //z축 랜덤
-                float posZ = positions[Random.Range(0, positions.Length)];
-                newPosition = new Vector3(posX, ob.transform.position.y, posZ);
-
-            } while (Mathf.Approximately(newPosition.x, prevPosition.x) || Mathf.Approximately(newPosition.z, prevPosition.z));
-
-            ob.transform.position = newPosition;
-            prevPosition = newPosition;
-        }
+        CreateObstacle();
     }
+    bool IsAdjacentDiagonally(Vector3 pos1, Vector3 pos2)
+    {
+        return (pos1.x - pos2.x == 15f && pos1.z - pos2.z == 15f) ||   // top-right
+               (pos1.x - pos2.x == -15f && pos1.z - pos2.z == 15f) ||  // top-left
+               (pos1.x - pos2.x == 15f && pos1.z - pos2.z == -15f) ||  // bottom-right
+               (pos1.x - pos2.x == -15f && pos1.z - pos2.z == -15f);   // bottom-left
+    }
+
 
     void Update()
     {
@@ -144,9 +137,10 @@ public class move_Pillar : MonoBehaviour
         SceneManager.LoadScene("YutPlay");
     }
     //라운드 표시 함수
-    void UpdateRoundInfo()
+    void UpdateRound()
     {
         round++;
+        CreateObstacle();
         status_text.text = "라운드 " + round + "!";
     }
 
@@ -195,7 +189,7 @@ public class move_Pillar : MonoBehaviour
             }
             else
             {
-                UpdateRoundInfo();
+                UpdateRound();
             }
         }
     }
@@ -240,6 +234,28 @@ public class move_Pillar : MonoBehaviour
         {
             rbs[i].constraints = RigidbodyConstraints.FreezePositionX;
             rbs[i].velocity = new Vector3(rbs[i].velocity.x, rbs[i].velocity.y, speed);
+        }
+    }
+    void CreateObstacle()
+    {
+        foreach (GameObject ob in obstacle)
+        {
+            Vector3 newPosition;
+            do
+            {
+                //x축 랜덤
+                float posX = positions[Random.Range(0, positions.Length)];
+
+                //z축 랜덤
+                float posZ = positions[Random.Range(0, positions.Length)];
+                newPosition = new Vector3(posX, ob.transform.position.y, posZ);
+
+            } while (IsAdjacentDiagonally(newPosition, prevPosition) ||
+                     Mathf.Approximately(newPosition.x, prevPosition.x) ||
+                     Mathf.Approximately(newPosition.z, prevPosition.z));
+
+            ob.transform.position = newPosition;
+            prevPosition = newPosition;
         }
     }
 }
