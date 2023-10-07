@@ -15,7 +15,7 @@ public class YutGameManager : MonoBehaviour
 
     private int turn = 0;
     private int player_number;
-    private user[][] users;
+    private user[] users;
     public GameObject[] red_team;
     public GameObject[] blue_team;
 
@@ -30,33 +30,34 @@ public class YutGameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        users = new user[Constants.PlayerNumber][];
+        users = new user[Constants.PlayerNumber];
         for (int i = 0; i < Constants.PlayerNumber; i++)
         {
-            users[i] = new user[Constants.HorseNumber];
+            users[i] = new user();
+            users[i].horses = new List<horse>();
             for (int j = 0; j < Constants.HorseNumber; j++)
             {
-                users[i][j] = new user();  // user 클래스의 인스턴스를 생성 (user 클래스의 생성자가 필요하다면 이것도 추가)
+                horse newHorse = new horse();
+                users[i].horses.Add(newHorse);
             }
         }
         for (int j = 0; j < Constants.PlayerNumber; j++)
         {
             for (int i = 0; i < Constants.HorseNumber; i++)
             {
-                users[0][i].player = red_team[i];
-                users[1][i].player = blue_team[i];
-                users[j][i].player_start_position = users[j][i].player.transform.position;
-                users[j][i].is_bind = false;
-                users[j][i].BindedHorse = new List<int>();
-                users[j][i].FinalPosition = new List<int>();
+                users[0].horses[i].player = red_team[i];
+                users[1].horses[i].player = blue_team[i];
+                users[j].horses[i].player_start_position = users[j].horses[i].player.transform.position;
+                users[j].horses[i].is_bind = false;
+                users[j].horses[i].BindedHorse = new List<int>();
+                users[j].horses[i].FinalPosition = new List<int>();
             }
         }
     }
-    public void SetTurnAndPlayerNumber(int t, int p_num, user[][] u)
+    public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
     {
         turn = t;
         player_number = p_num;
-        users = u;
     }
     //get
     public int GetTurn()
@@ -69,13 +70,17 @@ public class YutGameManager : MonoBehaviour
         return player_number;
     }
 
-    public user[][] GetUsers()
+    public user[] GetUsers()
     {
         return users;
     }
-    public user GetNowUser()
+    public List<horse> GetHorse()
     {
-        return users[turn][player_number];
+        return users[turn].horses;
+    }
+    public horse GetNowHorse()
+    {
+        return users[turn].horses[player_number];
     }
     public void SetTurn(int newTurn)
     {

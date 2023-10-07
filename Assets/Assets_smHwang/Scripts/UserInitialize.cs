@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class user
 {
+    public List<horse> horses;
+}
+public class horse
+{
     public GameObject player;
     public int routePosition;
     public int nowPosition;
