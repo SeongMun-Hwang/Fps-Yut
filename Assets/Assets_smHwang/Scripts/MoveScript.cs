@@ -17,10 +17,11 @@ public class MoveScript : MonoBehaviour
     private user[] users;
     private int turn;
     private int player_number;
-    public void GetData(int t, int p_num)
+    public void GetData(int t, int p_num, user[] u)
     {
         turn = t;
         player_number = p_num;
+        users = u;
     }
     void Start()
     {
