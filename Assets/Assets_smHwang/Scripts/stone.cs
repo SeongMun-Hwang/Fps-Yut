@@ -42,12 +42,13 @@ public class stone : MonoBehaviour
     //오브젝트 테두리
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
 
-    user[][] users;
-
+    user[] users;
+    horse horses;
     private void Update()
     {
         users = YutGameManager.Instance.GetUsers();
-        MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), users);
+        horses = YutGameManager.Instance.GetNowHorse();
+        MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), YutGameManager.Instance.GetUsers());
         if (isYutThrown) { choose_Player(); }
         AutoSelectClosestPlayerInArray();
     }
@@ -198,13 +199,13 @@ public class stone : MonoBehaviour
     }
     public void check_player()
     {
-        if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].goal == true)
+        if (horses.goal == true)
         {
             Yut.text = "player already goaled!";
         }
     }
     //플레이어 말 재생성
-    public void reset_player(ref user u, GameObject playerPrefab)
+    public void reset_player(horse u, GameObject playerPrefab)
     {
         if (!u.goal)
         {
@@ -222,7 +223,7 @@ public class stone : MonoBehaviour
                 u.is_bind = false;
                 foreach (int bindedHorseIndex in u.BindedHorse)
                 {
-                    reset_player(ref users[enemy][bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                    reset_player(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
                 }
                 u.BindedHorse.Clear();
             }
@@ -238,8 +239,8 @@ public class stone : MonoBehaviour
         {
             if (isYutThrown)
             {
-                user user = YutGameManager.Instance.GetNowUser();
-                user.FinalPosition.Clear();
+                horse horses = YutGameManager.Instance.GetNowHorse();
+                horses.FinalPosition.Clear();
                 UIScript.CalculateDestination(isBackdo);
             }
             if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -309,11 +310,11 @@ public class stone : MonoBehaviour
 
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
-            if (users[0][i].player != null)
+            if (users[0].horses[i].player != null)
             {
                 redTeamAllNull = false;
             }
-            if (users[1][i].player != null)
+            if (users[1].horses[i].player != null)
             {
                 blueTeamAllNull = false;
             }
@@ -331,7 +332,7 @@ public class stone : MonoBehaviour
     //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
     void AutoSelectClosestPlayerInArray()
     {
-        if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player == null)
+        if (users[YutGameManager.Instance.GetTurn()].horses[YutGameManager.Instance.GetPlayerNumber()].player == null)
         {
             int closestPlayerNumber = -1;
 
@@ -339,7 +340,8 @@ public class stone : MonoBehaviour
             {
                 int nextPlayerNumber = (YutGameManager.Instance.GetPlayerNumber() + i) % Constants.HorseNumber;
 
-                if (users[YutGameManager.Instance.GetTurn()][nextPlayerNumber].player != null)
+                if (users[YutGameManager.Instance.GetTurn()].horses[nextPlayerNumber] != null &&
+                    users[YutGameManager.Instance.GetTurn()].horses[nextPlayerNumber].goal != true)
                 {
                     closestPlayerNumber = nextPlayerNumber;
                     break;
@@ -349,7 +351,8 @@ public class stone : MonoBehaviour
             if (closestPlayerNumber != -1)
             {
                 YutGameManager.Instance.SetPlayerNumber(closestPlayerNumber);
-                UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].player);
+                Debug.Log("close:"+ closestPlayerNumber);
+                UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()].horses[YutGameManager.Instance.GetPlayerNumber()].player);
             }
         }
     }
@@ -357,7 +360,7 @@ public class stone : MonoBehaviour
     {
         int turn = YutGameManager.Instance.GetTurn();
         int player_number = YutGameManager.Instance.GetPlayerNumber();
-        user nowUser = YutGameManager.Instance.GetNowUser();
+        horse nowUser = YutGameManager.Instance.GetNowHorse();
         if (turn == 0)
         {
             enemy = 1;
@@ -382,7 +385,7 @@ public class stone : MonoBehaviour
                 Debug.Log("Goal");
                 DestroyBindedHorses(player_number);
                 Destroy(nowUser.player);
-                SetUserToGoal(ref nowUser);
+                SetUserToGoal(nowUser);
                 break;
             }
 
@@ -394,7 +397,7 @@ public class stone : MonoBehaviour
                 int NowpositionSum = 0;
                 for (int i = 0; i < Constants.HorseNumber; i++)
                 {
-                    NowpositionSum += users[turn][i].nowPosition;
+                    NowpositionSum += users[turn].horses[i].nowPosition;
                 }
                 if (NowpositionSum == 0)
                 {
@@ -483,14 +486,14 @@ public class stone : MonoBehaviour
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
-            if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition == users[enemy][i].nowPosition)
+            if (horses.nowPosition == users[enemy].horses[i].nowPosition)
             {
-                if (!users[enemy][i].goal)
+                if (!users[enemy].horses[i].goal)
                 {
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
-                    chance += (users[enemy][i].BindedHorse.Count + 1);
-                    reset_player(ref users[enemy][i], objectPrefab[enemy]);
+                    chance += (users[enemy].horses[i].BindedHorse.Count + 1);
+                    reset_player(users[enemy].horses[i], objectPrefab[enemy]);
                     Yut.text = chance + " 번의 기회를 추가 획득!";
                     UIScript.choose_step = 0;
                     isYutThrown = false;
@@ -505,7 +508,7 @@ public class stone : MonoBehaviour
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
-            if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].routePosition == users[enemy][i].nowPosition)
+            if (horses.routePosition == users[enemy].horses[i].nowPosition)
             {
                 if (LeftStep > 0)
                 {
@@ -539,19 +542,19 @@ public class stone : MonoBehaviour
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             if (YutGameManager.Instance.GetPlayerNumber() == i) continue;
-            if (users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition == users[YutGameManager.Instance.GetTurn()][i].nowPosition &&
-                users[YutGameManager.Instance.GetTurn()][i].goal != true)
+            if (horses.nowPosition == users[YutGameManager.Instance.GetTurn()].horses[i].nowPosition &&
+                horses.goal != true)
             {
-                Debug.Log(YutGameManager.Instance.GetTurn() + "의 현재 윷의 위치 : " + users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].nowPosition);
-                Debug.Log(YutGameManager.Instance.GetTurn() + "의 겹치는 윷의 위치 : " + users[YutGameManager.Instance.GetTurn()][i].nowPosition);
+                Debug.Log(YutGameManager.Instance.GetTurn() + "의 현재 윷의 위치 : " + horses.nowPosition);
+                Debug.Log(YutGameManager.Instance.GetTurn() + "의 겹치는 윷의 위치 : " + horses.nowPosition);
                 bindedHorseIndex = i;
                 List<int> overlappedHorses =new List<int>();
                 for (int j = 0; j < Constants.HorseNumber; j++)
                 {
                     int currentPlayer = YutGameManager.Instance.GetPlayerNumber();
                     if (currentPlayer == j) continue;
-                    if (users[YutGameManager.Instance.GetTurn()][currentPlayer].nowPosition == users[YutGameManager.Instance.GetTurn()][j].nowPosition &&
-                        users[YutGameManager.Instance.GetTurn()][j].goal != true)
+                    if (horses.nowPosition == users[YutGameManager.Instance.GetTurn()].horses[j].nowPosition &&
+                        users[YutGameManager.Instance.GetTurn()].horses[j].goal != true)
                     {
                         overlappedHorses.Add(j);
                     }
@@ -561,9 +564,9 @@ public class stone : MonoBehaviour
                 // 바인딩되어 있는 모든 말들의 리스트 생성
                 List<int> allBindedHorses = new List<int>();
                 allBindedHorses.Add(YutGameManager.Instance.GetPlayerNumber());
-                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][YutGameManager.Instance.GetPlayerNumber()].BindedHorse);
+                allBindedHorses.AddRange(horses.BindedHorse);
                 allBindedHorses.Add(bindedHorseIndex);
-                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()][bindedHorseIndex].BindedHorse);
+                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse);
 
                 // 중복 항목 제거
                 allBindedHorses = allBindedHorses.Distinct().ToList();
@@ -571,9 +574,9 @@ public class stone : MonoBehaviour
                 // 모든 관련된 말들에 바인딩 정보 업데이트
                 foreach (int horseIndex in allBindedHorses)
                 {
-                    users[YutGameManager.Instance.GetTurn()][horseIndex].is_bind = true;
-                    users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse = new List<int>(allBindedHorses);
-                    users[YutGameManager.Instance.GetTurn()][horseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
+                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].is_bind = true;
+                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse = new List<int>(allBindedHorses);
+                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
                 }
                 bindedHorseIndex = -1;
                 AdjustPositionByStacking(YutGameManager.Instance.GetPlayerNumber(), overlappedHorses);
@@ -585,32 +588,32 @@ public class stone : MonoBehaviour
     //묶인 말 이동후 묶인 말들 정보 동기화
     public void SynchronizeBindedHorses(int mainHorseIndex)
     {
-        List<int> bindedHorses = users[YutGameManager.Instance.GetTurn()][mainHorseIndex].BindedHorse;
+        List<int> bindedHorses = horses.BindedHorse;
 
-        user mainHorse = users[YutGameManager.Instance.GetTurn()][mainHorseIndex];
+        horse mainHorse = users[YutGameManager.Instance.GetTurn()].horses[mainHorseIndex];
 
         foreach (int bindedIndex in bindedHorses)
         {
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].routePosition = mainHorse.routePosition;
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].nowPosition = mainHorse.nowPosition;
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].lastPosition = mainHorse.lastPosition;
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].nextPos = mainHorse.nextPos;
-            users[YutGameManager.Instance.GetTurn()][bindedIndex].goal = mainHorse.goal;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].routePosition = mainHorse.routePosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].nowPosition = mainHorse.nowPosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].lastPosition = mainHorse.lastPosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].nextPos = mainHorse.nextPos;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].goal = mainHorse.goal;
         }
     }
     //묶인 말들 동시 파괴
     public void DestroyBindedHorses(int mainHorseIndex)
     {
-        List<int> bindedHorses = users[YutGameManager.Instance.GetTurn()][mainHorseIndex].BindedHorse;
+        List<int> bindedHorses = users[YutGameManager.Instance.GetTurn()].horses[mainHorseIndex].BindedHorse;
 
         foreach (int bindedIndex in bindedHorses)
         {
-            Destroy(users[YutGameManager.Instance.GetTurn()][bindedIndex].player);
-            SetUserToGoal(ref users[YutGameManager.Instance.GetTurn()][bindedIndex]);
+            Destroy(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].player);
+            SetUserToGoal(users[YutGameManager.Instance.GetTurn()].horses[bindedIndex]);
         }
     }
     //골인한 말들에 대한 정보 초기화
-    public void SetUserToGoal(ref user u)
+    public void SetUserToGoal(horse u)
     {
         u.nextPos = Vector3.zero; // 다음 위치가 필요 없음
         u.goal = true;
@@ -620,10 +623,10 @@ public class stone : MonoBehaviour
     //말 업을 때 위치 조정
     void AdjustPositionByStacking(int currentPlayer, List<int> overlappedHorses)
     {
-        Vector3 basePosition = users[YutGameManager.Instance.GetTurn()][currentPlayer].player.transform.position;
+        Vector3 basePosition = horses.player.transform.position;
         for (int i = 0; i < overlappedHorses.Count; i++)
         {
-            users[YutGameManager.Instance.GetTurn()][overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
+            users[YutGameManager.Instance.GetTurn()].horses[overlappedHorses[i]].player.transform.position = basePosition + new Vector3(0, Constants.STACK_HEIGHT * (i + 1), 0);
         }
     }
 }

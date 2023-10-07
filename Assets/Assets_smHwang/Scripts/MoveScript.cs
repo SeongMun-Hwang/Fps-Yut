@@ -14,10 +14,10 @@ public class MoveScript : MonoBehaviour
     private const int CENTER_STRAIGHT = 24;
     private const int CENTER_FORK = 28;
 
-    private user[][] users;
+    private user[] users;
     private int turn;
     private int player_number;
-    public void GetData(int t, int p_num, user[][] u)
+    public void GetData(int t, int p_num, user[] u)
     {
         turn = t;
         player_number = p_num;
@@ -31,8 +31,8 @@ public class MoveScript : MonoBehaviour
     //백도 이동 예외 처리
     public int BackdoRoute()
     {
-        int position = users[turn][player_number].nowPosition;
-        int lastPosition = users[turn][player_number].lastPosition;
+        int position = users[turn].horses[player_number].nowPosition;
+        int lastPosition = users[turn].horses[player_number].lastPosition;
         int result = -1;
         switch (position)
         {
@@ -52,7 +52,7 @@ public class MoveScript : MonoBehaviour
                 result = position + result;
                 break;
         }
-        users[turn][player_number].nowPosition = users[turn][player_number].routePosition;
+        users[turn].horses[player_number].nowPosition = users[turn].horses[player_number].routePosition;
         return result;
     }
     //정상 이동 예외처리
@@ -99,27 +99,27 @@ public class MoveScript : MonoBehaviour
     //플레이어 이동함수
     public bool MoveToNextNode(Vector3 goal)
     {
-        if (users[turn][player_number].player != null)
+        if (users[turn].horses[player_number].player != null)
         {
             // 현재 위치에서 x, z 값을 가져오고 y 값은 변경하지 않습니다.
-            Vector3 startPos = users[turn][player_number].player.transform.position;
+            Vector3 startPos = users[turn].horses[player_number].player.transform.position;
             Vector3 newGoal = new Vector3(goal.x, startPos.y, goal.z);
 
             bool isMovingPlayer = (newGoal - startPos).sqrMagnitude > 0.001f * 0.001f;
             if (isMovingPlayer)
             {
-                users[turn][player_number].player.transform.position = Vector3.MoveTowards(startPos, newGoal, 8f * Time.deltaTime);
+                users[turn].horses[player_number].player.transform.position = Vector3.MoveTowards(startPos, newGoal, 8f * Time.deltaTime);
             }
             //업은 말이면 함께 이동
-            if (users[turn][player_number].is_bind)
+            if (users[turn].horses[player_number].is_bind)
             {
-                foreach (int bindedIndex in users[turn][player_number].BindedHorse)
+                foreach (int bindedIndex in users[turn].horses[player_number].BindedHorse)
                 {
-                    if (users[turn][bindedIndex].player != null)
+                    if (users[turn].horses[bindedIndex].player != null)
                     {
-                        Vector3 bindedStartPos = users[turn][bindedIndex].player.transform.position;
+                        Vector3 bindedStartPos = users[turn].horses[bindedIndex].player.transform.position;
                         Vector3 bindedGoal = new Vector3(goal.x, bindedStartPos.y, goal.z);
-                        users[turn][bindedIndex].player.transform.position = Vector3.MoveTowards(bindedStartPos, bindedGoal, 8f * Time.deltaTime);
+                        users[turn].horses[bindedIndex].player.transform.position = Vector3.MoveTowards(bindedStartPos, bindedGoal, 8f * Time.deltaTime);
                     }
                 }
             }
