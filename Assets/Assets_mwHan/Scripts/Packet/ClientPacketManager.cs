@@ -33,6 +33,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SStartGame, PacketHandler.S_StartGameHandler);		
 		_onRecv.Add((ushort)MsgId.SThrowYut, MakePacket<S_ThrowYut>);
 		_handler.Add((ushort)MsgId.SThrowYut, PacketHandler.S_ThrowYutHandler);		
+		_onRecv.Add((ushort)MsgId.SHorseCatch, MakePacket<S_HorseCatch>);
+		_handler.Add((ushort)MsgId.SHorseCatch, PacketHandler.S_HorseCatchHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawn, MakePacket<S_Spawn>);
 		_handler.Add((ushort)MsgId.SSpawn, PacketHandler.S_SpawnHandler);		
 		_onRecv.Add((ushort)MsgId.SDespawn, MakePacket<S_Despawn>);

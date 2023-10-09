@@ -52,6 +52,7 @@ class PacketHandler
 		foreach (ObjectInfo player in spawnPacket.Objects)
 		{
 			Managers.Object.Add(player, myPlayer: false);
+			Debug.Log(player.ObjectId);
 		}
 	}
 
@@ -63,6 +64,13 @@ class PacketHandler
 			Managers.Object.Remove(id);
 		}
 	}
+
+	public static void S_HorseCatchHandler(PacketSession session, IMessage packet)
+    {
+		S_HorseCatch horsecatchPacket = packet as S_HorseCatch;
+		Managers.Object.MyPlayer._playtime = horsecatchPacket.Playtime;
+		Debug.Log("horsecatch");
+    }
 
 	public static void S_MoveHandler(PacketSession session, IMessage packet)
 	{

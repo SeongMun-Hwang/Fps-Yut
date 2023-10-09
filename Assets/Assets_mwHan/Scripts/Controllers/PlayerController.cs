@@ -206,8 +206,6 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    public GameManager manager;
-
     // 넉백중인지 여부
     public bool isKnockedBack = false;
     protected float knockbackTimer = 0f;
@@ -384,7 +382,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log($"KnockbackForce = {knockbackForce}");
             TakeDamage(1); // 데미지 입음
 
-            if (Hp <= 0) Dodie();
+            //if (Hp <= 0) Dodie();
             StartCoroutine(OnDamage());
             Debug.Log("피격됨");
         }
@@ -472,8 +470,6 @@ public class PlayerController : MonoBehaviour
             return;
 
         isdead = true;
-        manager.loseplayer = gameObject.name;
-        manager.GameOver();
 
         foreach (MeshRenderer mesh in meshs)
         {

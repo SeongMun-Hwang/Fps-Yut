@@ -391,7 +391,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   theCamera: {fileID: 7925613722368316039}
   cameraRotationLimit: 80
-  manager: {fileID: 0}
   isKnockedBack: 0
   isdead: 0
   doAttack: 0
@@ -763,17 +762,3 @@ MonoBehaviour:
   KnockbackForceY: 3
   KnockbackTime: 2
   playerHitDuration: 3
---- !u!114 &7925613722826568471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7925613720960889146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f51bddd07fa0e74e9c1e64ae7087985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wc: {fileID: 0}
-  HitParticle: {fileID: 7925613721312807129}

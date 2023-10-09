@@ -5,45 +5,39 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class MinitwoGameManager : MonoBehaviour
 {
-    public float LeftTime; // 남은 시간
-    public bool isdead; 
-    public float WaitTime; // 씬 전환 시간
-    public string loseplayer;
+    MinitwoGameManager g_instance;
+    public MinitwoGameManager Instance { get { Init(); return g_instance; } }
 
+    float _lefttime; // 남은 시간
+    float WaitTime = 3; // 씬 전환 시간
+
+    public float LeftTime
+    {
+        get { return _lefttime; }
+        set { Instance._lefttime = value; }
+    } 
+
+    #region
     public GameObject diedPanel;
     public TextMeshProUGUI WinPlayerTxt;
     public TextMeshProUGUI SceneChangeTimeTxt;
     public TextMeshProUGUI LeftTimeTxt; // 남은 시간 텍스트
+    #endregion
 
     private void Start()
     {
+        Init();
     }
+
     private void Update()
     {
-
-        if (isdead)
-        {
-            WaitTime -= Time.deltaTime;
-        }
-        else
-        {
-            LeftTime -= Time.deltaTime;
-        }
+        LeftTime -= Time.deltaTime;
 
         if (LeftTime <= 0)
         {
-            // Determine the player with lower health
-            PlayerController player1 = GameObject.Find("Player1").GetComponent<PlayerController>();
-            PlayerController player2 = GameObject.Find("Enemy").GetComponent<PlayerController>();
-
-            if (player1.Hp < player2.Hp)
-                loseplayer = "Player1";
-            else
-                loseplayer = "Player2";
-
-            GameOver();
+            //GameOver();
         }
     }
 
@@ -57,20 +51,25 @@ public class GameManager : MonoBehaviour
         SceneChangeTimeTxt.text = string.Format("Please wait : ") + string.Format("{0:0}", diesec) + string.Format(" secs");
     }
 
-    public void GameOver()
+    static void Init()
     {
-        if (!isdead)
-        {
-            isdead = true;
-            if(loseplayer == "Player1")
-            {
-                WinPlayerTxt.text = string.Format("{0} Win!!", "TestPlayer");
-            }
-            else WinPlayerTxt.text = string.Format("{0} Win!!", "Player1");
-            diedPanel.SetActive(true);
-            StartCoroutine(ChangeScene());
-        }
+
     }
+
+    //public void GameOver()
+    //{
+    //    if (!isdead)
+    //    {
+    //        isdead = true;
+    //        if(loseplayer == "Player1")
+    //        {
+    //            WinPlayerTxt.text = string.Format("{0} Win!!", "TestPlayer");
+    //        }
+    //        else WinPlayerTxt.text = string.Format("{0} Win!!", "Player1");
+    //        diedPanel.SetActive(true);
+    //        StartCoroutine(ChangeScene());
+    //    }
+    //}
 
     IEnumerator ChangeScene()
     {
