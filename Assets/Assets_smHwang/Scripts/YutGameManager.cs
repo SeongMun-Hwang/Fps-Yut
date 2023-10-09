@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public static class Constants
 {
@@ -31,22 +32,41 @@ public class YutGameManager : MonoBehaviour
             Destroy(gameObject);
         }
         users = new user[Constants.PlayerNumber];
+
+        //유저 생성
         for (int i = 0; i < Constants.PlayerNumber; i++)
         {
-            users[i] = new user();
+            users[i] = new();
+        }
+        AssignTurns(); // 턴 값 할당
+        //말 셍상
+        for (int i = 0; i < Constants.PlayerNumber; i++)
+        {
             users[i].horses = new List<horse>();
             for (int j = 0; j < Constants.HorseNumber; j++)
             {
-                horse newHorse = new horse();
+                horse newHorse = new();
                 users[i].horses.Add(newHorse);
             }
         }
+        //user.turn에 따라 초기화
         for (int j = 0; j < Constants.PlayerNumber; j++)
         {
+            int userTurn = users[j].turn;
             for (int i = 0; i < Constants.HorseNumber; i++)
             {
-                users[0].horses[i].player = red_team[i];
-                users[1].horses[i].player = blue_team[i];
+                if (userTurn == 0)
+                {
+                    users[j].horses[i].player = red_team[i];
+                    Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
+                    users[j].DestinationColor = newColor;
+                }
+                else if (userTurn == 1)
+                {
+                    users[j].horses[i].player = blue_team[i];
+                    Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
+                    users[j].DestinationColor = newColor;
+                }
                 users[j].horses[i].player_start_position = users[j].horses[i].player.transform.position;
                 users[j].horses[i].is_bind = false;
                 users[j].horses[i].BindedHorse = new List<int>();
@@ -54,6 +74,7 @@ public class YutGameManager : MonoBehaviour
             }
         }
     }
+
     public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
     {
         turn = t;
@@ -69,10 +90,13 @@ public class YutGameManager : MonoBehaviour
     {
         return player_number;
     }
-
     public user[] GetUsers()
     {
         return users;
+    }
+    public user GetNowUsers()
+    {
+        return users[turn];
     }
     public List<horse> GetHorse()
     {
@@ -90,5 +114,32 @@ public class YutGameManager : MonoBehaviour
     public void SetPlayerNumber(int newPlayerNumber)
     {
         player_number = newPlayerNumber;
+    }
+    private void AssignTurns()
+    {
+        int[] turnValues = new int[Constants.PlayerNumber];
+        for (int i = 0; i < Constants.PlayerNumber; i++)
+        {
+            turnValues[i] = i;
+        }
+
+        Shuffle(turnValues);
+
+        for (int i = 0; i < Constants.PlayerNumber; i++)
+        {
+            users[i].turn = turnValues[i];
+        }
+    }
+    private void Shuffle(int[] array)
+    {
+        System.Random rng = new System.Random();
+        int n = array.Length;
+        for (int i = n - 1; i > 0; i--)
+        {
+            int j = rng.Next(i + 1);
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
     }
 }

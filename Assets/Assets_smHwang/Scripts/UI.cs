@@ -234,7 +234,7 @@ public class UI : MonoBehaviour
     public void ChooseMove()
     {
         //이동할 steps left/right arrow로 선택            
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             Yut.text = "";
             if (choose_step > 0)
@@ -316,13 +316,13 @@ public class UI : MonoBehaviour
                 }
                 else
                 {
-                    NormalRoute = MoveScript.NormalRoute(horses.nowPosition,finalPosition);
+                    NormalRoute = MoveScript.NormalRoute(horses.nowPosition, finalPosition);
                     if (NormalRoute != -1)
                     {
                         finalPosition = NormalRoute;
                         tempStepsLeft--;
                     }
-                    else if(NormalRoute==-1)
+                    else if (NormalRoute == -1)
                     {
                         finalPosition++;
                         tempStepsLeft--;
@@ -343,6 +343,7 @@ public class UI : MonoBehaviour
     {
         int turn = YutGameManager.Instance.GetTurn();
         horse horses = YutGameManager.Instance.GetNowHorse();
+        user nowUser = YutGameManager.Instance.GetNowUsers();
 
         foreach (var destination in horses.FinalPosition)
         {
@@ -356,16 +357,7 @@ public class UI : MonoBehaviour
             Renderer rend = instantiatedObj.GetComponent<Renderer>();
             if (rend != null)
             {
-                if (turn == 0)
-                {
-                    Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
-                    rend.material.color = newColor;
-                }
-                else if (turn == 1)
-                {
-                    Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
-                    rend.material.color = newColor;
-                }
+                rend.material.color = nowUser.DestinationColor;
             }
         }
     }
