@@ -74,9 +74,9 @@ public class UI : MonoBehaviour
     private void Update()
     {
         timer();
-        GoalCounter(YutGameManager.Instance.GetUsers());
+        GoalCounter(YutGameManager.Instance.GetHorse());
         ChooseMove();
-        SetOutline(YutGameManager.Instance.GetNowUser().player);
+        SetOutline(YutGameManager.Instance.GetNowHorse().player);
         if (steps.Count > 1 && stone.isYutThrown == true)
         {
             if (stone.isMoving)
@@ -101,15 +101,15 @@ public class UI : MonoBehaviour
         StartCoroutine(YieldReturnDelay(1.0f, DelayFunctionText));
         timeLeft = startTime;
     }
-    public void GoalCounter(user[][] users)
+    public void GoalCounter(List<horse> horses)
     {
         int[] countArray = new int[2];
 
         for (int i = 0; i < 2; i++)
         {
-            foreach (var user in users[i])
+            foreach (var horse in horses)
             {
-                if (!user.goal)
+                if (!horse.goal)
                 {
                     countArray[i]++;
                 }
@@ -193,7 +193,6 @@ public class UI : MonoBehaviour
     }
     public void choose_steps(int buttonIndex)
     {
-        user[][] users = YutGameManager.Instance.GetUsers();
         if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
@@ -235,7 +234,7 @@ public class UI : MonoBehaviour
     public void ChooseMove()
     {
         //이동할 steps left/right arrow로 선택            
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             Yut.text = "";
             if (choose_step > 0)
@@ -301,11 +300,11 @@ public class UI : MonoBehaviour
 
     public void CalculateDestination(bool isBackdo)
     {
-        user user = YutGameManager.Instance.GetNowUser();
+        horse horses = YutGameManager.Instance.GetNowHorse();
         foreach (var stepsLeft in steps)
         {
             int tempStepsLeft = stepsLeft;
-            int finalPosition = user.nowPosition;
+            int finalPosition = horses.nowPosition;
 
             while (tempStepsLeft > 0)
             {
@@ -317,13 +316,13 @@ public class UI : MonoBehaviour
                 }
                 else
                 {
-                    NormalRoute = MoveScript.NormalRoute(user.nowPosition,finalPosition);
+                    NormalRoute = MoveScript.NormalRoute(horses.nowPosition, finalPosition);
                     if (NormalRoute != -1)
                     {
                         finalPosition = NormalRoute;
                         tempStepsLeft--;
                     }
-                    else if(NormalRoute==-1)
+                    else if (NormalRoute == -1)
                     {
                         finalPosition++;
                         tempStepsLeft--;
@@ -336,16 +335,17 @@ public class UI : MonoBehaviour
                 }
 
             }
-            user.FinalPosition.Add(finalPosition);
+            horses.FinalPosition.Add(finalPosition);
         }
     }
 
     public void ShowDestination()
     {
         int turn = YutGameManager.Instance.GetTurn();
-        user users = YutGameManager.Instance.GetNowUser();
+        horse horses = YutGameManager.Instance.GetNowHorse();
+        user nowUser = YutGameManager.Instance.GetNowUsers();
 
-        foreach (var destination in users.FinalPosition)
+        foreach (var destination in horses.FinalPosition)
         {
             Transform targetNode = stone.currentRoute.childNodeList[destination];
             Vector3 targetPosition = targetNode.position;
@@ -357,16 +357,7 @@ public class UI : MonoBehaviour
             Renderer rend = instantiatedObj.GetComponent<Renderer>();
             if (rend != null)
             {
-                if (turn == 0)
-                {
-                    Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
-                    rend.material.color = newColor;
-                }
-                else if (turn == 1)
-                {
-                    Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
-                    rend.material.color = newColor;
-                }
+                rend.material.color = nowUser.DestinationColor;
             }
         }
     }
@@ -377,8 +368,8 @@ public class UI : MonoBehaviour
         {
             Destroy(obj);
         }
-        user user = YutGameManager.Instance.GetNowUser();
-        user.FinalPosition.Clear();
+        horse horses = YutGameManager.Instance.GetNowHorse();
+        horses.FinalPosition.Clear();
         DestiantionObject.Clear();
     }
 }

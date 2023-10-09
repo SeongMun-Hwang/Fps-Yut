@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class user
 {
+    public List<horse> horses;
+    public int turn;
+    public Color DestinationColor;
+}
+public class horse
+{
     public GameObject player;
     public int routePosition;
     public int nowPosition;
