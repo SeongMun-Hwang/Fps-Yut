@@ -5,6 +5,7 @@ using UnityEngine;
 public class user
 {
     public List<horse> horses;
+    public int turn;
 }
 public class horse
 {

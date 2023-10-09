@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public static class Constants
 {
@@ -53,6 +54,7 @@ public class YutGameManager : MonoBehaviour
                 users[j].horses[i].FinalPosition = new List<int>();
             }
         }
+        AssignTurns();
     }
     public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
     {
@@ -90,5 +92,34 @@ public class YutGameManager : MonoBehaviour
     public void SetPlayerNumber(int newPlayerNumber)
     {
         player_number = newPlayerNumber;
+    }
+    private void AssignTurns()
+    {
+        int[] turnValues = new int[Constants.PlayerNumber];
+        for (int i = 0; i < Constants.PlayerNumber; i++)
+        {
+            turnValues[i] = i;
+        }
+
+        Shuffle(turnValues);
+
+        for (int i = 0; i < Constants.PlayerNumber; i++)
+        {
+            users[i].turn = turnValues[i];
+        }
+    }
+
+    // Fisher-Yates 알고리즘을 사용하여 배열을 섞는 함수
+    private void Shuffle(int[] array)
+    {
+        System.Random rng = new System.Random();
+        int n = array.Length;
+        for (int i = n - 1; i > 0; i--)
+        {
+            int j = rng.Next(i + 1);
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
     }
 }
