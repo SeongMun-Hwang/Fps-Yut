@@ -2,11 +2,25 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MyPlayerController : PlayerController
 {
     float _mouseRotationY;
     float _mouseRotationX;
+
+    Transform mycanvas;
+    Transform gamePanel;
+    GameObject timeimg;
+    GameObject diedImage;
+    TextMeshProUGUI _lefttimetxt;
+    TextMeshProUGUI _gameendtxt;
+
+    public float _playtime;
+    private float _lefttime;
+    int WaitTime = 3;
 
     [SerializeField]
     protected float lookSensitivity; // 카메라 민감도
@@ -14,20 +28,19 @@ public class MyPlayerController : PlayerController
     // Start is called before the first frame update
     new void Start()
     {
-        //{
-        //    C_EnterRoom enterroomPacket = new C_EnterRoom();
-        //    enterroomPacket.RoomId = 1;
-        //    Managers.Network.Send(enterroomPacket);
-        //}
-
+        _playtime = 60f;
+        _lefttime = _playtime;
         myRigid = GetComponent<Rigidbody>();
         meshs = GetComponentsInChildren<MeshRenderer>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         weaponController = GetComponentInChildren<WeaponController>();
-        weaponController.owner = gameObject;
 
-        Speed = 10f;
-        RunSpeed = 20f;
+        mycanvas = transform.Find("Canvas");
+        gamePanel = mycanvas.Find("Game Panel");
+        timeimg = gamePanel.Find("Time").gameObject;
+        diedImage = gamePanel.Find("Died image").gameObject;
+        _lefttimetxt = timeimg.GetComponentInChildren<TextMeshProUGUI>();
+        _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
 
         applySpeed = Speed;
 
@@ -73,11 +86,20 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    private void LateUpdate()
+    {
+        _lefttime -= Time.deltaTime;
+
+        int sec = (int)_lefttime % 60;
+        _lefttimetxt.text = string.Format("{0:00}", sec);
+    }
+
     private void TryJump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             Jump();
+            GameEnd();
         }
     }
 
@@ -132,21 +154,6 @@ public class MyPlayerController : PlayerController
         _mouseRotationY = Input.GetAxisRaw("Mouse X"); // 좌우 마우스 회전
         CameraRotationY = _mouseRotationY * lookSensitivity;
     }
-    //protected void CameraRotation() // 상하 카메라 회전
-    //{
-    //    currentCameraRotationX -= CameraRotationX;
-    //    currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit); // 카메라 각도 최대값 고정
-
-    //    theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f); //localEulerAngles : Rotation x,y,z
-
-    //}
-
-    //protected void CharacterRotation() // 좌우 카메라 회전. (캐릭터도 같이 회전됨)
-    //{
-    //    Vector3 _characterRotationY = new Vector3(0f, CameraRotationY, 0f);
-    //    myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
-    //    // 실제 유니티 내부에 회전은 quaternion 사용함. 우리가 구한 vector(euler)를 quaternion으로 바꿔주는 과정
-    //}
 
     void UpdatePlayerInfo()
     {
@@ -162,6 +169,20 @@ public class MyPlayerController : PlayerController
         rotationPacket.RotInfo = RotInfo;
         Managers.Network.Send(movePacket);
         Managers.Network.Send(rotationPacket);
+    }
+
+    void GameEnd()
+    {
+        _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
+        _gameendtxt.text = string.Format("Game End\n Player Win");
+        diedImage.gameObject.SetActive(true);
+        StartCoroutine(ChangeScene());
+    }
+
+    IEnumerator ChangeScene()
+    {
+        yield return new WaitForSeconds(WaitTime);
+        SceneManager.LoadScene("YutPlay");
     }
 }
 

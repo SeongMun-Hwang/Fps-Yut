@@ -303,7 +303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 852388431113477272}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -694,7 +694,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &852388431648684458
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1073,7 +1073,6 @@ GameObject:
   - component: {fileID: 4265124150349342646}
   - component: {fileID: 4265124150349342669}
   - component: {fileID: 4265124150349342647}
-  - component: {fileID: 852388432553790126}
   - component: {fileID: 852388431454980110}
   m_Layer: 3
   m_Name: Hammer
@@ -1181,20 +1180,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &852388432553790126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4265124150349342665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f51bddd07fa0e74e9c1e64ae7087985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wc: {fileID: 852388431454980110}
-  HitParticle: {fileID: 0}
 --- !u!114 &852388431454980110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1210,7 +1195,6 @@ MonoBehaviour:
   playerController: {fileID: 852388432834721099}
   owner: {fileID: 4265124151416648635}
   Hammer: {fileID: 4265124150349342665}
-  canAttack: 1
   AttackCooldown: 1
   IsAttacking: 0
   meleeArea: {fileID: 4265124150349342669}
@@ -1682,9 +1666,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   theCamera: {fileID: 4265124151091773524}
   cameraRotationLimit: 80
-  manager: {fileID: 0}
   isKnockedBack: 0
   isdead: 0
+  doAttack: 0
+  canattack: 1
+  _playtime: 0
   lookSensitivity: 2
 --- !u!1 &4265124151561643603
 GameObject:
