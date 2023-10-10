@@ -469,6 +469,7 @@ public class stone : MonoBehaviour
             yield return new WaitUntil(() => chooseBindCalled);
             chooseBindCalled = false;
         }
+        if (nowUser.nowPosition == 22) { nowUser.nowPosition = 27; }
         SynchronizeBindedHorses(player_number);
         //턴 변경전 승자 체크
         check_Winner();
