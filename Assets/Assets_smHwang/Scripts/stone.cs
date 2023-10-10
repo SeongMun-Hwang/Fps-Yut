@@ -550,52 +550,51 @@ public class stone : MonoBehaviour
     {
         Debug.Log("말 묶기 실행");
         Debug.Log("현재 말 : " + YutGameManager.Instance.GetPlayerNumber());
+
+        int currentPlayer = YutGameManager.Instance.GetPlayerNumber();
+        List<int> overlappedHorses = new List<int>();
+
         //자기 말들 위치 같은지 검사
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
-            if (YutGameManager.Instance.GetPlayerNumber() == i) continue;//자기 자신 건너뜀
-            if (horses.nowPosition == users[YutGameManager.Instance.GetTurn()].horses[i].nowPosition &&
-                horses.goal != true)
+            if (currentPlayer == i) continue; //자기 자신 건너뜀
+
+            if (horses.nowPosition == users[YutGameManager.Instance.GetTurn()].horses[i].nowPosition && horses.goal != true)
             {
-                Debug.Log(YutGameManager.Instance.GetTurn() + "의 현재 윷의 위치 : " + horses.nowPosition);
                 Debug.Log(YutGameManager.Instance.GetTurn() + "의 겹치는 윷의 위치 : " + horses.nowPosition);
-                bindedHorseIndex = i;
-                List<int> overlappedHorses =new List<int>();
-                for (int j = 0; j < Constants.HorseNumber; j++)
-                {
-                    int currentPlayer = YutGameManager.Instance.GetPlayerNumber();
-                    if (currentPlayer == j) continue;
-                    if (horses.nowPosition == users[YutGameManager.Instance.GetTurn()].horses[j].nowPosition &&
-                        users[YutGameManager.Instance.GetTurn()].horses[j].goal != true)
-                    {
-                        overlappedHorses.Add(j);
-                    }
-                }
-                if (bindedHorseIndex < 0) return;
-
-                // 바인딩되어 있는 모든 말들의 리스트 생성
-                List<int> allBindedHorses = new List<int>();
-                allBindedHorses.Add(YutGameManager.Instance.GetPlayerNumber());
-                allBindedHorses.AddRange(horses.BindedHorse);
-                allBindedHorses.Add(bindedHorseIndex);
-                allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse);
-
-                // 중복 항목 제거
-                allBindedHorses = allBindedHorses.Distinct().ToList();
-
-                // 모든 관련된 말들에 바인딩 정보 업데이트
-                foreach (int horseIndex in allBindedHorses)
-                {
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].is_bind = true;
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse = new List<int>(allBindedHorses);
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
-                }
-                bindedHorseIndex = -1;
-                //말 오브젝트 쌓기
-                AdjustPositionByStacking(YutGameManager.Instance.GetPlayerNumber(), overlappedHorses);
+                overlappedHorses.Add(i);
             }
         }
+
+        if (overlappedHorses.Count == 0) return;
+
+        // 바인딩되어 있는 모든 말들의 리스트 생성
+        List<int> allBindedHorses = new List<int>();
+        allBindedHorses.Add(currentPlayer);
+        allBindedHorses.AddRange(horses.BindedHorse);
+        allBindedHorses.AddRange(overlappedHorses);
+
+        // 현재 겹치는 말에 대한 바인딩 정보 추가
+        foreach (int overlappedHorse in overlappedHorses)
+        {
+            allBindedHorses.AddRange(users[YutGameManager.Instance.GetTurn()].horses[overlappedHorse].BindedHorse);
+        }
+
+        // 중복 항목 제거
+        allBindedHorses = allBindedHorses.Distinct().ToList();
+
+        // 모든 관련된 말들에 바인딩 정보 업데이트
+        foreach (int horseIndex in allBindedHorses)
+        {
+            users[YutGameManager.Instance.GetTurn()].horses[horseIndex].is_bind = true;
+            users[YutGameManager.Instance.GetTurn()].horses[horseIndex].BindedHorse = new List<int>(allBindedHorses);
+            users[YutGameManager.Instance.GetTurn()].horses[horseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
+        }
+
+        //말 오브젝트 쌓기
+        AdjustPositionByStacking(currentPlayer, overlappedHorses);
     }
+
 
     //묶인 말 이동후 묶인 말들 정보 동기화
     public void SynchronizeBindedHorses(int mainHorseIndex)
@@ -611,6 +610,8 @@ public class stone : MonoBehaviour
             users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].lastPosition = mainHorse.lastPosition;
             users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].nextPos = mainHorse.nextPos;
             users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].goal = mainHorse.goal;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse = mainHorse.BindedHorse;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].is_bind = mainHorse.is_bind;
         }
     }
     //묶인 말들 동시 파괴

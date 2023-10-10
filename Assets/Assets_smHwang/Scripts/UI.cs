@@ -56,9 +56,11 @@ public class UI : MonoBehaviour
     }
     private void Start()
     {
+        //액션에 따른 동작 지정
         stone.OnChangeTurnAction = ChangeTurnUI;
         stone.ShowDestination = DestinationUI;
         stone.UpdateSteps = _UpdateSteps;
+
         StartText(YutGameManager.Instance.GetTurn());
         for (int i = 0; i < steps_button.Length; i++)
         {
@@ -242,7 +244,6 @@ public class UI : MonoBehaviour
                 choose_step--;
             }
             Debug.Log("steps=" + steps[choose_step]);
-            Yut.text = "Available" + Yut.text + "\nyou choose";
             selectedButtonIndex = choose_step;
             UpdateButtonColors();
         }
@@ -297,10 +298,11 @@ public class UI : MonoBehaviour
     {
         return steps[choose_step];
     }
-
+    //목적지 계산
     public void CalculateDestination(bool isBackdo)
     {
         horse horses = YutGameManager.Instance.GetNowHorse();
+        //steps 리스트에 있는 값들에 대해 각각 계산 후 FinalDestination 리스트에 추가
         foreach (var stepsLeft in steps)
         {
             int tempStepsLeft = stepsLeft;
@@ -338,7 +340,7 @@ public class UI : MonoBehaviour
             horses.FinalPosition.Add(finalPosition);
         }
     }
-
+    //FinalDestination 위치들에 오브젝트 생성
     public void ShowDestination()
     {
         int turn = YutGameManager.Instance.GetTurn();
@@ -361,6 +363,7 @@ public class UI : MonoBehaviour
             }
         }
     }
+    //목적지 오브젝트 모두 파괴, 리스트 초기화
     public void DestroyDestination()
     {
         foreach (var obj in DestiantionObject)

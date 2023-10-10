@@ -38,8 +38,8 @@ public class YutGameManager : MonoBehaviour
         {
             users[i] = new();
         }
-        AssignTurns(); // ÅÏ °ª ÇÒ´ç
-        //¸» ¼Ä»ó
+        AssignTurns(); // ÅÏ °ª ·£´ý ÇÒ´ç
+        //¸» »ý¼º
         for (int i = 0; i < Constants.PlayerNumber; i++)
         {
             users[i].horses = new List<horse>();
@@ -55,13 +55,13 @@ public class YutGameManager : MonoBehaviour
             int userTurn = users[j].turn;
             for (int i = 0; i < Constants.HorseNumber; i++)
             {
-                if (userTurn == 0)
+                if (userTurn == 0) //»¡°­
                 {
                     users[j].horses[i].player = red_team[i];
                     Color newColor = new Color(255f / 255f, 77f / 255f, 70f / 255f, 0.5f);
                     users[j].DestinationColor = newColor;
                 }
-                else if (userTurn == 1)
+                else if (userTurn == 1) //ÆÄ¶û
                 {
                     users[j].horses[i].player = blue_team[i];
                     Color newColor = new Color(77f / 255f, 77f / 255f, 255f / 255f);
@@ -115,6 +115,7 @@ public class YutGameManager : MonoBehaviour
     {
         player_number = newPlayerNumber;
     }
+    //·£´ý ÅÏ ÁöÁ¤
     private void AssignTurns()
     {
         int[] turnValues = new int[Constants.PlayerNumber];
@@ -130,6 +131,7 @@ public class YutGameManager : MonoBehaviour
             users[i].turn = turnValues[i];
         }
     }
+    //ÅÏ ·£´ýÇÏ°Ô ¼ÅÇÃ
     private void Shuffle(int[] array)
     {
         System.Random rng = new System.Random();
