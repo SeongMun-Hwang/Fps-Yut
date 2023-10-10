@@ -60,7 +60,7 @@ public class MoveScript : MonoBehaviour
     {
         //int position = users[turn][player_number].nowPosition;
         //int lastPosition = users[turn][player_number].lastPosition;
-        int result = -1; // default value
+        int result = -1;
         switch (position)
         {
             case FIRST_CORNER:

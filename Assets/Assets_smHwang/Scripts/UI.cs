@@ -363,7 +363,6 @@ public class UI : MonoBehaviour
     }
     public void DestroyDestination()
     {
-        Debug.Log("destroy destination");
         foreach (var obj in DestiantionObject)
         {
             Destroy(obj);
