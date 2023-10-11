@@ -36,11 +36,6 @@ class PacketHandler
 		Managers.Object.RemoveMyPlayer();
 	}
 
-	public static void S_ThrowYutHandler(PacketSession session, IMessage packet)
-	{
-		S_ThrowYut throwYutHandler = packet as S_ThrowYut;
-	}
-
 	public static void S_StartGameHandler(PacketSession session, IMessage packet)
 	{
 		S_StartGame startGameHandler = packet as S_StartGame;
@@ -63,6 +58,14 @@ class PacketHandler
 		{
 			Managers.Object.Remove(id);
 		}
+	}
+
+	public static void S_ThrowYutHandler(PacketSession session, IMessage packet)
+	{
+		S_ThrowYut throwYutHandler = packet as S_ThrowYut;
+		stone stoneScript = Object.FindObjectOfType<stone>();
+		stoneScript.HandleThrowYut(throwYutHandler.Result);
+
 	}
 
 	public static void S_HorseCatchHandler(PacketSession session, IMessage packet)
