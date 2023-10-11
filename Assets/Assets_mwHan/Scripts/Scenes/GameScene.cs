@@ -12,7 +12,7 @@ public class GameScene : BaseScene
 
         Managers.Network.stt();
 
-        Screen.SetResolution(640, 480, false);
+        //Screen.SetResolution(640, 480, false);
 
         //GameObject player = Managers.Resource.Instantiate("Creature/Player");
         //player.name = "Player";

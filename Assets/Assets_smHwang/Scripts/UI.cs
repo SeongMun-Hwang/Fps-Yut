@@ -45,7 +45,7 @@ public class UI : MonoBehaviour
     private void DestinationUI()
     {
         DestroyDestination();
-        CalculateDestination(stone.GetBackdo());
+        CalculateDestination();
         ShowDestination();
     }
     private void _UpdateSteps()
@@ -225,12 +225,12 @@ public class UI : MonoBehaviour
             Debug.Log(i);
         }
     }
-    public void SetSteps(int value, bool isBackdo)
+    public void SetSteps(int value)
     {
         steps.Add(value);
-        _isBackdo = isBackdo;
-        Debug.Log("_isBackdo : " + _isBackdo);
-        Debug.Log("isBackdo : " + isBackdo);
+        //_isBackdo = isBackdo;
+        //Debug.Log("_isBackdo : " + _isBackdo);
+        //Debug.Log("isBackdo : " + isBackdo);
         match_Yut(value);
     }
     public void ChooseMove()
@@ -264,17 +264,13 @@ public class UI : MonoBehaviour
     {
         switch (i)
         {
+            case -1:
+                steps_button_Text[steps.Count - 1].text = "백도";
+                Yut.text = " 백도";
+                break;
             case 1:
-                if (_isBackdo)
-                {
-                    steps_button_Text[steps.Count - 1].text = "백도";
-                    Yut.text = " 백도";
-                }
-                else
-                {
-                    steps_button_Text[steps.Count - 1].text = "도";
-                    Yut.text = " 도";
-                }
+                steps_button_Text[steps.Count - 1].text = "도";
+                Yut.text = " 도";
                 break;
             case 2:
                 steps_button_Text[steps.Count - 1].text = "개";
@@ -299,7 +295,7 @@ public class UI : MonoBehaviour
         return steps[choose_step];
     }
     //목적지 계산
-    public void CalculateDestination(bool isBackdo)
+    public void CalculateDestination()
     {
         horse horses = YutGameManager.Instance.GetNowHorse();
         //steps 리스트에 있는 값들에 대해 각각 계산 후 FinalDestination 리스트에 추가
@@ -311,10 +307,9 @@ public class UI : MonoBehaviour
             while (tempStepsLeft > 0)
             {
                 int NormalRoute;
-                if (isBackdo && tempStepsLeft == 1)
+                if (tempStepsLeft == -1)
                 {
                     finalPosition = MoveScript.BackdoRoute();
-                    isBackdo = false;
                 }
                 else
                 {

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,7 +31,6 @@ public class stone : MonoBehaviour
     }
     //bool 변수
     public bool isMoving;
-    public bool isBackdo = false;
     private bool chooseBindCalled = false;
     public bool isFight = false;
     public bool isYutThrown = false;
@@ -65,48 +65,72 @@ public class stone : MonoBehaviour
     {
         if (!isYutThrown)
         {
-            int[] yut = new int[4]; //윷 4개
-            //윷 4개 랜덤으로 0,1 굴려서 값 더함 -> sum
-            for (int i = 0; i < 4; i++)
-            {
-                yut[i] = UnityEngine.Random.Range(0, 2);
-                sum += yut[i];
-            }
-            switch (sum)
-            {
-                case 0:
-                    throw_mo();
-                    break;
-                case 1:
-                    if (yut[3] == 1) //마지막 윷을 백도 윷으로 지정
-                    {
-                        throw_back_do();
-                        break;
-                    }
-                    throw_do();
-                    break;
-                case 2:
-                    throw_gae();
-                    break;
-                case 3:
-                    throw_girl();
-                    break;
-                case 4:
-                    throw_yut();
-                    break;
-            }
-            //소리 랜덤 재생
-            int RandomSound = UnityEngine.Random.Range(0, 5);
-            yutSound[RandomSound].mute = false;
-            yutSound[RandomSound].Play();
-            sum = 0;
+            C_ThrowYut throwYutPacket = new C_ThrowYut();
+            Managers.Network.Send(throwYutPacket);
         }
+    }
+
+    public void HandleThrowYut(YutResult result)
+    {
+        sum = convertYutResult(result);
+        Debug.Log(result);
+        Debug.Log(sum);
+
+        switch (sum)
+        {
+            case -1:
+                throw_back_do();
+                break;
+            case 0:
+                throw_mo();
+                break;
+            case 1:
+                throw_do();
+                break;
+            case 2:
+                throw_gae();
+                break;
+            case 3:
+                throw_girl();
+                break;
+            case 4:
+                throw_yut();
+                break;
+            case 5:
+                throw_nak();
+                break;
+        }
+        int RandomSound = UnityEngine.Random.Range(0, 5);
+        yutSound[RandomSound].mute = false;
+        yutSound[RandomSound].Play();
+
         ShowDestination.Invoke();
     }
-    public bool GetBackdo()
+
+    private int convertYutResult(YutResult result)
     {
-        return isBackdo;
+        switch (result)
+        {
+            case YutResult.Backdo:
+                return -1;
+            case YutResult.Mo:
+                return 0;
+            case YutResult.Do:
+                return 1;
+            case YutResult.Gae:
+                return 2;
+            case YutResult.Geol:
+                return 3;
+            case YutResult.Yut:
+                return 4;
+            case YutResult.Nak:
+                return 5;
+            default:
+                Debug.Log("무슨상황이여");
+                return 5;
+        }
     }
+
     //윷 지정 던지기
     public void throw_do()
     {
@@ -121,9 +145,7 @@ public class stone : MonoBehaviour
     public void throw_back_do()
     {
         Debug.Log("윷 지정 : 백도");
-        isBackdo = true;
-        UpdateThrowResult(1);
-        Debug.Log("stone : " + isBackdo);
+        UpdateThrowResult(-1);
         if (chance == 0)
         {
             isYutThrown = true;
@@ -160,13 +182,21 @@ public class stone : MonoBehaviour
         Debug.Log("윷 지정 : 모");
         UpdateThrowResult(5);
     }
+    
+    public void throw_nak()
+    {
+        if (chance == 0)
+        {
+            isYutThrown = true;
+        }
+        else { chance--; }
+    }
     //윷 결과 저장 함수
     private async void UpdateThrowResult(int value)
     {
         if (!isYutThrown)
         {
-            Debug.Log("before : " + isBackdo);
-            UIScript.SetSteps(value, isBackdo); //steps리스트에 추가(UI.cs)
+            UIScript.SetSteps(value); //steps리스트에 추가(UI.cs)
             if (value == 4 || value == 5) //윷, 모면 윷 던지기 함수 재호출
             {
                 await DelayAsync(0.5f);
@@ -395,8 +425,7 @@ public class stone : MonoBehaviour
             }
 
             //백도 예외 처리
-            //isbackdo 이고 스텝값이 1이면 백도. -1로 변경시 조건 하나로 축소
-            if (isBackdo == true && UIScript.GetStep() == 1)
+            if (UIScript.GetStep() == -1)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -411,7 +440,6 @@ public class stone : MonoBehaviour
                     yield return new WaitForSeconds(1f);
                     LeftStep = 0;
                     isMoving = false;
-                    isBackdo = false;
                     ChangeTurn();
                     yield break;
                 }
@@ -421,7 +449,6 @@ public class stone : MonoBehaviour
                     int BackdoRoute = MoveScript.BackdoRoute(); //백도이동
                     nowUser.routePosition = BackdoRoute;
                 }
-                isBackdo = false;
             }
             //NormalRoute
             else
