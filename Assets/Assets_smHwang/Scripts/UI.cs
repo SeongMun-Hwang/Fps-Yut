@@ -198,7 +198,7 @@ public class UI : MonoBehaviour
         if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
-            Debug.Log(buttonIndex);
+            Debug.Log("buttonindex : "+buttonIndex);
             if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
             {
                 selectedButtonIndex = buttonIndex;
