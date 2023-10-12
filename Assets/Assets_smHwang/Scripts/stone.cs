@@ -478,7 +478,6 @@ public class stone : MonoBehaviour
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
             LeftStep--;
-
             //이동 중 상대방 말을 지나갈때
             //DefenseGameTrigger(LeftStep);
 
@@ -538,22 +537,32 @@ public class stone : MonoBehaviour
         }
     }
     //DefenseGame 트리거
-    private IEnumerator DefenseGameTrigger(int LeftStep)
+    private void DefenseGameTrigger(int LeftStep)
     {
+        Debug.Log("defensegame");
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             //이동 예상 경로에 상대가 존재하고
             if (horses.routePosition == users[enemy].horses[i].nowPosition)
             {
-                //이동 가능하면
-                if (LeftStep > 0)
+                //업은 말이 같거나 작으면
+                if (horses.BindedHorse.Count <= users[enemy].horses[i].BindedHorse.Count)
                 {
-                    Yut.text = "To pass, Win!";
-                    yield return new WaitForSeconds(1f);
-                    SceneManager.LoadScene("Defense_Game");
+                    //이동 가능하면
+                    if (LeftStep > 0)
+                    {
+                        Yut.text = "To pass, Win!";
+                        //yield return new WaitForSeconds(1f
+                        StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
+                        SceneManager.LoadScene("Defense_Game");
+                    }
                 }
             }
         }
+    }
+    private IEnumerator LoadDefenseGameSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
     }
     public void ChangeTurn()
     {
