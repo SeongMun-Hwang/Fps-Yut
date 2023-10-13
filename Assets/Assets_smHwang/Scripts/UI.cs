@@ -123,7 +123,7 @@ public class UI : MonoBehaviour
         Goal_Status.text = "플레이어1 남은 말: " + countArray[0] +
             "\n플레이어2 남은 말: " + countArray[1];
     }
-    IEnumerator YieldReturnDelay(float time, String text)
+    public IEnumerator YieldReturnDelay(float time, String text)
     {
         yield return new WaitForSeconds(time);
         Yut.text = text;
@@ -294,6 +294,7 @@ public class UI : MonoBehaviour
                 Yut.text = " 모";
                 break;
         }
+        StartCoroutine(YieldReturnDelay(1.0f, ""));
     }
     public int GetStep()
     {
@@ -382,8 +383,9 @@ public class UI : MonoBehaviour
         }
         DirectionalLight.intensity = 0.1f;
     }
-    public void TurnOffFire()
+    public IEnumerator TurnOffFire()
     {
+        yield return new WaitForSeconds(2.0f);
         for (int i = 0; i < 4; i++)
         {
             Fire[i].Stop();

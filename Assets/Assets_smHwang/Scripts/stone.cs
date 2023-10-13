@@ -31,7 +31,6 @@ public class stone : MonoBehaviour
     }
     //bool 변수
     public bool isMoving;
-    private bool chooseBindCalled = false;
     public bool isFight = false;
     public bool isYutThrown = false;
     bool shownDestination = false;
@@ -329,7 +328,9 @@ public class stone : MonoBehaviour
     //버튼에 연결돼있음 날리면 안됨
     public void move_Player()
     {
-        horse horses = YutGameManager.Instance.GetNowHorse();
+        if (isYutThrown)
+        {
+            horse horses = YutGameManager.Instance.GetNowHorse();
 
         C_YutMove yutmovePacket = new C_YutMove();
         yutmovePacket.UseResult = UIScript.choose_step;
@@ -346,7 +347,7 @@ public class stone : MonoBehaviour
         //    Debug.Log("move");
         //    StartCoroutine(Move(UIScript.GetStep()));
         //}
-        handleMovePlayer();
+         handleMovePlayer(); }
     }
 
     public void handleMovePlayer()
@@ -554,6 +555,7 @@ public class stone : MonoBehaviour
             {
                 if (!users[enemy].horses[i].goal)
                 {
+                    //불키기
                     UIScript.TurnOnFire();
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
@@ -567,6 +569,7 @@ public class stone : MonoBehaviour
                     isYutThrown = false;
                     //Fpsfight 진행
                     //SceneManager.LoadScene("Fpsfight");
+                    StartCoroutine(UIScript.TurnOffFire());
                 }
             }
         }
