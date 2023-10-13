@@ -629,9 +629,9 @@ public class stone : MonoBehaviour
                 // 모든 관련된 말들에 바인딩 정보 업데이트
                 foreach (int horseIndex in allBindedHorses)
                 {
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].is_bind = true;
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse = new List<int>(allBindedHorses);
-                    users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
+                    users[YutGameManager.Instance.GetTurn()].horses[horseIndex].is_bind = true;
+                    users[YutGameManager.Instance.GetTurn()].horses[horseIndex].BindedHorse = new List<int>(allBindedHorses);
+                    users[YutGameManager.Instance.GetTurn()].horses[horseIndex].BindedHorse.Remove(horseIndex); // 자기 자신은 리스트에서 제외
                 }
                 bindedHorseIndex = -1;
                 //말 오브젝트 쌓기
@@ -650,13 +650,13 @@ public class stone : MonoBehaviour
 
         foreach (int bindedIndex in bindedHorses)
         {
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].routePosition = mainHorse.routePosition;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].nowPosition = mainHorse.nowPosition;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].lastPosition = mainHorse.lastPosition;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].nextPos = mainHorse.nextPos;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].goal = mainHorse.goal;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].BindedHorse = mainHorse.BindedHorse;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].is_bind = mainHorse.is_bind;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].routePosition = mainHorse.routePosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].nowPosition = mainHorse.nowPosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].lastPosition = mainHorse.lastPosition;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].nextPos = mainHorse.nextPos;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].goal = mainHorse.goal;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].BindedHorse = mainHorse.BindedHorse;
+            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].is_bind = mainHorse.is_bind;
         }
     }
     //묶인 말들 동시 파괴
