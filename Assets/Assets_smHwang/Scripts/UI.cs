@@ -34,7 +34,10 @@ public class UI : MonoBehaviour
     //최종위치 표시
     public GameObject instance;
     public List<GameObject> DestiantionObject = new List<GameObject>();
-    //턴 변경 시 액션
+    //불꽃
+    public ParticleSystem[] Fire;
+    //조명
+    public Light DirectionalLight;
     private void ChangeTurnUI()
     {
         choose_step = 0;
@@ -370,5 +373,21 @@ public class UI : MonoBehaviour
         horse horses = YutGameManager.Instance.GetNowHorse();
         horses.FinalPosition.Clear();
         DestiantionObject.Clear();
+    }
+    public void TurnOnFire()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            Fire[i].Play();
+        }
+        DirectionalLight.intensity = 0.1f;
+    }
+    public void TurnOffFire()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Fire[i].Stop();
+        }
+        DirectionalLight.intensity = 1.0f;
     }
 }
