@@ -64,9 +64,6 @@ public class move_Pillar : MonoBehaviour
         {
             isStopped[i] = false;
         }
-
-        
-
         //장애물 위치 랜덤 생성
         CreateObstacle();
     }
@@ -146,7 +143,7 @@ public class move_Pillar : MonoBehaviour
 
     void ResetPillarAndColor()
     {
-        Color initialColor = new Color(243f / 255f, 171f / 255f, 6f / 255f);
+        Color initialColor = new Color(255f / 255f, 255f / 255f, 255f / 255f);
         for (int i = 0; i < 4; i++)
         {
             pillar[i] = false;

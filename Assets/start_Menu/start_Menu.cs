@@ -11,7 +11,7 @@ public class start_Menu : MonoBehaviour
     }
     public void Settings()
     {
-        Debug.Log("setting button clicked");
+        SceneManager.LoadScene("setting");
     }
     public void game_Quit()
     {

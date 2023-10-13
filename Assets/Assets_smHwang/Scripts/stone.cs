@@ -438,7 +438,7 @@ public class stone : MonoBehaviour
         }
         isMoving = true;
         //이동, step이 남아있는 동안
-        while (LeftStep > 0)
+        while (LeftStep != 0)
         {
             //목적지가 30(마지막)이고, 그 이후에도 이동가능하면 오브젝트 파괴, 골인 처리 후 이동 탈출
             if (nowUser.routePosition == 30 && LeftStep > 0)
@@ -451,7 +451,7 @@ public class stone : MonoBehaviour
             }
 
             //백도 예외 처리
-            if (UIScript.GetStep() == -1)
+            if (UIScript.GetStep()== -1)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -503,8 +503,14 @@ public class stone : MonoBehaviour
             }
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
-            LeftStep--;
-
+            if (LeftStep > 0)
+            {
+                LeftStep--;
+            }
+            else if (LeftStep == -1)
+            {
+                LeftStep++;
+            }
             //이동 중 상대방 말을 지나갈때
             //DefenseGameTrigger(LeftStep);
 
@@ -564,22 +570,32 @@ public class stone : MonoBehaviour
         }
     }
     //DefenseGame 트리거
-    private IEnumerator DefenseGameTrigger(int LeftStep)
+    private void DefenseGameTrigger(int LeftStep)
     {
+        Debug.Log("defensegame");
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             //이동 예상 경로에 상대가 존재하고
             if (horses.routePosition == users[enemy].horses[i].nowPosition)
             {
-                //이동 가능하면
-                if (LeftStep > 0)
+                //업은 말이 같거나 작으면
+                if (horses.BindedHorse.Count <= users[enemy].horses[i].BindedHorse.Count)
                 {
-                    Yut.text = "To pass, Win!";
-                    yield return new WaitForSeconds(1f);
-                    SceneManager.LoadScene("Defense_Game");
+                    //이동 가능하면
+                    if (LeftStep > 0)
+                    {
+                        Yut.text = "To pass, Win!";
+                        //yield return new WaitForSeconds(1f
+                        StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
+                        SceneManager.LoadScene("Defense_Game");
+                    }
                 }
             }
         }
+    }
+    private IEnumerator LoadDefenseGameSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
     }
     public void ChangeTurn()
     {

@@ -1,37 +1,28 @@
 using UnityEngine;
-using System.Collections;
 
 public class move_Camera : MonoBehaviour
 {
-
-    /*
-    Writen by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.  
-    Converted to C# 27-02-13 - no credit wanted.
-    Simple flycam I made, since I couldn't find any others made public.  
-    Made simple to use (drag and drop, done) for regular keyboard layout  
-    wasd : basic movement
-    shift : Makes camera accelerate
-    space : Moves camera on X and Z axis only.  So camera doesn't gain any height*/
-
-
     float mainSpeed = 10.0f; //regular speed
-    float shiftAdd = 250.0f; //multiplied by how long shift is held.  Basically running
-    float maxShift = 1000.0f; //Maximum speed when holdin gshift
-    float camSens = 0.25f; //How sensitive it with mouse
-    private Vector3 lastMouse = new Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
+    float shiftAdd = 250.0f; //multiplied by how long shift is held. Basically running
+    float maxShift = 1000.0f; //Maximum speed when holding shift
+    float rotateSpeed = 100.0f;
     private float totalRun = 1.0f;
+    private Vector3 rotateCenter = new Vector3(3.47f, -0.05f, 1.47f);
+    private Vector3 initialHitPoint; // 초기 hit 점의 위치
 
+    private void Start()
+    {
+        //카메라 초점 확인
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+        {
+            initialHitPoint = hit.point; // 초기 hit 점 저장
+            Debug.Log(initialHitPoint);
+        }
+    }
     void Update()
     {
-        lastMouse = new Vector3(3,0,3);//Input.mousePosition - lastMouse;
-        //lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
-        //lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
-        //transform.eulerAngles = lastMouse;
-        //lastMouse = Input.mousePosition;
-        //Mouse  camera angle done.  
-
         //Keyboard commands
-        float f = 0.0f;
         Vector3 p = GetBaseInput();
         if (p.sqrMagnitude > 0)
         { // only move while a direction key is pressed
@@ -50,27 +41,22 @@ public class move_Camera : MonoBehaviour
             }
 
             p = p * Time.deltaTime;
-            Vector3 newPosition = transform.position;
-            //if (Input.GetKey(KeyCode.Space))
-            //{ //If player wants to move on X and Z axis only
-                transform.Translate(p);
-                newPosition.x = transform.position.x;
-                newPosition.z = transform.position.z;
-                transform.position = newPosition;
-            //}
-            //else
-            //{
-            //    transform.Translate(p);
-            //}
+            transform.Translate(p);
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            RotateAroundPoint(new Vector3(4.75f, rotateCenter.y, 5.0f), -rotateSpeed * Time.deltaTime); // 음의 각도로 왼쪽 회전
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            RotateAroundPoint(new Vector3(4.75f, rotateCenter.y, 5.0f), rotateSpeed * Time.deltaTime); // 양의 각도로 오른쪽 회전
         }
     }
 
     private Vector3 GetBaseInput()
-    { //returns the basic values, if it's 0 than it's not active.
+    {
+        //returns the basic values, if it's 0 then it's not active.
         Vector3 p_Velocity = new Vector3();
-        transform.rotation = Quaternion.Euler(p_Velocity);
-        transform.LookAt(lastMouse);
-        
         if (Input.GetKey(KeyCode.W))
         {
             p_Velocity += new Vector3(0, 0, 1);
@@ -88,5 +74,10 @@ public class move_Camera : MonoBehaviour
             p_Velocity += new Vector3(1, 0, 0);
         }
         return p_Velocity;
+    }
+    void RotateAroundPoint(Vector3 point, float angle)
+    {
+        Vector3 axis = Vector3.up;
+        transform.RotateAround(point, axis, angle);
     }
 }

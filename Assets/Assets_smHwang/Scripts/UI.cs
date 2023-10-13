@@ -198,7 +198,7 @@ public class UI : MonoBehaviour
         if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
-            Debug.Log(buttonIndex);
+            Debug.Log("buttonindex : "+buttonIndex);
             if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
             {
                 selectedButtonIndex = buttonIndex;
@@ -235,29 +235,31 @@ public class UI : MonoBehaviour
     }
     public void ChooseMove()
     {
-        //이동할 steps left/right arrow로 선택            
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (steps.Count > 0)
         {
-            Yut.text = "";
-            if (choose_step > 0)
+            //이동할 steps left/right arrow로 선택            
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                choose_step--;
+                Yut.text = "";
+                if (choose_step > 0)
+                {
+                    choose_step--;
+                }
+                Debug.Log("steps=" + steps[choose_step]);
+                selectedButtonIndex = choose_step;
+                UpdateButtonColors();
             }
-            Debug.Log("steps=" + steps[choose_step]);
-            selectedButtonIndex = choose_step;
-            UpdateButtonColors();
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Yut.text = "";
-            if (choose_step < steps.Count - 1)
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                choose_step++;
+                Yut.text = "";
+                if (choose_step < steps.Count - 1)
+                {
+                    choose_step++;
+                }
+                Debug.Log("steps=" + steps[choose_step]);
+                selectedButtonIndex = choose_step;
+                UpdateButtonColors();
             }
-            Debug.Log("steps=" + steps[choose_step]);
-            Yut.text = "Available" + Yut.text + "\nyou choose";
-            selectedButtonIndex = choose_step;
-            UpdateButtonColors();
         }
     }
     void match_Yut(int i)
