@@ -15,10 +15,11 @@ public class YutGameManager : MonoBehaviour
     public static YutGameManager Instance { get; private set; }
 
     private int turn = 0;
-    private int player_number;
+    public int player_number;
     private user[] users;
     public GameObject[] red_team;
     public GameObject[] blue_team;
+
 
     private void Awake()
     {

@@ -68,7 +68,20 @@ class PacketHandler
 
 	}
 
-	public static void S_HorseCatchHandler(PacketSession session, IMessage packet)
+	public static void S_YutMoveHandler(PacketSession session, IMessage packet)
+	{
+		S_YutMove yutmovePacket = packet as S_YutMove;
+		stone stoneScript = Object.FindObjectOfType<stone>();
+		UI uiScript = Object.FindObjectOfType<UI>();
+		YutGameManager yutmanagerscript = Object.FindObjectOfType<YutGameManager>();
+
+		uiScript.choose_step = yutmovePacket.UseResult;
+		yutmanagerscript.player_number = yutmovePacket.MovedYut;
+
+		stoneScript.handleMovePlayer();
+	}
+
+		public static void S_HorseCatchHandler(PacketSession session, IMessage packet)
     {
 		S_HorseCatch horsecatchPacket = packet as S_HorseCatch;
 		Managers.Object.MyPlayer._playtime = horsecatchPacket.Playtime;

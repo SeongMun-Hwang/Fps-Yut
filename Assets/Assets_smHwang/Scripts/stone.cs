@@ -309,8 +309,9 @@ public class stone : MonoBehaviour
             //엔터 입력 시 Move 코루틴 시작
             else if (Input.GetKeyDown(KeyCode.Return))
             {
-                Debug.Log("move" + YutGameManager.Instance.GetPlayerNumber());
-                StartCoroutine(Move(UIScript.GetStep()));
+                Debug.Log("enter move" + YutGameManager.Instance.GetPlayerNumber());
+                move_Player();
+                //StartCoroutine(Move(UIScript.GetStep()));
             }
             //스페이스, 윷 던지기
             else if (Input.GetKeyDown(KeyCode.Space))
@@ -328,9 +329,34 @@ public class stone : MonoBehaviour
     //버튼에 연결돼있음 날리면 안됨
     public void move_Player()
     {
+        horse horses = YutGameManager.Instance.GetNowHorse();
+
+        C_YutMove yutmovePacket = new C_YutMove();
+        yutmovePacket.UseResult = UIScript.choose_step;
+        yutmovePacket.MovedYut = YutGameManager.Instance.GetPlayerNumber();
+        yutmovePacket.MovedPos = horses.FinalPosition[UIScript.choose_step];
+        Managers.Network.Send(yutmovePacket);
+
+        Debug.Log("step : " + yutmovePacket.UseResult);
+        Debug.Log("Horse num :  " + yutmovePacket.MovedYut);
+        Debug.Log("destination : " + yutmovePacket.MovedPos);
+
+        //if (isYutThrown)
+        //{
+        //    Debug.Log("move");
+        //    StartCoroutine(Move(UIScript.GetStep()));
+        //}
+    }
+
+    public void handleMovePlayer()
+    {
         if (isYutThrown)
         {
-            Debug.Log("clicked");
+            Debug.Log("step : " + UIScript.choose_step);
+            Debug.Log("Horse num :  " + YutGameManager.Instance.GetPlayerNumber());
+            Debug.Log("destination : " + horses.FinalPosition[UIScript.choose_step]);
+
+            Debug.Log("move");
             StartCoroutine(Move(UIScript.GetStep()));
         }
     }
