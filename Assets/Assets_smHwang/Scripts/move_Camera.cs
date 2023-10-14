@@ -7,7 +7,7 @@ public class move_Camera : MonoBehaviour
     float maxShift = 1000.0f; //Maximum speed when holding shift
     float rotateSpeed = 100.0f;
     private float totalRun = 1.0f;
-    private Vector3 rotateCenter = new Vector3(3.47f, -0.05f, 1.47f);
+    private Vector3 rotateCenter = new Vector3(4.5f, -0.05f, -8f);
     private Vector3 initialHitPoint; // 초기 hit 점의 위치
 
     private void Start()
