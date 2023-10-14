@@ -562,7 +562,7 @@ public class stone : MonoBehaviour
                     //묶여있는 말 개수만큼 추가로 찬스획득.
                     chance += (users[enemy].horses[i].BindedHorse.Count + 1);
                     //적말 리셋
-                    reset_player(users[enemy].horses[i], objectPrefab[enemy]);
+                    reset_player(users[enemy].horses[i], objectPrefab[users[enemy].turn]);
                     Yut.text = chance + " 번의 기회를 추가 획득!";
                     UIScript.choose_step = 0;
                     //윷 다시 던지기 위한 bool 변수 설정
