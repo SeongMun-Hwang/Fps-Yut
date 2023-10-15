@@ -83,7 +83,7 @@ public class move_Pillar : MonoBehaviour
         {
             //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
-            adjustedBounds.extents *= 1.0f; //충돌 판정 범위 상세 조정
+            adjustedBounds.extents *= 0.95f; //충돌 판정 범위 상세 조정
 
             if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
             {
