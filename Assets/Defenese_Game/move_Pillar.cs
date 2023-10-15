@@ -21,7 +21,8 @@ public class move_Pillar : MonoBehaviour
     int round = 1;
     public float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
     public Vector3 prevPosition = Vector3.zero;
-
+    float originalY = 7.5f; // 원래 Y 좌표
+    float targetY = 22.5f; // 목표 Y 좌표
     private struct PillarState
     {
         public Vector3 position;
@@ -99,24 +100,28 @@ public class move_Pillar : MonoBehaviour
             {
                 ResetPillarAndColor();
                 pillar[0] = true;
+                StartCoroutine(MoveToTargetY(rend[0].transform, targetY, 1f));
                 rend[0].material.color = Color.red;
             }
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 ResetPillarAndColor();
                 pillar[1] = true;
+                StartCoroutine(MoveToTargetY(rend[1].transform, targetY, 1f));
                 rend[1].material.color = Color.red;
             }
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 ResetPillarAndColor();
                 pillar[2] = true;
+                StartCoroutine(MoveToTargetY(rend[2].transform, targetY, 1f));
                 rend[2].material.color = Color.red;
             }
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 ResetPillarAndColor();
                 pillar[3] = true;
+                StartCoroutine(MoveToTargetY(rend[3].transform, targetY, 1f));
                 rend[3].material.color = Color.red;
             }
         }
@@ -147,6 +152,10 @@ public class move_Pillar : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             pillar[i] = false;
+            if (rend[i].transform.position.y != originalY)
+            {
+                StartCoroutine(MoveToTargetY(rend[i].transform, originalY, 1f)); // 1초 동안 이동
+            }
             rend[i].material.color = initialColor; // 원하는 초기 색상으로 변경
         }
     }
@@ -254,5 +263,19 @@ public class move_Pillar : MonoBehaviour
             ob.transform.position = newPosition;
             prevPosition = newPosition;
         }
+    }
+    IEnumerator MoveToTargetY(Transform objectTransform, float targetY, float duration)
+    {
+        float elapsedTime = 0f;
+        Vector3 originalPosition = objectTransform.position;
+        Vector3 targetPosition = new Vector3(originalPosition.x, targetY, originalPosition.z);
+
+        while (elapsedTime < duration)
+        {
+            objectTransform.position = Vector3.Lerp(originalPosition, targetPosition, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        objectTransform.position = targetPosition;
     }
 }
