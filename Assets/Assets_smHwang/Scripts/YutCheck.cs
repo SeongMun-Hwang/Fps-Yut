@@ -53,7 +53,7 @@ public class YutCheck : MonoBehaviour
                     }
                     break;
                 case "yut4":
-                    if (col.gameObject.name == "top" && !isAdd[3]) { YutText.result++; 
+                    if (col.gameObject.name == "top" && !isAdd[3]) { YutText.result++; YutText.isbackdo = true;
                         isAdd[3] = true;
                     }
                     break;
