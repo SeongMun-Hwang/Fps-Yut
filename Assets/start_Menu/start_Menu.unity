@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12640344, g: 0.30630168, b: 0.6027815, a: 1}
+  m_IndirectSpecularColor: {r: 0.12630987, g: 0.30630225, b: 0.60221726, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -977,7 +977,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 353489249}
         m_TargetAssemblyTypeName: start_Menu, Assembly-CSharp
         m_MethodName: Settings
         m_Mode: 1
@@ -1411,6 +1411,7 @@ GameObject:
   - component: {fileID: 1962510910}
   - component: {fileID: 1962510909}
   - component: {fileID: 1962510908}
+  - component: {fileID: 1962510911}
   m_Layer: 0
   m_Name: start camera
   m_TagString: MainCamera
@@ -1484,6 +1485,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1962510911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962510907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b22bc5504755f3f47a19e1c04640c484, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2140032582
 GameObject:
   m_ObjectHideFlags: 0
