@@ -255,7 +255,7 @@ public class stone : MonoBehaviour
                 u.is_bind = false;
                 foreach (int bindedHorseIndex in u.BindedHorse)
                 {
-                    reset_player(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                    reset_player(users[enemy].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
                 }
                 u.BindedHorse.Clear();
             }
@@ -570,6 +570,7 @@ public class stone : MonoBehaviour
                     //Fpsfight 진행
                     //SceneManager.LoadScene("Fpsfight");
                     StartCoroutine(UIScript.TurnOffFire());
+                    break;
                 }
             }
         }
@@ -686,8 +687,6 @@ public class stone : MonoBehaviour
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].lastPosition = mainHorse.lastPosition;
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].nextPos = mainHorse.nextPos;
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].goal = mainHorse.goal;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].BindedHorse = mainHorse.BindedHorse;
-            users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].is_bind = mainHorse.is_bind;
         }
     }
     //묶인 말들 동시 파괴
@@ -697,7 +696,7 @@ public class stone : MonoBehaviour
 
         foreach (int bindedIndex in bindedHorses)
         {
-            Destroy(users[YutGameManager.Instance.GetTurn()].horses[bindedHorseIndex].player);
+            Destroy(users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].player);
             SetUserToGoal(users[YutGameManager.Instance.GetTurn()].horses[bindedIndex]);
         }
     }
