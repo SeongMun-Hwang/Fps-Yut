@@ -7,6 +7,10 @@ using System.Linq;
 
 public class move_Pillar : MonoBehaviour
 {
+    /*씬*/
+    public GameObject MainGame;
+    public GameObject MiniGame;
+    /**/
     public float speed = 100f;  // 움직이는 속도
     private bool[] isStopped = new bool[4];  // 각 방향에 대해 움직임이 멈췄는지 추적합니다.
     public Rigidbody[] rbs;
@@ -136,7 +140,9 @@ public class move_Pillar : MonoBehaviour
     IEnumerator delay()
     {
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("YutPlay");
+        //SceneManager.LoadScene("YutPlay");
+        MainGame.SetActive(true);
+        MiniGame.SetActive(false);
     }
     //라운드 표시 함수
     void UpdateRound()

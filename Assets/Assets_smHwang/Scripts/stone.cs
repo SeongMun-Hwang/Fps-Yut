@@ -11,6 +11,9 @@ using System.Linq;
 
 public class stone : MonoBehaviour
 {
+    /*씬*/
+    public GameObject MainGame;
+    public GameObject MiniGame;
     /************스크립트***********/
     public UI UIScript;
     public MoveScript MoveScript;
@@ -43,6 +46,11 @@ public class stone : MonoBehaviour
 
     user[] users;
     horse horses;
+    void Awake()
+    {
+        MainGame.SetActive(true);
+        MiniGame.SetActive(false);
+    }
     private void Update()
     {
         users = YutGameManager.Instance.GetUsers();
@@ -514,7 +522,7 @@ public class stone : MonoBehaviour
                 LeftStep++;
             }
             //이동 중 상대방 말을 지나갈때
-            //DefenseGameTrigger(LeftStep);
+            DefenseGameTrigger(LeftStep);
 
             yield return new WaitForSeconds(0.1f);
             //FpsFight 진행 중이면
@@ -593,7 +601,9 @@ public class stone : MonoBehaviour
                         Yut.text = "To pass, Win!";
                         //yield return new WaitForSeconds(1f
                         StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
-                        SceneManager.LoadScene("Defense_Game");
+                        //SceneManager.LoadScene("Defense_Game");
+                        MainGame.SetActive(false);
+                        MiniGame.SetActive(true);
                     }
                 }
             }
