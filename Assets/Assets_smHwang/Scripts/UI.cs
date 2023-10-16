@@ -375,7 +375,7 @@ public class UI : MonoBehaviour
         horses.FinalPosition.Clear();
         DestiantionObject.Clear();
     }
-    public void TurnOnFire()
+    public IEnumerator TurnOnFire()
     {
         for(int i = 0; i < 4; i++)
         {

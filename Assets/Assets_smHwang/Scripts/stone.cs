@@ -556,7 +556,7 @@ public class stone : MonoBehaviour
                 if (!users[enemy].horses[i].goal)
                 {
                     //불키기
-                    UIScript.TurnOnFire();
+                    StartCoroutine(UIScript.TurnOnFire());
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
                     //묶여있는 말 개수만큼 추가로 찬스획득.
