@@ -44,7 +44,7 @@ public class LobbyButton : MonoBehaviour
         makeRoomPacket.RoomName = roomName;
         Managers.Network.Send(makeRoomPacket);
 
-        SceneManager.LoadScene("Fpsfight");
+        SceneManager.LoadScene("YutPlay");
 
         Debug.Log(roomName);
     }
@@ -114,6 +114,6 @@ public class LobbyButton : MonoBehaviour
         enterroomPacket.RoomId = roomInfo.RoomId;
         Managers.Network.Send(enterroomPacket);
 
-        SceneManager.LoadScene("Fpsfight");
+        SceneManager.LoadScene("YutPlay");
     }
 }

@@ -4,6 +4,7 @@ using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 class PacketHandler
 {
@@ -26,6 +27,8 @@ class PacketHandler
 
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
+		stone stonescript = Object.FindObjectOfType<stone>();
+		stonescript.DoFight();
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 		Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
 	}

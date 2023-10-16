@@ -560,7 +560,7 @@ public class stone : MonoBehaviour
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
                     //묶여있는 말 개수만큼 추가로 찬스획득.
-                    chance += (users[enemy].horses[i].BindedHorse.Count + 1);
+                    chance ++;
                     //적말 리셋
                     reset_player(users[enemy].horses[i], objectPrefab[users[enemy].turn]);
                     Yut.text = chance + " 번의 기회를 추가 획득!";
@@ -574,6 +574,12 @@ public class stone : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void DoFight()
+    {
+        SceneManager.LoadScene("Fpsfight");
+        StartCoroutine(UIScript.TurnOffFire());
     }
     //DefenseGame 트리거
     private void DefenseGameTrigger(int LeftStep)
