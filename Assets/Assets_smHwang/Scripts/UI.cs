@@ -382,6 +382,7 @@ public class UI : MonoBehaviour
             Fire[i].Play();
         }
         DirectionalLight.intensity = 0.1f;
+        yield return new WaitForSeconds(2.0f);
     }
     public IEnumerator TurnOffFire()
     {
