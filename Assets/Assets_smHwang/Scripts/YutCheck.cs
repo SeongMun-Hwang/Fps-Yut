@@ -25,14 +25,13 @@ public class YutCheck : MonoBehaviour
     }
     void OnTriggerStay(Collider col)
     {
-        //Debug.Log(col.gameObject.transform.parent.name);
         string parentName = col.gameObject.transform.parent.name;
 
         //Rigidbody parentRb = col.gameObject.transform.parent.GetComponent<Rigidbody>();
         Rigidbody rb=col.gameObject.transform.parent.GetComponent<Rigidbody>();
         if (rb.velocity.x == 0f && rb.velocity.y == 0f && rb.velocity.z == 0f)
         {
-            Debug.Log("name : "+col.gameObject.name);
+            //Debug.Log("name : "+col.gameObject.name);
 
             switch (parentName)
             {

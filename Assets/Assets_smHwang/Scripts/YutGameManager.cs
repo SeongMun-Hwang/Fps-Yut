@@ -9,7 +9,9 @@ public static class Constants
     public const int HorseNumber = 4;
     public const float STACK_HEIGHT = 1.2f;
 }
-
+/// <summary>
+/// 0.0 0.5 -5.48
+/// </summary>
 public class YutGameManager : MonoBehaviour
 {
     public static YutGameManager Instance { get; private set; }
@@ -19,10 +21,13 @@ public class YutGameManager : MonoBehaviour
     private user[] users;
     public GameObject[] red_team;
     public GameObject[] blue_team;
-
-
+    public GameObject MainGame;
+    public GameObject HammerGame;
+    public GameObject DefenseGame;
+    private Camera mainCamera;
     private void Awake()
     {
+        mainCamera = Camera.main;
         if (Instance == null)
         {
             Instance = this;
@@ -74,6 +79,7 @@ public class YutGameManager : MonoBehaviour
                 users[j].horses[i].FinalPosition = new List<int>();
             }
         }
+        StartMainGame();
     }
 
     public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
@@ -144,5 +150,28 @@ public class YutGameManager : MonoBehaviour
             array[i] = array[j];
             array[j] = temp;
         }
+    }
+    public void StartMainGame()
+    {
+        stone.isFight = false;
+        MainGame.SetActive(true);
+        if (DefenseGame.activeSelf) { DefenseGame.SetActive(false); }
+        if (HammerGame.activeSelf) { HammerGame.SetActive(false); }
+        Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
+        mainCamera.transform.position = new Vector3(-4.11f, 17.02f, -4.5f);
+        transform.LookAt(v);
+    }
+    public void StartDefenseGame()
+    {
+        Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
+        MainGame.SetActive(false);
+        DefenseGame.SetActive(true);
+        mainCamera.transform.position = new Vector3(0.0f, 94.3f, -37.6f);
+        transform.LookAt(v);
+    }
+    public void StartHammerGame()
+    {
+        MainGame.SetActive(false);
+        HammerGame.SetActive(true);
     }
 }
