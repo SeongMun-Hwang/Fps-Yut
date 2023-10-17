@@ -164,7 +164,7 @@ public class YutGameManager : MonoBehaviour
     public void StartDefenseGame()
     {
         Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
-        //MainGame.SetActive(false);
+        MainGame.SetActive(false);
         DefenseGame.SetActive(true);
         mainCamera.transform.position = new Vector3(0.0f, 94.3f, -37.6f);
         transform.LookAt(v);

@@ -506,13 +506,10 @@ public class stone : MonoBehaviour
             }
             //다음 위치에 상대방이 있을 때
             DefenseGameTrigger(LeftStep);
-            Debug.Log("while isfight : " + isFight);
             while (isFight) // 싸우는 동안 일시정지
             {
-                Debug.Log("now fighting");
                 yield return null;
             }
-            Debug.Log("나옴");
             //if (winner == enemy)
             //{
             //    break;

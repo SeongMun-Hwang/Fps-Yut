@@ -252,7 +252,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throwYut
         m_Mode: 1
@@ -1498,7 +1498,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_yut
         m_Mode: 1
@@ -2492,7 +2492,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_gae
         m_Mode: 1
@@ -2626,9 +2626,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 658787157}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
-        m_MethodName: choose_steps
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3753,7 +3753,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_do
         m_Mode: 1
@@ -5037,7 +5037,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 658787158}
-  - component: {fileID: 658787159}
   - component: {fileID: 658787160}
   - component: {fileID: 658787161}
   m_Layer: 0
@@ -5062,34 +5061,6 @@ Transform:
   m_Father: {fileID: 635596236}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &658787159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 658787157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b7acb6c0cd0a79468aebbe4a3cb7036, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIScript: {fileID: 658787160}
-  MoveScript: {fileID: 658787161}
-  SettingScript: {fileID: 0}
-  Yut: {fileID: 1776707962}
-  currentRoute: {fileID: 196885769}
-  yutSound:
-  - {fileID: 739863744}
-  - {fileID: 643647087}
-  - {fileID: 805761114}
-  - {fileID: 1409385109}
-  - {fileID: 1733140602}
-  isMoving: 0
-  isYutThrown: 0
-  objectPrefab:
-  - {fileID: 2070411140}
-  - {fileID: 2025427989}
 --- !u!114 &658787160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5102,7 +5073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f99c47e5b9b5524aab211a634a3cef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stone: {fileID: 658787159}
+  stone: {fileID: 963194231}
   MoveScript: {fileID: 658787161}
   Goal_Status: {fileID: 1618175816}
   Yut: {fileID: 1776707962}
@@ -5207,7 +5178,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_mo
         m_Mode: 1
@@ -7698,6 +7669,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -7809,6 +7781,34 @@ MonoBehaviour:
   MainGame: {fileID: 635596235}
   HammerGame: {fileID: 1241842324}
   DefenseGame: {fileID: 312651260}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7acb6c0cd0a79468aebbe4a3cb7036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIScript: {fileID: 658787160}
+  MoveScript: {fileID: 658787161}
+  SettingScript: {fileID: 0}
+  Yut: {fileID: 1776707962}
+  currentRoute: {fileID: 196885769}
+  yutSound:
+  - {fileID: 739863744}
+  - {fileID: 643647087}
+  - {fileID: 805761114}
+  - {fileID: 1409385109}
+  - {fileID: 1733140602}
+  isMoving: 0
+  isYutThrown: 0
+  objectPrefab:
+  - {fileID: 2070411140}
+  - {fileID: 2025427989}
 --- !u!1 &969883066 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e656216a3a8e5ac4994c8b1f039a346d, type: 3}
@@ -9438,7 +9438,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: move_Player
         m_Mode: 1
@@ -12581,7 +12581,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: choose_steps
         m_Mode: 3
@@ -12715,7 +12715,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_girl
         m_Mode: 1
@@ -13526,7 +13526,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: choose_steps
         m_Mode: 3
@@ -13906,7 +13906,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 963194231}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: throw_back_do
         m_Mode: 1
@@ -14496,7 +14496,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: choose_steps
         m_Mode: 3
@@ -15322,7 +15322,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 658787159}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: stone, Assembly-CSharp
         m_MethodName: choose_steps
         m_Mode: 3
