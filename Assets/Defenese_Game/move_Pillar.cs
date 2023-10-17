@@ -40,6 +40,13 @@ public class move_Pillar : MonoBehaviour
     private GameObject[] pillars;
     void Start()
     {
+        Vector3 initialHitPoint; // 초기 hit 점의 위치
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
+        {
+            initialHitPoint = hit.point; // 초기 hit 점 저장
+            Debug.Log(initialHitPoint);
+        }
         pillars = GameObject.FindGameObjectsWithTag("pillar");
         status_text.text = "라운드 " + round + "!";
         //pillar, edge 초기화
@@ -94,6 +101,7 @@ public class move_Pillar : MonoBehaviour
                 Debug.Log("플레이어와 기둥이 충돌했습니다.");
                 // 여기에 충돌 시 수행될 로직을 추가합니다.
                 status_text.text = "패배!";
+                stone.winner = stone.enemy;
                 StartCoroutine(delay());
                 playerCollidedWithPillar = true;
             }
@@ -140,9 +148,9 @@ public class move_Pillar : MonoBehaviour
     IEnumerator delay()
     {
         yield return new WaitForSeconds(2f);
+        stone.isFight = false;
         //SceneManager.LoadScene("YutPlay");
-        MainGame.SetActive(true);
-        MiniGame.SetActive(false);
+        YutGameManager.Instance.StartMainGame();
     }
     //라운드 표시 함수
     void UpdateRound()
@@ -195,6 +203,7 @@ public class move_Pillar : MonoBehaviour
             count++;
             if (count == 3)
             {
+                stone.winner = YutGameManager.Instance.GetPlayerNumber();
                 status_text.text = "승리!";
                 count = 0;
                 StartCoroutine(delay());

@@ -46,6 +46,5 @@ public class YutText : MonoBehaviour
         {
             text.text = "윷";
         }
-        Debug.Log(result);
     }
 }

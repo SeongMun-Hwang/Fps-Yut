@@ -11,9 +11,6 @@ using System.Linq;
 
 public class stone : MonoBehaviour
 {
-    /*씬*/
-    public GameObject MainGame;
-    public GameObject MiniGame;
     /************스크립트***********/
     public UI UIScript;
     public MoveScript MoveScript;
@@ -34,25 +31,25 @@ public class stone : MonoBehaviour
     }
     //bool 변수
     public bool isMoving;
-    public bool isFight = false;
+    public static bool isFight = false;
     public bool isYutThrown = false;
     bool shownDestination = false;
     int chance = 0;
     int sum = 0;
-    int enemy;
+    public static int enemy;
     public GameObject[] objectPrefab;
     //오브젝트 테두리
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
-
+    public static int winner=-1;
     user[] users;
     horse horses;
-    void Awake()
-    {
-        MainGame.SetActive(true);
-        MiniGame.SetActive(false);
-    }
+
     private void Update()
     {
+        while (!YutGameManager.Instance.MainGame.activeSelf)
+        {
+            LoadDefenseGameSceneAfterDelay(1.0f);
+        }
         users = YutGameManager.Instance.GetUsers();
         horses = YutGameManager.Instance.GetNowHorse();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), YutGameManager.Instance.GetUsers());
@@ -511,6 +508,14 @@ public class stone : MonoBehaviour
             {
                 nowUser.nextPos = currentRoute.childNodeList[nowUser.routePosition].position;
             }
+            //다음 위치에 상대방이 있을 때
+            DefenseGameTrigger(LeftStep);
+            if (winner == enemy)
+            {
+                ChangeTurn();
+                break;
+            }
+            Debug.Log("isfight : " + isFight);
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
             if (LeftStep > 0)
@@ -521,8 +526,6 @@ public class stone : MonoBehaviour
             {
                 LeftStep++;
             }
-            //이동 중 상대방 말을 지나갈때
-            DefenseGameTrigger(LeftStep);
 
             yield return new WaitForSeconds(0.1f);
             //FpsFight 진행 중이면
@@ -574,9 +577,10 @@ public class stone : MonoBehaviour
                     Yut.text = chance + " 번의 기회를 추가 획득!";
                     UIScript.choose_step = 0;
                     //윷 다시 던지기 위한 bool 변수 설정
-                    isYutThrown = false;
+                    isYutThrown = true;
                     //Fpsfight 진행
                     //SceneManager.LoadScene("Fpsfight");
+                    YutGameManager.Instance.StartHammerGame();
                     StartCoroutine(UIScript.TurnOffFire());
                     break;
                 }
@@ -602,8 +606,8 @@ public class stone : MonoBehaviour
                         //yield return new WaitForSeconds(1f
                         StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
                         //SceneManager.LoadScene("Defense_Game");
-                        MainGame.SetActive(false);
-                        MiniGame.SetActive(true);
+                        isFight = true;
+                        YutGameManager.Instance.StartDefenseGame();
                     }
                 }
             }
