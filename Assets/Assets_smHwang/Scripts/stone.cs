@@ -510,10 +510,13 @@ public class stone : MonoBehaviour
             {
                 yield return null;
             }
-            //if (winner == enemy)
-            //{
-            //    break;
-            //}
+            if (winner == enemy)
+            {
+                LeftStep = 0;
+                isMoving = false;
+                ChangeTurn();
+                yield break;
+            }
             Debug.Log("isfight : " + isFight);
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
