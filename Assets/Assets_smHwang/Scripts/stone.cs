@@ -46,10 +46,6 @@ public class stone : MonoBehaviour
 
     private void Update()
     {
-        while (!YutGameManager.Instance.MainGame.activeSelf)
-        {
-            LoadDefenseGameSceneAfterDelay(1.0f);
-        }
         users = YutGameManager.Instance.GetUsers();
         horses = YutGameManager.Instance.GetNowHorse();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), YutGameManager.Instance.GetUsers());
@@ -445,7 +441,7 @@ public class stone : MonoBehaviour
         }
         isMoving = true;
         //이동, step이 남아있는 동안
-        while (LeftStep != 0)
+        while (LeftStep != 0 && !isFight)
         {
             //목적지가 30(마지막)이고, 그 이후에도 이동가능하면 오브젝트 파괴, 골인 처리 후 이동 탈출
             if (nowUser.routePosition == 30 && LeftStep > 0)
@@ -510,11 +506,17 @@ public class stone : MonoBehaviour
             }
             //다음 위치에 상대방이 있을 때
             DefenseGameTrigger(LeftStep);
-            if (winner == enemy)
+            Debug.Log("while isfight : " + isFight);
+            while (isFight) // 싸우는 동안 일시정지
             {
-                ChangeTurn();
-                break;
+                Debug.Log("now fighting");
+                yield return null;
             }
+            Debug.Log("나옴");
+            //if (winner == enemy)
+            //{
+            //    break;
+            //}
             Debug.Log("isfight : " + isFight);
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }

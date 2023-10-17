@@ -150,6 +150,9 @@ public class move_Pillar : MonoBehaviour
         yield return new WaitForSeconds(2f);
         stone.isFight = false;
         //SceneManager.LoadScene("YutPlay");
+        Debug.Log("isfight d : " + stone.isFight);
+        Debug.Log("winner : " + stone.winner);
+        Debug.Log("nowuser : " + YutGameManager.Instance.GetTurn());
         YutGameManager.Instance.StartMainGame();
     }
     //라운드 표시 함수
@@ -201,9 +204,9 @@ public class move_Pillar : MonoBehaviour
         if (!playerCollidedWithPillar)
         {
             count++;
-            if (count == 3)
+            if (count == 1)
             {
-                stone.winner = YutGameManager.Instance.GetPlayerNumber();
+                stone.winner = YutGameManager.Instance.GetTurn();
                 status_text.text = "승리!";
                 count = 0;
                 StartCoroutine(delay());
