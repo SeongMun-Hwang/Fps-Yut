@@ -98,7 +98,7 @@ public class move_Pillar : MonoBehaviour
 
             if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
             {
-                Debug.Log("플레이어와 기둥이 충돌했습니다.");
+                //Debug.Log("플레이어와 기둥이 충돌했습니다.");
                 // 여기에 충돌 시 수행될 로직을 추가합니다.
                 status_text.text = "패배!";
                 stone.winner = stone.enemy;

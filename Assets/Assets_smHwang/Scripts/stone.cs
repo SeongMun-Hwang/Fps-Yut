@@ -487,16 +487,50 @@ public class stone : MonoBehaviour
                 //NormalRoute가 -1이 아니면 == 특수 위치면(코너, 중앙) routePosition에 계산한 NormalRoute 값 할당
                 if (NormalRoute != -1)
                 {
-                    nowUser.routePosition = NormalRoute;
-                    Debug.Log("routePosition : " + nowUser.routePosition);
-                    nowUser.nowPosition = NormalRoute;
-                    Debug.Log("nowPosition : " + nowUser.nowPosition);
+                    DefenseGameTrigger(LeftStep);
+                    while (isFight) // 싸우는 동안 일시정지
+                    {
+                        yield return null;
+                    }
+                    if (winner == enemy)
+                    {
+                        LeftStep = 0;
+                        isMoving = false;
+                        ChangeTurn();
+                        winner = -1;
+                        nowUser.routePosition = nowUser.nowPosition;
+                        yield break;
+                    }
+                    else
+                    {
+                        nowUser.routePosition = NormalRoute;
+                        Debug.Log("routePosition : " + nowUser.routePosition);
+                        nowUser.nowPosition = NormalRoute;
+                        Debug.Log("nowPosition : " + nowUser.nowPosition);
+                    }
                 }
                 //-1이면 == 평범한 이동이면 그냥 현재 위치++
                 else
                 {
-                    nowUser.nowPosition++;
-                    Debug.Log("nowPosition : " + nowUser.nowPosition);
+                    DefenseGameTrigger(LeftStep);
+                    while (isFight) // 싸우는 동안 일시정지
+                    {
+                        yield return null;
+                    }
+                    if (winner == enemy)
+                    {
+                        LeftStep = 0;
+                        isMoving = false;
+                        ChangeTurn();
+                        winner = -1;
+                        nowUser.routePosition = nowUser.nowPosition;
+                        yield break;
+                    }
+                    else
+                    {
+                        nowUser.nowPosition++;
+                        Debug.Log("nowPosition : " + nowUser.nowPosition);
+                    }
                 }
             }
 
@@ -505,19 +539,7 @@ public class stone : MonoBehaviour
                 nowUser.nextPos = currentRoute.childNodeList[nowUser.routePosition].position;
             }
             //다음 위치에 상대방이 있을 때
-            DefenseGameTrigger(LeftStep);
-            while (isFight) // 싸우는 동안 일시정지
-            {
-                yield return null;
-            }
-            if (winner == enemy)
-            {
-                LeftStep = 0;
-                isMoving = false;
-                ChangeTurn();
-                winner = -1;
-                yield break;
-            }
+
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
             if (LeftStep > 0)
@@ -619,7 +641,6 @@ public class stone : MonoBehaviour
     //DefenseGame 트리거
     private void DefenseGameTrigger(int LeftStep)
     {
-        Debug.Log("defensegame");
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
             //이동 예상 경로에 상대가 존재하고
@@ -631,6 +652,7 @@ public class stone : MonoBehaviour
                     //이동 가능하면
                     if (LeftStep > 1)
                     {
+                        Debug.Log("defensegame");
                         Yut.text = "To pass, Win!";
                         //yield return new WaitForSeconds(1f
                         StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
