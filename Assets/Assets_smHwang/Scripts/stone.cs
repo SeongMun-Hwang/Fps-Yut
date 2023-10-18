@@ -40,7 +40,7 @@ public class stone : MonoBehaviour
     public GameObject[] objectPrefab;
     //오브젝트 테두리
     private int bindedHorseIndex = -1; //말 엎기 동작시 말 번호 저장
-    public static int winner=-1;
+    public static int winner = -1;
     user[] users;
     horse horses;
     int fightenemy = -1;
@@ -182,7 +182,7 @@ public class stone : MonoBehaviour
         Debug.Log("윷 지정 : 모");
         UpdateThrowResult(5);
     }
-    
+
     public void throw_nak()
     {
         if (chance == 0)
@@ -333,22 +333,23 @@ public class stone : MonoBehaviour
         {
             horse horses = YutGameManager.Instance.GetNowHorse();
 
-        C_YutMove yutmovePacket = new C_YutMove();
-        yutmovePacket.UseResult = UIScript.choose_step;
-        yutmovePacket.MovedYut = YutGameManager.Instance.GetPlayerNumber();
-        yutmovePacket.MovedPos = horses.FinalPosition[UIScript.choose_step];
-        Managers.Network.Send(yutmovePacket);
+            C_YutMove yutmovePacket = new C_YutMove();
+            yutmovePacket.UseResult = UIScript.choose_step;
+            yutmovePacket.MovedYut = YutGameManager.Instance.GetPlayerNumber();
+            yutmovePacket.MovedPos = horses.FinalPosition[UIScript.choose_step];
+            Managers.Network.Send(yutmovePacket);
 
-        Debug.Log("step : " + yutmovePacket.UseResult);
-        Debug.Log("Horse num :  " + yutmovePacket.MovedYut);
-        Debug.Log("destination : " + yutmovePacket.MovedPos);
+            Debug.Log("step : " + yutmovePacket.UseResult);
+            Debug.Log("Horse num :  " + yutmovePacket.MovedYut);
+            Debug.Log("destination : " + yutmovePacket.MovedPos);
 
-        //if (isYutThrown)
-        //{
-        //    Debug.Log("move");
-        //    StartCoroutine(Move(UIScript.GetStep()));
-        //}
-         handleMovePlayer(); }
+            //if (isYutThrown)
+            //{
+            //    Debug.Log("move");
+            //    StartCoroutine(Move(UIScript.GetStep()));
+            //}
+            handleMovePlayer();
+        }
     }
 
     public void handleMovePlayer()
@@ -413,7 +414,7 @@ public class stone : MonoBehaviour
             if (closestPlayerNumber != -1)
             {
                 YutGameManager.Instance.SetPlayerNumber(closestPlayerNumber);
-                Debug.Log("close:"+ closestPlayerNumber);
+                Debug.Log("close:" + closestPlayerNumber);
                 UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()].horses[YutGameManager.Instance.GetPlayerNumber()].player);
             }
         }
@@ -454,7 +455,7 @@ public class stone : MonoBehaviour
             }
 
             //백도 예외 처리
-            if (UIScript.GetStep()== -1)
+            if (UIScript.GetStep() == -1)
             {
                 Debug.Log("백도예외처리");
                 int NowpositionSum = 0;
@@ -479,60 +480,50 @@ public class stone : MonoBehaviour
                     nowUser.routePosition = BackdoRoute;
                 }
             }
-            //NormalRoute
+            //이동계산
             else
             {
-                nowUser.routePosition++; //목적지++
-                int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition); //다음 목적지 계산
-                //NormalRoute가 -1이 아니면 == 특수 위치면(코너, 중앙) routePosition에 계산한 NormalRoute 값 할당
-                if (NormalRoute != -1)
+                nowUser.routePosition++;
+                int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition);
+
+                DefenseGameTrigger(LeftStep);
+
+                while (isFight) // 싸우는 동안 일시정지
                 {
-                    DefenseGameTrigger(LeftStep);
-                    while (isFight) // 싸우는 동안 일시정지
+                    yield return null;
+                }
+
+                if (winner == enemy)
+                {
+                    LeftStep = 0;
+                    isMoving = false;
+                    winner = -1;
+                    nowUser.routePosition = nowUser.nowPosition;
+
+                    UpdateSteps.Invoke();
+                    if (UIScript.steps.Count == 0)
                     {
-                        yield return null;
-                    }
-                    if (winner == enemy)
-                    {
-                        LeftStep = 0;
-                        isMoving = false;
                         ChangeTurn();
-                        winner = -1;
-                        nowUser.routePosition = nowUser.nowPosition;
-                        yield break;
                     }
-                    else
+                    yield break;
+                }
+                else
+                {
+                    if (NormalRoute != -1) // 특수 위치
                     {
                         nowUser.routePosition = NormalRoute;
                         Debug.Log("routePosition : " + nowUser.routePosition);
                         nowUser.nowPosition = NormalRoute;
                         Debug.Log("nowPosition : " + nowUser.nowPosition);
                     }
-                }
-                //-1이면 == 평범한 이동이면 그냥 현재 위치++
-                else
-                {
-                    DefenseGameTrigger(LeftStep);
-                    while (isFight) // 싸우는 동안 일시정지
-                    {
-                        yield return null;
-                    }
-                    if (winner == enemy)
-                    {
-                        LeftStep = 0;
-                        isMoving = false;
-                        ChangeTurn();
-                        winner = -1;
-                        nowUser.routePosition = nowUser.nowPosition;
-                        yield break;
-                    }
-                    else
+                    else // 평범한 이동
                     {
                         nowUser.nowPosition++;
                         Debug.Log("nowPosition : " + nowUser.nowPosition);
                     }
                 }
             }
+
 
             if (nowUser.routePosition < currentRoute.childNodeList.Count)
             {
@@ -576,8 +567,8 @@ public class stone : MonoBehaviour
             yield return null;
         }
         StartCoroutine(UIScript.TurnOffFire());
-        Debug.Log("winner : "+winner);
-        Debug.Log("turn : "+YutGameManager.Instance.GetTurn());
+        Debug.Log("winner : " + winner);
+        Debug.Log("turn : " + YutGameManager.Instance.GetTurn());
         if (winner == YutGameManager.Instance.GetTurn())
         {
             chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
@@ -590,7 +581,7 @@ public class stone : MonoBehaviour
         }
         else if (winner == enemy)
         {
-            reset_player(horses,objectPrefab[users[turn].turn]);
+            reset_player(horses, objectPrefab[users[turn].turn]);
             winner = -1;
         }
         /**************************************************************/
@@ -615,7 +606,7 @@ public class stone : MonoBehaviour
                 if (!users[enemy].horses[i].goal)
                 {
                     //불키기
-                    
+
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
                     //묶여있는 말 개수만큼 추가로 찬스획득.
@@ -683,7 +674,7 @@ public class stone : MonoBehaviour
         YutGameManager.Instance.SetPlayerNumber(0);
         Yut.text = "player " + (YutGameManager.Instance.GetTurn() + 1) + " turn!";
         //changeTurn액션(UI.cs의 ChangeTurnUI)
-        OnChangeTurnAction.Invoke();     
+        OnChangeTurnAction.Invoke();
     }
     //말 업기
     private void BindHorse()
