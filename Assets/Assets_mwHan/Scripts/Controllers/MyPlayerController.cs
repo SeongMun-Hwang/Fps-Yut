@@ -101,6 +101,16 @@ public class MyPlayerController : PlayerController
             Jump();
             GameEnd();
         }
+        //패배 테스트 용
+        if (Input.GetKeyDown(KeyCode.Return) && isGround)
+        {
+            Jump();
+            _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
+            _gameendtxt.text = string.Format("Game End\n Player Win");
+            diedImage.gameObject.SetActive(true);
+            stone.winner = stone.enemy;
+            StartCoroutine(ChangeScene());
+        }
     }
 
     private void TryRun() // 쉬프트 키 누르면 달릴 수 있게
@@ -176,13 +186,16 @@ public class MyPlayerController : PlayerController
         _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
         _gameendtxt.text = string.Format("Game End\n Player Win");
         diedImage.gameObject.SetActive(true);
+        stone.winner = YutGameManager.Instance.GetTurn();
         StartCoroutine(ChangeScene());
     }
 
     IEnumerator ChangeScene()
     {
+        stone.isFight = false;
         yield return new WaitForSeconds(WaitTime);
-        SceneManager.LoadScene("YutPlay");
+        //SceneManager.LoadScene("YutPlay");
+        YutGameManager.Instance.StartMainGame();
     }
 }
 

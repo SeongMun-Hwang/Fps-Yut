@@ -43,7 +43,7 @@ public class stone : MonoBehaviour
     public static int winner=-1;
     user[] users;
     horse horses;
-
+    int fightenemy = -1;
     private void Update()
     {
         users = YutGameManager.Instance.GetUsers();
@@ -256,7 +256,7 @@ public class stone : MonoBehaviour
                 u.is_bind = false;
                 foreach (int bindedHorseIndex in u.BindedHorse)
                 {
-                    reset_player(users[enemy].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                    reset_player(users[u.Owner.turn].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
                 }
                 u.BindedHorse.Clear();
             }
@@ -515,9 +515,9 @@ public class stone : MonoBehaviour
                 LeftStep = 0;
                 isMoving = false;
                 ChangeTurn();
+                winner = -1;
                 yield break;
             }
-            Debug.Log("isfight : " + isFight);
             //말 nextPos로 이동
             while (MoveScript.MoveToNextNode(nowUser.nextPos)) { yield return null; }
             if (LeftStep > 0)
@@ -547,7 +547,31 @@ public class stone : MonoBehaviour
         BindHorse(); //말 묶기
         if (nowUser.nowPosition == 22) { nowUser.nowPosition = 27; } //센터 두 개 통일
         SynchronizeBindedHorses(player_number); //묶인 말들 정보 통일
-        FpsfightTrigger(); //상대와 위치 같으면 Fpsfight 지금은 꺼놈
+        /***********************fpsfight**************************/
+        FpsfightTrigger();
+        while (isFight)
+        {
+            yield return null;
+        }
+        StartCoroutine(UIScript.TurnOffFire());
+        Debug.Log("winner : "+winner);
+        Debug.Log("turn : "+YutGameManager.Instance.GetTurn());
+        if (winner == YutGameManager.Instance.GetTurn())
+        {
+            chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
+            Yut.text = chance + " 번의 기회를 추가 획득!";
+            reset_player(users[enemy].horses[fightenemy], objectPrefab[users[fightenemy].turn]);
+            UIScript.choose_step = 0;
+            isYutThrown = false;
+            winner = -1;
+            fightenemy = -1;
+        }
+        else if (winner == enemy)
+        {
+            reset_player(horses,objectPrefab[users[turn].turn]);
+            winner = -1;
+        }
+        /**************************************************************/
         //턴 변경전 승자 체크
         check_Winner();
         //찬스 0이고, 스텝에 선택 가능한 이동 없으면 턴 변경
@@ -569,21 +593,18 @@ public class stone : MonoBehaviour
                 if (!users[enemy].horses[i].goal)
                 {
                     //불키기
-                    StartCoroutine(UIScript.TurnOnFire());
+                    
                     //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
                     //묶여있는 말 개수만큼 추가로 찬스획득.
-                    chance ++;
                     //적말 리셋
-                    reset_player(users[enemy].horses[i], objectPrefab[users[enemy].turn]);
-                    Yut.text = chance + " 번의 기회를 추가 획득!";
-                    UIScript.choose_step = 0;
+                    fightenemy = i;
                     //윷 다시 던지기 위한 bool 변수 설정
-                    isYutThrown = true;
                     //Fpsfight 진행
                     //SceneManager.LoadScene("Fpsfight");
+                    isFight = true;
+                    StartCoroutine(UIScript.TurnOnFire());
                     YutGameManager.Instance.StartHammerGame();
-                    StartCoroutine(UIScript.TurnOffFire());
                     break;
                 }
             }
@@ -608,7 +629,7 @@ public class stone : MonoBehaviour
                 if (horses.BindedHorse.Count <= users[enemy].horses[i].BindedHorse.Count)
                 {
                     //이동 가능하면
-                    if (LeftStep > 0)
+                    if (LeftStep > 1)
                     {
                         Yut.text = "To pass, Win!";
                         //yield return new WaitForSeconds(1f

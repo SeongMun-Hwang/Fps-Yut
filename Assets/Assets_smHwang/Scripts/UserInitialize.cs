@@ -10,6 +10,7 @@ public class user
 }
 public class horse
 {
+    public user Owner { get; set; }
     public GameObject player;
     public int routePosition;
     public int nowPosition;
