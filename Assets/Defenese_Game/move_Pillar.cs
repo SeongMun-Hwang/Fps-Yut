@@ -94,7 +94,7 @@ public class move_Pillar : MonoBehaviour
         {
             //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
-            adjustedBounds.extents *= 0.95f; //충돌 판정 범위 상세 조정
+            adjustedBounds.extents *= 0.97f; //충돌 판정 범위 상세 조정
 
             if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
             {
@@ -103,7 +103,6 @@ public class move_Pillar : MonoBehaviour
                 status_text.text = "패배!";
                 stone.winner = stone.enemy;
                 StartCoroutine(delay());
-                playerCollidedWithPillar = true;
             }
         }
         if (!launch && !hasLaunched)
@@ -140,19 +139,24 @@ public class move_Pillar : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
         {
-            playerCollidedWithPillar = false; // 이 부분을 추가합니다.
+            playerCollidedWithPillar = false;
             launch = true;
         }
     }
     //2초 대기 후 씬 이동
     IEnumerator delay()
     {
+        ResetPillarAndColor();
+        ResetPillarPosition();
         yield return new WaitForSeconds(2f);
         stone.isFight = false;
         //SceneManager.LoadScene("YutPlay");
         Debug.Log("isfight d : " + stone.isFight);
         Debug.Log("winner : " + stone.winner);
         Debug.Log("nowuser : " + YutGameManager.Instance.GetTurn());
+        status_text.text = "";
+        round = 0;
+        playerCollidedWithPillar = false;
         YutGameManager.Instance.StartMainGame();
     }
     //라운드 표시 함수
@@ -186,10 +190,8 @@ public class move_Pillar : MonoBehaviour
         if (pillar[3] && !isStopped[3]) pillar_Up();
 
     }
-    //공격 후 5초 뒤 기둥 위치 리셋, count 증가
-    IEnumerator ResetPillarPositionsAfterDelay()
+    void ResetPillarPosition()
     {
-        yield return new WaitForSeconds(5f);
         for (int i = 0; i < rbs.Length; i++)
         {
             rbs[i].transform.position = initialPillarStates[i].position;
@@ -199,6 +201,12 @@ public class move_Pillar : MonoBehaviour
         }
         launch = false;
         hasLaunched = false;
+    }
+    //공격 후 5초 뒤 기둥 위치 리셋, count 증가
+    IEnumerator ResetPillarPositionsAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+        ResetPillarPosition();
 
         // pillar reset 후에 충돌이 발생하지 않았으면 count를 증가시킵니다.
         if (!playerCollidedWithPillar)
@@ -209,6 +217,7 @@ public class move_Pillar : MonoBehaviour
                 stone.winner = YutGameManager.Instance.GetTurn();
                 status_text.text = "승리!";
                 count = 0;
+                CreateObstacle();
                 StartCoroutine(delay());
             }
             else
@@ -260,7 +269,7 @@ public class move_Pillar : MonoBehaviour
             rbs[i].velocity = new Vector3(rbs[i].velocity.x, rbs[i].velocity.y, speed);
         }
     }
-    void CreateObstacle()
+    public void CreateObstacle()
     {
         foreach (GameObject ob in obstacle)
         {

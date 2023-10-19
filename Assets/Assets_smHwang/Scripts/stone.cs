@@ -454,7 +454,7 @@ public class stone : MonoBehaviour
                 break;
             }
 
-            //백도 예외 처리
+            //백도 예외 처리(움직일 수 있는 말이 없을 때)
             if (UIScript.GetStep() == -1)
             {
                 Debug.Log("백도예외처리");
