@@ -7,10 +7,6 @@ using System.Linq;
 
 public class move_Pillar : MonoBehaviour
 {
-    /*씬*/
-    public GameObject MainGame;
-    public GameObject MiniGame;
-    /**/
     public float speed = 100f;  // 움직이는 속도
     private bool[] isStopped = new bool[4];  // 각 방향에 대해 움직임이 멈췄는지 추적합니다.
     public Rigidbody[] rbs;
@@ -50,7 +46,7 @@ public class move_Pillar : MonoBehaviour
         pillars = GameObject.FindGameObjectsWithTag("pillar");
         status_text.text = "라운드 " + round + "!";
         //pillar, edge 초기화
-        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge"); 
         //충돌 무시 설정
         foreach (GameObject pillar in pillars)
         {
@@ -155,7 +151,8 @@ public class move_Pillar : MonoBehaviour
         Debug.Log("winner : " + stone.winner);
         Debug.Log("nowuser : " + YutGameManager.Instance.GetTurn());
         status_text.text = "";
-        round = 0;
+        count = 0;
+        round = 1;
         playerCollidedWithPillar = false;
         YutGameManager.Instance.StartMainGame();
     }

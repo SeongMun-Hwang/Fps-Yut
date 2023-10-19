@@ -492,14 +492,13 @@ public class stone : MonoBehaviour
                 {
                     yield return null;
                 }
-
+                isFight = false;
                 if (winner == enemy)
                 {
                     LeftStep = 0;
-                    isMoving = false;
                     winner = -1;
+                    isMoving = false;
                     nowUser.routePosition = nowUser.nowPosition;
-
                     UpdateSteps.Invoke();
                     if (UIScript.steps.Count == 0)
                     {
@@ -507,6 +506,7 @@ public class stone : MonoBehaviour
                     }
                     yield break;
                 }
+                
                 else
                 {
                     if (NormalRoute != -1) // 특수 위치
@@ -522,6 +522,7 @@ public class stone : MonoBehaviour
                         Debug.Log("nowPosition : " + nowUser.nowPosition);
                     }
                 }
+                winner = -1;
             }
 
 
@@ -566,6 +567,7 @@ public class stone : MonoBehaviour
         {
             yield return null;
         }
+        isFight = false;
         StartCoroutine(UIScript.TurnOffFire());
         Debug.Log("winner : " + winner);
         Debug.Log("turn : " + YutGameManager.Instance.GetTurn());
@@ -605,16 +607,8 @@ public class stone : MonoBehaviour
             {
                 if (!users[enemy].horses[i].goal)
                 {
-                    //불키기
-
-                    //미니 게임 없이 말을 먹을 때의 동작
                     Debug.Log("encounter");
-                    //묶여있는 말 개수만큼 추가로 찬스획득.
-                    //적말 리셋
                     fightenemy = i;
-                    //윷 다시 던지기 위한 bool 변수 설정
-                    //Fpsfight 진행
-                    //SceneManager.LoadScene("Fpsfight");
                     isFight = true;
                     StartCoroutine(UIScript.TurnOnFire());
                     YutGameManager.Instance.StartHammerGame();
