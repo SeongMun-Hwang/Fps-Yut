@@ -77,6 +77,7 @@ public class YutGameManager : MonoBehaviour
                 users[j].horses[i].is_bind = false;
                 users[j].horses[i].BindedHorse = new List<int>();
                 users[j].horses[i].FinalPosition = new List<int>();
+                users[j].horses[i].Owner = users[j];
             }
         }
         StartMainGame();

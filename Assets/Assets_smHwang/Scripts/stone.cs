@@ -250,7 +250,7 @@ public class stone : MonoBehaviour
             u.lastPosition = 0;
             u.nextPos = Vector3.zero;
             u.goal = false;
-
+            
             if (u.is_bind)
             {
                 u.is_bind = false;
@@ -268,7 +268,7 @@ public class stone : MonoBehaviour
     space : 윷던지기*/
     void choose_Player()
     {
-        if (!isMoving) //말이 움직이지 않고
+        if (!isMoving && !isFight) //말이 움직이지 않고
         {
             if (isYutThrown) //윷을 다 던졌으면
             {
@@ -570,8 +570,9 @@ public class stone : MonoBehaviour
         isFight = false;
         Debug.Log("winner : " + winner);
         Debug.Log("turn : " + YutGameManager.Instance.GetTurn());
+        StartCoroutine(UIScript.TurnOffFire());
 
-        if (winner == YutGameManager.Instance.GetTurn())
+        if (winner == turn)
         {
             chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
             Yut.text = chance + " 번의 기회를 추가 획득!";
@@ -586,7 +587,6 @@ public class stone : MonoBehaviour
             reset_player(horses, objectPrefab[users[turn].turn]);
             winner = -1;
         }
-        StartCoroutine(UIScript.TurnOffFire());
         /**************************************************************/
         //턴 변경전 승자 체크
         check_Winner();
