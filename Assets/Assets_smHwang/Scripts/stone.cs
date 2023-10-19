@@ -238,13 +238,13 @@ public class stone : MonoBehaviour
         }
     }
     //플레이어 말 재생성
-    public void reset_player(horse u, GameObject playerPrefab)
+    public void reset_player(horse u)
     {
         if (!u.goal)
         {
             Quaternion prevRotation = u.player.transform.rotation;
             Destroy(u.player);
-            u.player = Instantiate(playerPrefab);
+            u.player = Instantiate(objectPrefab[u.Owner.turn]);
             u.routePosition = 0;
             u.nowPosition = 0;
             u.lastPosition = 0;
@@ -256,7 +256,7 @@ public class stone : MonoBehaviour
                 u.is_bind = false;
                 foreach (int bindedHorseIndex in u.BindedHorse)
                 {
-                    reset_player(users[u.Owner.turn].horses[bindedHorseIndex], playerPrefab); // 재귀적으로 호출
+                    reset_player(users[u.Owner.turn].horses[bindedHorseIndex]); // 재귀적으로 호출
                 }
                 u.BindedHorse.Clear();
             }
@@ -576,17 +576,17 @@ public class stone : MonoBehaviour
         {
             chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
             Yut.text = chance + " 번의 기회를 추가 획득!";
-            reset_player(users[enemy].horses[fightenemy], objectPrefab[users[fightenemy].turn]);
+            Debug.Log("fightenemy : " + fightenemy);
+            reset_player(users[enemy].horses[fightenemy]);
             UIScript.choose_step = 0;
             isYutThrown = false;
-            winner = -1;
-            fightenemy = -1;
         }
         else if (winner == enemy)
         {
-            reset_player(horses, objectPrefab[users[turn].turn]);
-            winner = -1;
+            reset_player(horses);
         }
+        winner = -1;
+        fightenemy = -1;
         /**************************************************************/
         //턴 변경전 승자 체크
         check_Winner();
@@ -738,6 +738,7 @@ public class stone : MonoBehaviour
 
         foreach (int bindedIndex in bindedHorses)
         {
+            Debug.Log("bindedindexx : " + bindedIndex);
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].routePosition = mainHorse.routePosition;
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].nowPosition = mainHorse.nowPosition;
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].lastPosition = mainHorse.lastPosition;
@@ -745,7 +746,7 @@ public class stone : MonoBehaviour
             users[YutGameManager.Instance.GetTurn()].horses[bindedIndex].goal = mainHorse.goal;
         }
     }
-    //묶인 말들 동시 파괴
+    //묶인 말들 동시 파괴(골인시)
     public void DestroyBindedHorses(int mainHorseIndex)
     {
         List<int> bindedHorses = users[YutGameManager.Instance.GetTurn()].horses[mainHorseIndex].BindedHorse;
