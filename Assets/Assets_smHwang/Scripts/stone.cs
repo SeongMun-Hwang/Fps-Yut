@@ -486,7 +486,7 @@ public class stone : MonoBehaviour
                 nowUser.routePosition++;
                 int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition);
 
-                DefenseGameTrigger(LeftStep);
+                StartCoroutine(DefenseGameTrigger(LeftStep));
 
                 while (isFight) // 싸우는 동안 일시정지
                 {
@@ -562,15 +562,15 @@ public class stone : MonoBehaviour
         if (nowUser.nowPosition == 22) { nowUser.nowPosition = 27; } //센터 두 개 통일
         SynchronizeBindedHorses(player_number); //묶인 말들 정보 통일
         /***********************fpsfight**************************/
-        FpsfightTrigger();
+        StartCoroutine(FpsfightTrigger());
         while (isFight)
         {
             yield return null;
         }
         isFight = false;
-        StartCoroutine(UIScript.TurnOffFire());
         Debug.Log("winner : " + winner);
         Debug.Log("turn : " + YutGameManager.Instance.GetTurn());
+
         if (winner == YutGameManager.Instance.GetTurn())
         {
             chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
@@ -586,6 +586,7 @@ public class stone : MonoBehaviour
             reset_player(horses, objectPrefab[users[turn].turn]);
             winner = -1;
         }
+        StartCoroutine(UIScript.TurnOffFire());
         /**************************************************************/
         //턴 변경전 승자 체크
         check_Winner();
@@ -599,7 +600,7 @@ public class stone : MonoBehaviour
     }
 
     //Fps Fight 트리거
-    private void FpsfightTrigger()
+    private IEnumerator FpsfightTrigger()
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
@@ -607,10 +608,13 @@ public class stone : MonoBehaviour
             {
                 if (!users[enemy].horses[i].goal)
                 {
+                    isFight = true;
                     Debug.Log("encounter");
                     fightenemy = i;
-                    isFight = true;
+                    Yut.text = "먹으려면\n승리하세요!";
                     StartCoroutine(UIScript.TurnOnFire());
+                    yield return new WaitForSeconds(1.0f);
+                    Yut.text = "";
                     YutGameManager.Instance.StartHammerGame();
                     break;
                 }
@@ -624,7 +628,7 @@ public class stone : MonoBehaviour
         StartCoroutine(UIScript.TurnOffFire());
     }
     //DefenseGame 트리거
-    private void DefenseGameTrigger(int LeftStep)
+    private IEnumerator DefenseGameTrigger(int LeftStep)
     {
         for (int i = 0; i < Constants.HorseNumber; i++)
         {
@@ -637,12 +641,14 @@ public class stone : MonoBehaviour
                     //이동 가능하면
                     if (LeftStep > 1)
                     {
-                        Debug.Log("defensegame");
-                        Yut.text = "To pass, Win!";
-                        //yield return new WaitForSeconds(1f
-                        StartCoroutine(LoadDefenseGameSceneAfterDelay(1f));
-                        //SceneManager.LoadScene("Defense_Game");
                         isFight = true;
+
+                        Debug.Log("defensegame");
+                        UIScript.Yut.text = "지나가려면\n 승리하세요!";
+
+                        yield return new WaitForSeconds(1.0f);
+                        StartCoroutine(LoadDefenseGameSceneAfterDelay(5f));
+                        //SceneManager.LoadScene("Defense_Game");
                         YutGameManager.Instance.StartDefenseGame();
                     }
                 }

@@ -125,9 +125,9 @@ public class UI : MonoBehaviour
     }
     public IEnumerator YieldReturnDelay(float time, String text)
     {
-        yield return new WaitForSeconds(time);
-        Yut.text = text;
         DelayFunctionText = "";
+        Yut.text = text;
+        yield return new WaitForSeconds(time);
     }
     // 플레이어 오브젝트
     public void SetOutline(GameObject player)
