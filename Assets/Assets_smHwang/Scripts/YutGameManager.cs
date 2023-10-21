@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public static class Constants
 {
@@ -25,6 +26,7 @@ public class YutGameManager : MonoBehaviour
     public GameObject HammerGame;
     public GameObject DefenseGame;
     private Camera mainCamera;
+    public TextMeshProUGUI ManagerText;
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -82,7 +84,34 @@ public class YutGameManager : MonoBehaviour
         }
         StartMainGame();
     }
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
+        if (Physics.Raycast(ray, out hit))
+        {
+            GameObject clickedObject = hit.collider.gameObject;
+
+            // Check if the clicked object is in the red_team array
+            int index = Array.IndexOf(red_team, clickedObject);
+            if (index != -1)
+            {
+                SetPlayerNumber(index);
+                return; // Exit after setting the player number
+            }
+
+            // Check if the clicked object is in the blue_team array
+            index = Array.IndexOf(blue_team, clickedObject);
+            if (index != -1)
+            {
+                SetPlayerNumber(index);
+            }
+        }
+    }
+    }
     public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
     {
         turn = t;
@@ -122,6 +151,7 @@ public class YutGameManager : MonoBehaviour
     public void SetPlayerNumber(int newPlayerNumber)
     {
         player_number = newPlayerNumber;
+        ManagerText.text = (player_number+1) + " 번 플레이어 선택!";
     }
     //랜덤 턴 지정
     private void AssignTurns()
