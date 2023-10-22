@@ -63,7 +63,7 @@ public class UI : MonoBehaviour
         stone.OnChangeTurnAction = ChangeTurnUI;
         stone.ShowDestination = DestinationUI;
         stone.UpdateSteps = _UpdateSteps;
-
+        YutGameManager.Instance.ActionSetPlayerNumber = AutoSelectClosestPlayerInArray;
         StartText(YutGameManager.Instance.GetTurn());
         for (int i = 0; i < steps_button.Length; i++)
         {
@@ -81,7 +81,6 @@ public class UI : MonoBehaviour
         timer();
         GoalCounter(YutGameManager.Instance.GetHorse());
         ChooseMove();
-        SetOutline(YutGameManager.Instance.GetNowHorse().player);
         if (steps.Count > 1 && stone.isYutThrown == true)
         {
             if (stone.isMoving)
@@ -195,6 +194,39 @@ public class UI : MonoBehaviour
             steps_button[i].image.color = original_Edge;
         }
         steps.Clear();
+    }
+    //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
+    void AutoSelectClosestPlayerInArray()
+    {
+        user nowuser = YutGameManager.Instance.GetNowUsers();
+        horse nowhorse = YutGameManager.Instance.GetNowHorse();
+        if (nowhorse.player == null)
+        {
+            int closestPlayerNumber = -1;
+
+            for (int i = 0; i < Constants.HorseNumber; i++)
+            {
+                int nextPlayerNumber = (YutGameManager.Instance.GetPlayerNumber() + i) % Constants.HorseNumber;
+
+                if (nowuser.horses[nextPlayerNumber] != null &&
+                    nowuser.horses[nextPlayerNumber].goal != true)
+                {
+                    closestPlayerNumber = nextPlayerNumber;
+                    break;
+                }
+            }
+
+            if (closestPlayerNumber != -1)
+            {
+                YutGameManager.Instance.SetPlayerNumber(closestPlayerNumber);
+                Debug.Log("close:" + closestPlayerNumber);
+                SetOutline(nowhorse.player);
+            }
+        }
+        else
+        {
+            SetOutline(nowhorse.player);
+        }
     }
     public void choose_steps(int buttonIndex)
     {

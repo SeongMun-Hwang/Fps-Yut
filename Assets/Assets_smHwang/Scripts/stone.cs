@@ -50,7 +50,6 @@ public class stone : MonoBehaviour
         horses = YutGameManager.Instance.GetNowHorse();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), YutGameManager.Instance.GetUsers());
         if (isYutThrown) { choose_Player(); }
-        AutoSelectClosestPlayerInArray();
     }
     void Start()
     {
@@ -58,7 +57,6 @@ public class stone : MonoBehaviour
         {
             yutSound[i].mute = true;
         }
-        //UIScript.SetOutlineMaterial(Resources.Load<Material>("OutlineMaterial"));
     }
     //윷던지기 랜덤 함수 - 버튼에 연결
     public void throwYut()
@@ -392,33 +390,7 @@ public class stone : MonoBehaviour
             Yut.text = "Blue Team is the winner!";
         }
     }
-    //플레이어 오브젝트가 존재하지 않으면 배열 상 가장 가까운 존재하는 오브젝트 자동으로 선택
-    void AutoSelectClosestPlayerInArray()
-    {
-        if (users[YutGameManager.Instance.GetTurn()].horses[YutGameManager.Instance.GetPlayerNumber()].player == null)
-        {
-            int closestPlayerNumber = -1;
 
-            for (int i = 0; i < Constants.HorseNumber; i++)
-            {
-                int nextPlayerNumber = (YutGameManager.Instance.GetPlayerNumber() + i) % Constants.HorseNumber;
-
-                if (users[YutGameManager.Instance.GetTurn()].horses[nextPlayerNumber] != null &&
-                    users[YutGameManager.Instance.GetTurn()].horses[nextPlayerNumber].goal != true)
-                {
-                    closestPlayerNumber = nextPlayerNumber;
-                    break;
-                }
-            }
-
-            if (closestPlayerNumber != -1)
-            {
-                YutGameManager.Instance.SetPlayerNumber(closestPlayerNumber);
-                Debug.Log("close:" + closestPlayerNumber);
-                UIScript.SetOutline(users[YutGameManager.Instance.GetTurn()].horses[YutGameManager.Instance.GetPlayerNumber()].player);
-            }
-        }
-    }
     //이동 동작의 모든 것
     IEnumerator Move(int LeftStep)
     {

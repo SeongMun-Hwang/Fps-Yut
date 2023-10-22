@@ -27,6 +27,7 @@ public class YutGameManager : MonoBehaviour
     public GameObject DefenseGame;
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
+    public Action ActionSetPlayerNumber;
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -152,7 +153,9 @@ public class YutGameManager : MonoBehaviour
     {
         player_number = newPlayerNumber;
         ManagerText.text = (player_number+1) + " 번 플레이어 선택!";
+        ActionSetPlayerNumber.Invoke();
     }
+
     //랜덤 턴 지정
     private void AssignTurns()
     {
