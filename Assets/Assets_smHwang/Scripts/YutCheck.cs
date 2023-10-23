@@ -36,23 +36,28 @@ public class YutCheck : MonoBehaviour
             switch (parentName)
             {
                 case "yut1":
-                    if (col.gameObject.name == "top" && !isAdd[0]) { 
+                    if (col.gameObject.name == "top" && !isAdd[0]) {
+                        Debug.Log("1: top");
                         YutText.result++; 
                         isAdd[0]=true;
                     }
                     break;
                 case "yut2":
+                        Debug.Log("1: top");
                     if (col.gameObject.name == "top" && !isAdd[1]) { YutText.result++;
+                        Debug.Log("2: top");
                         isAdd[1] = true;
                     }
                     break;
                 case "yut3":
                     if (col.gameObject.name == "top" && !isAdd[2]) { YutText.result++; 
+                        Debug.Log("3: top");
                         isAdd[2] = true;
                     }
                     break;
                 case "yut4":
                     if (col.gameObject.name == "top" && !isAdd[3]) { YutText.result++; YutText.isbackdo = true;
+                        Debug.Log("4: top");
                         isAdd[3] = true;
                     }
                     break;

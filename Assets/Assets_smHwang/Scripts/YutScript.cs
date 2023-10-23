@@ -49,6 +49,7 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         isOverThrowButton = false;
         currentForce = 0; // 버튼에서 손을 떼면 게이지 리셋
+        YutText.result = 0;
         UpdateGaugeFill();
     }
 
@@ -82,6 +83,11 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void ThrowYuts()
     {
+        YutText.result = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            YutCheck.isAdd[i] = false;
+        }
         for (int i = 0; i < 4; i++)
         {
             rb[i].position = new Vector3(8, 2+i, -8);

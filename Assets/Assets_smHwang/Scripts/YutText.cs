@@ -5,9 +5,8 @@ using System.Linq;
 using TMPro;
 
 public class YutText : MonoBehaviour
-{
-
-    TextMeshProUGUI text;
+{ 
+    public TextMeshProUGUI text;
     public static int result = 0;
     public static bool isbackdo = false;
     // Use this for initialization
