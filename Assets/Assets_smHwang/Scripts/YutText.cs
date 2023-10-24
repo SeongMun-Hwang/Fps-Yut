@@ -5,7 +5,7 @@ using System.Linq;
 using TMPro;
 
 public class YutText : MonoBehaviour
-{ 
+{
     public TextMeshProUGUI text;
     public static int result = 0;
     public static bool isbackdo = false;
@@ -18,32 +18,33 @@ public class YutText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (result == 0)
+        if (YutCheck.isAdd.Any(add => !add)) // isAdd 배열에 false가 하나라도 있으면
         {
-            text.text = "모";
+            text.text = "낙";
         }
-        else if (result == 1)
+        else // 모든 값이 true일 때
         {
-            if (isbackdo)
+            switch (result)
             {
-                text.text = "백도";
+                case 0:
+                    text.text = "모";
+                    break;
+                case 1:
+                    text.text = isbackdo ? "백도" : "도";
+                    break;
+                case 2:
+                    text.text = "개";
+                    break;
+                case 3:
+                    text.text = "걸";
+                    break;
+                case 4:
+                    text.text = "윷";
+                    break;
+                default:
+                    // 필요한 경우, 기본 텍스트나 에러 메시지를 여기에 추가
+                    break;
             }
-            else
-            {
-                text.text = "도";
-            }
-        }
-        else if (result == 2)
-        {
-            text.text = "개";
-        }
-        else if (result == 3)
-        {
-            text.text = "걸";
-        }
-        else if (result == 4)
-        {
-            text.text = "윷";
         }
     }
 }

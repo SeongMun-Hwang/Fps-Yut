@@ -81,7 +81,7 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         gaugeImage.fillAmount = normalizedForce; // 게이지의 채워진 정도를 업데이트
     }
 
-    void ThrowYuts()
+    public void ThrowYuts()
     {
         YutText.result = 0;
         YutText.isbackdo = false;

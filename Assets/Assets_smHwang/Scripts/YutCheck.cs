@@ -41,23 +41,46 @@ public class YutCheck : MonoBehaviour
                         YutText.result++; 
                         isAdd[0]=true;
                     }
+                    else if(col.gameObject.name=="bottom" && !isAdd[0])
+                    {
+                        //Debug.Log("1: bottom");
+                        isAdd[0] = true
+;                    }
                     break;
                 case "yut2":
-                        Debug.Log("1: top");
-                    if (col.gameObject.name == "top" && !isAdd[1]) { YutText.result++;
+                    if (col.gameObject.name == "top" && !isAdd[1]) { 
+                        YutText.result++;
                         Debug.Log("2: top");
+                        isAdd[1] = true;
+                    }
+                    else if (col.gameObject.name == "bottom" && !isAdd[1])
+                    {
+                        //Debug.Log("2: bottom");
                         isAdd[1] = true;
                     }
                     break;
                 case "yut3":
-                    if (col.gameObject.name == "top" && !isAdd[2]) { YutText.result++; 
+                    if (col.gameObject.name == "top" && !isAdd[2]) { 
+                        YutText.result++; 
                         Debug.Log("3: top");
+                        isAdd[2] = true;
+                    }
+                    else if (col.gameObject.name == "bottom" && !isAdd[2])
+                    {
+                        //Debug.Log("3: bottom");
                         isAdd[2] = true;
                     }
                     break;
                 case "yut4":
-                    if (col.gameObject.name == "top" && !isAdd[3]) { YutText.result++; YutText.isbackdo = true;
+                    if (col.gameObject.name == "top" && !isAdd[3]) { 
+                        YutText.result++; 
+                        YutText.isbackdo = true;
                         Debug.Log("4: top");
+                        isAdd[3] = true;
+                    }
+                    else if (col.gameObject.name == "bottom" && !isAdd[3])
+                    {
+                        //Debug.Log("4: bottom");
                         isAdd[3] = true;
                     }
                     break;
