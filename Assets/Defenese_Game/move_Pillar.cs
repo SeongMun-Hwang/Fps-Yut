@@ -83,14 +83,13 @@ public class move_Pillar : MonoBehaviour
                (pos1.x - pos2.x == -15f && pos1.z - pos2.z == -15f);   // bottom-left
     }
 
-
     void Update()
     {
         foreach (GameObject pillar in pillars)
         {
             //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
-            adjustedBounds.extents *= 0.97f; //충돌 판정 범위 상세 조정
+            adjustedBounds.extents *= 1.0f; //충돌 판정 범위 상세 조정
 
             if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
             {
@@ -209,7 +208,7 @@ public class move_Pillar : MonoBehaviour
         if (!playerCollidedWithPillar)
         {
             count++;
-            if (count == 1)
+            if (count == 10)
             {
                 stone.winner = YutGameManager.Instance.GetTurn();
                 status_text.text = "승리!";
