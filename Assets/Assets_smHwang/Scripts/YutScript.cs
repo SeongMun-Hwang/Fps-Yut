@@ -84,6 +84,7 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     void ThrowYuts()
     {
         YutText.result = 0;
+        YutText.isbackdo = false;
         for (int i = 0; i < 4; i++)
         {
             YutCheck.isAdd[i] = false;
