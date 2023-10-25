@@ -38,6 +38,8 @@ public class UI : MonoBehaviour
     public ParticleSystem[] Fire;
     //조명
     public Light DirectionalLight;
+    public GameObject textMeshProPrefab;
+
     private void ChangeTurnUI()
     {
         choose_step = 0;
@@ -381,22 +383,30 @@ public class UI : MonoBehaviour
         horse horses = YutGameManager.Instance.GetNowHorse();
         user nowUser = YutGameManager.Instance.GetNowUsers();
 
-        foreach (var destination in horses.FinalPosition)
+        for (int i = 0; i < horses.FinalPosition.Count; i++)
         {
+            int destination = horses.FinalPosition[i];
             Transform targetNode = stone.currentRoute.childNodeList[destination];
             Vector3 targetPosition = targetNode.position;
 
-            targetPosition.y += 0.5f;
+            targetPosition.y += 1.5f;
 
-            GameObject instantiatedObj = Instantiate(stone.objectPrefab[turn], targetPosition, Quaternion.identity);
-            DestiantionObject.Add(instantiatedObj);
-            Renderer rend = instantiatedObj.GetComponent<Renderer>();
-            if (rend != null)
-            {
-                rend.material.color = nowUser.DestinationColor;
-            }
+            // 프리팹 인스턴스화
+            GameObject instantiatedText = Instantiate(
+           textMeshProPrefab,
+           targetPosition,
+           Quaternion.Euler(0, 90, 0)  // 여기에서 Y축을 90도 회전
+       );
+
+            // 필요하다면 여기서 추가적인 속성 설정
+            TextMeshPro tmp = instantiatedText.GetComponent<TextMeshPro>();
+            tmp.text = steps_button_Text[i].text;  // 텍스트 변경
+
+            DestiantionObject.Add(instantiatedText);
         }
     }
+
+
     //목적지 오브젝트 모두 파괴, 리스트 초기화
     public void DestroyDestination()
     {
