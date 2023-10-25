@@ -84,7 +84,6 @@ public class YutGameManager : MonoBehaviour
                 users[j].horses[i].Owner = users[j];
             }
         }
-
         StartMainGame();
     }
     private void Update()
@@ -114,11 +113,6 @@ public class YutGameManager : MonoBehaviour
             }
         }
     }
-    }
-    public void SetTurnAndPlayerNumber(int t, int p_num, horse[][] u)
-    {
-        turn = t;
-        player_number = p_num;
     }
     //get
     public int GetTurn()

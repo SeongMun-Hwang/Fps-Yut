@@ -53,6 +53,7 @@ public class stone : MonoBehaviour
     }
     void Start()
     {
+
         for (int i = 0; i < 5; i++)
         {
             yutSound[i].mute = true;
@@ -457,13 +458,8 @@ public class stone : MonoBehaviour
             {
                 nowUser.routePosition++;
                 int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition);
-<<<<<<< Updated upstream
                 StartCoroutine(DefenseGameTrigger(LeftStep));
-=======
 
-                //StartCoroutine(DefenseGameTrigger(LeftStep));
-
->>>>>>> Stashed changes
                 while (isFight) // 싸우는 동안 일시정지
                 {
                     yield return null;

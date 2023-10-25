@@ -24,6 +24,8 @@ public class move_Pillar : MonoBehaviour
     public Vector3 prevPosition = Vector3.zero;
     float originalY = 7.5f; // 원래 Y 좌표
     float targetY = 22.5f; // 목표 Y 좌표
+    public List<Vector3> previousPositions = new List<Vector3>(); // 이전 위치를 저장하는 리스트
+    private Vector3 playerInitialPosition = new Vector3();
     private struct PillarState
     {
         public Vector3 position;
@@ -37,6 +39,7 @@ public class move_Pillar : MonoBehaviour
     private GameObject[] pillars;
     void Start()
     {
+        playerInitialPosition = player.transform.position;
         Vector3 initialHitPoint; // 초기 hit 점의 위치
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
@@ -47,7 +50,7 @@ public class move_Pillar : MonoBehaviour
         pillars = GameObject.FindGameObjectsWithTag("pillar");
         status_text.text = "라운드 " + round + "!";
         //pillar, edge 초기화
-        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge"); 
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("edge");
         //충돌 무시 설정
         foreach (GameObject pillar in pillars)
         {
@@ -101,43 +104,45 @@ public class move_Pillar : MonoBehaviour
                 StartCoroutine(delay());
             }
         }
-        if (!launch && !hasLaunched)
-        {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+        //if (stone.enemy == YutGameManager.Instance.GetNowUsers().turn)
+        //{
+            if (!launch && !hasLaunched)
             {
-                ResetPillarAndColor();
-                pillar[0] = true;
-                StartCoroutine(MoveToTargetY(rend[0].transform, targetY, 1f));
-                rend[0].material.color = Color.red;
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    ResetPillarAndColor();
+                    pillar[0] = true;
+                    StartCoroutine(MoveToTargetY(rend[0].transform, targetY, 1f));
+                    rend[0].material.color = Color.red;
+                }
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    ResetPillarAndColor();
+                    pillar[1] = true;
+                    StartCoroutine(MoveToTargetY(rend[1].transform, targetY, 1f));
+                    rend[1].material.color = Color.red;
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    ResetPillarAndColor();
+                    pillar[2] = true;
+                    StartCoroutine(MoveToTargetY(rend[2].transform, targetY, 1f));
+                    rend[2].material.color = Color.red;
+                }
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    ResetPillarAndColor();
+                    pillar[3] = true;
+                    StartCoroutine(MoveToTargetY(rend[3].transform, targetY, 1f));
+                    rend[3].material.color = Color.red;
+                }
             }
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
             {
-                ResetPillarAndColor();
-                pillar[1] = true;
-                StartCoroutine(MoveToTargetY(rend[1].transform, targetY, 1f));
-                rend[1].material.color = Color.red;
+                playerCollidedWithPillar = false;
+                launch = true;
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                ResetPillarAndColor();
-                pillar[2] = true;
-                StartCoroutine(MoveToTargetY(rend[2].transform, targetY, 1f));
-                rend[2].material.color = Color.red;
-            }
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                ResetPillarAndColor();
-                pillar[3] = true;
-                StartCoroutine(MoveToTargetY(rend[3].transform, targetY, 1f));
-                rend[3].material.color = Color.red;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
-        {
-            playerCollidedWithPillar = false;
-            launch = true;
-        }
+        //}
     }
     //2초 대기 후 씬 이동
     IEnumerator delay()
@@ -162,6 +167,8 @@ public class move_Pillar : MonoBehaviour
     void UpdateRound()
     {
         round++;
+        previousPositions.Clear();
+        player.transform.position=playerInitialPosition;
         CreateObstacle();
         status_text.text = "라운드 " + round + "!";
     }
@@ -189,18 +196,7 @@ public class move_Pillar : MonoBehaviour
         if (pillar[3] && !isStopped[3]) pillar_Up();
 
     }
-    void ResetPillarPosition()
-    {
-        for (int i = 0; i < rbs.Length; i++)
-        {
-            rbs[i].transform.position = initialPillarStates[i].position;
-            rbs[i].transform.rotation = initialPillarStates[i].rotation;
-            rbs[i].velocity = initialPillarStates[i].velocity;
-            rbs[i].angularVelocity = initialPillarStates[i].angularVelocity;
-        }
-        launch = false;
-        hasLaunched = false;
-    }
+   
     //공격 후 5초 뒤 기둥 위치 리셋, count 증가
     IEnumerator ResetPillarPositionsAfterDelay()
     {
@@ -275,20 +271,43 @@ public class move_Pillar : MonoBehaviour
             Vector3 newPosition;
             do
             {
-                //x축 랜덤
+                // x축 랜덤
                 float posX = positions[Random.Range(0, positions.Length)];
 
-                //z축 랜덤
+                // z축 랜덤
                 float posZ = positions[Random.Range(0, positions.Length)];
                 newPosition = new Vector3(posX, ob.transform.position.y, posZ);
 
-            } while (IsAdjacentDiagonally(newPosition, prevPosition) ||
-                     Mathf.Approximately(newPosition.x, prevPosition.x) ||
-                     Mathf.Approximately(newPosition.z, prevPosition.z));
+            } while (IsPositionInvalid(newPosition, previousPositions));
 
             ob.transform.position = newPosition;
-            prevPosition = newPosition;
+            previousPositions.Add(newPosition); // 새 위치를 리스트에 추가
         }
+    }
+    bool IsPositionInvalid(Vector3 newPosition, List<Vector3> previousPositions)
+    {
+        foreach (Vector3 prevPosition in previousPositions)
+        {
+            if (IsAdjacentDiagonally(newPosition, prevPosition) ||
+                Mathf.Approximately(newPosition.x, prevPosition.x) ||
+                Mathf.Approximately(newPosition.z, prevPosition.z))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    void ResetPillarPosition()
+    {
+        for (int i = 0; i < rbs.Length; i++)
+        {
+            rbs[i].transform.position = initialPillarStates[i].position;
+            rbs[i].transform.rotation = initialPillarStates[i].rotation;
+            rbs[i].velocity = initialPillarStates[i].velocity;
+            rbs[i].angularVelocity = initialPillarStates[i].angularVelocity;
+        }
+        launch = false;
+        hasLaunched = false;
     }
     IEnumerator MoveToTargetY(Transform objectTransform, float targetY, float duration)
     {

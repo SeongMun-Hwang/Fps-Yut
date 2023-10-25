@@ -37,6 +37,7 @@ public class move_Player : MonoBehaviour
             moveHorizontal = 1;
         }
 
+
         // 움직일 방향을 계산합니다.
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
