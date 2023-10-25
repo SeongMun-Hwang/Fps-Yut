@@ -457,7 +457,13 @@ public class stone : MonoBehaviour
             {
                 nowUser.routePosition++;
                 int NormalRoute = MoveScript.NormalRoute(nowUser.nowPosition, nowUser.lastPosition);
+<<<<<<< Updated upstream
                 StartCoroutine(DefenseGameTrigger(LeftStep));
+=======
+
+                //StartCoroutine(DefenseGameTrigger(LeftStep));
+
+>>>>>>> Stashed changes
                 while (isFight) // 싸우는 동안 일시정지
                 {
                     yield return null;
@@ -618,7 +624,7 @@ public class stone : MonoBehaviour
 
                         yield return new WaitForSeconds(1.0f);
                         StartCoroutine(LoadDefenseGameSceneAfterDelay(5f));
-                        //SceneManager.LoadScene("Defense_Game");
+                        SceneManager.LoadScene("Defense_Game");
                         YutGameManager.Instance.StartDefenseGame();
                     }
                 }

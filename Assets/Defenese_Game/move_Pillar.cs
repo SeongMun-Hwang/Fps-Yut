@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Google.Protobuf.Protocol;
 
 public class move_Pillar : MonoBehaviour
 {
@@ -154,6 +155,8 @@ public class move_Pillar : MonoBehaviour
         round = 1;
         playerCollidedWithPillar = false;
         YutGameManager.Instance.StartMainGame();
+        C_GameEndReady endreadyPacket = new C_GameEndReady();
+        Managers.Network.Send(endreadyPacket);
     }
     //라운드 표시 함수
     void UpdateRound()

@@ -99,17 +99,6 @@ public class MyPlayerController : PlayerController
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
             Jump();
-            GameEnd();
-        }
-        //패배 테스트 용
-        if (Input.GetKeyDown(KeyCode.Return) && isGround)
-        {
-            Jump();
-            _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
-            _gameendtxt.text = string.Format("Game End\n Player Win");
-            diedImage.gameObject.SetActive(true);
-            stone.winner = stone.enemy;
-            StartCoroutine(ChangeScene());
         }
     }
 
@@ -181,12 +170,20 @@ public class MyPlayerController : PlayerController
         Managers.Network.Send(rotationPacket);
     }
 
-    void GameEnd()
+    public void GameEnd(int p, bool timeset)
     {
         _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
-        _gameendtxt.text = string.Format("Game End\n Player Win");
+        _gameendtxt.text = string.Format("Game End\n Player {0} Win", p == 0 ? 1 : 0);
         diedImage.gameObject.SetActive(true);
-        stone.winner = YutGameManager.Instance.GetTurn();
+
+        if (p == YutGameManager.Instance.GetTurn())
+        {
+            stone.winner = YutGameManager.Instance.GetTurn();
+        }
+        else
+        {
+            stone.winner = stone.enemy;
+        }
         StartCoroutine(ChangeScene());
     }
 
@@ -195,7 +192,11 @@ public class MyPlayerController : PlayerController
         stone.isFight = false;
         yield return new WaitForSeconds(WaitTime);
         //SceneManager.LoadScene("YutPlay");
+        Debug.Log("Die222");
         YutGameManager.Instance.StartMainGame();
+
+        C_GameEndReady endreadyPacket = new C_GameEndReady();
+        Managers.Network.Send(endreadyPacket);
     }
 }
 

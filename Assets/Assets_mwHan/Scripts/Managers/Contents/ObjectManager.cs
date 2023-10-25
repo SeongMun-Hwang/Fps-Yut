@@ -11,6 +11,7 @@ public class ObjectManager
 	
 	public void Add(ObjectInfo info, bool myPlayer = false)
 	{
+		if (_objects.ContainsKey(info.ObjectId)) return;
 		if (myPlayer)
 		{
 			GameObject go = Managers.Resource.Instantiate("Player/MyPlayer");

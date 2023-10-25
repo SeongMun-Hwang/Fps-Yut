@@ -324,6 +324,7 @@ public class PlayerController : MonoBehaviour
 
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
         // Time.deltaTime : 그냥 움직이게 하면 텔포하는것처럼 보이니까 시간 쪼개기?
+
     }
 
     protected void IsGround()

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -83,6 +84,7 @@ public class YutGameManager : MonoBehaviour
                 users[j].horses[i].Owner = users[j];
             }
         }
+
         StartMainGame();
     }
     private void Update()
@@ -202,10 +204,20 @@ public class YutGameManager : MonoBehaviour
         DefenseGame.SetActive(true);
         mainCamera.transform.position = new Vector3(0.0f, 94.3f, -37.6f);
         transform.LookAt(v);
+        StartCoroutine(MinigameDelay());
     }
     public void StartHammerGame()
     {
         MainGame.SetActive(false);
         HammerGame.SetActive(true);
+        StartCoroutine(MinigameDelay());
+    }
+
+    private IEnumerator MinigameDelay()
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        C_GameReady readyPacket = new C_GameReady();
+        Managers.Network.Send(readyPacket);
     }
 }

@@ -27,8 +27,6 @@ class PacketHandler
 
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		stone stonescript = Object.FindObjectOfType<stone>();
-		stonescript.DoFight();
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 		Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
 	}
@@ -42,6 +40,8 @@ class PacketHandler
 	public static void S_StartGameHandler(PacketSession session, IMessage packet)
 	{
 		S_StartGame startGameHandler = packet as S_StartGame;
+		YutGameManager yutmanagerscript = Object.FindObjectOfType<YutGameManager>();
+
 	}
 
 	public static void S_SpawnHandler(PacketSession session, IMessage packet)
@@ -171,18 +171,12 @@ class PacketHandler
 	public static void S_DieHandler(PacketSession session, IMessage packet)
     {
 		S_Die diePacket = packet as S_Die;
+		MyPlayerController pc = Object.FindObjectOfType<MyPlayerController>();
 
-		GameObject go = Managers.Object.FindById(diePacket.ObjectId);
-		if (go == null)
-		{
-			Debug.Log("FindById 실패");
-			return;
-		}
-
-		PlayerController pc = go.GetComponent<PlayerController>();
 		if (pc != null)
         {
 			Debug.Log("Die");
+			pc.GameEnd(diePacket.ObjectId, diePacket.Timeset);
 			return;
         }
 	}
