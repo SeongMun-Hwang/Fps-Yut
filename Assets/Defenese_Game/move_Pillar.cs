@@ -86,7 +86,6 @@ public class move_Pillar : MonoBehaviour
                (pos1.x - pos2.x == 15f && pos1.z - pos2.z == -15f) ||  // bottom-right
                (pos1.x - pos2.x == -15f && pos1.z - pos2.z == -15f);   // bottom-left
     }
-
     void Update()
     {
         foreach (GameObject pillar in pillars)
@@ -94,14 +93,16 @@ public class move_Pillar : MonoBehaviour
             //충돌판정
             Bounds adjustedBounds = pillar.GetComponent<Collider>().bounds;
             adjustedBounds.extents *= 1.0f; //충돌 판정 범위 상세 조정
-
-            if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
+            if (launch && hasLaunched)
             {
-                //Debug.Log("플레이어와 기둥이 충돌했습니다.");
-                // 여기에 충돌 시 수행될 로직을 추가합니다.
-                status_text.text = "패배!";
-                stone.winner = stone.enemy;
-                StartCoroutine(delay());
+                if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
+                {
+                    //Debug.Log("플레이어와 기둥이 충돌했습니다.");
+                    // 여기에 충돌 시 수행될 로직을 추가합니다.
+                    status_text.text = "패배!";
+                    stone.winner = stone.enemy;
+                    StartCoroutine(delay());
+                }
             }
         }
         //if (stone.enemy == YutGameManager.Instance.GetNowUsers().turn)
