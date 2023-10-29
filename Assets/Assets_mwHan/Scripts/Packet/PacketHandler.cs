@@ -180,4 +180,27 @@ class PacketHandler
 			return;
         }
 	}
+
+	public static void S_SelectWallHandler(PacketSession session, IMessage packet)
+    {
+		S_SelectWall wallPacket = packet as S_SelectWall;
+		move_Pillar mp = Object.FindObjectOfType<move_Pillar>();
+
+		if(mp != null)
+        {
+			mp.movepillar(wallPacket.Selectwall);
+			return;
+		}
+    }
+
+	public static void S_AttackWallHandler(PacketSession session, IMessage packet)
+	{
+		move_Pillar mp = Object.FindObjectOfType<move_Pillar>();
+
+		if (mp != null)
+		{
+			mp.attackWall();
+			return;
+		}
+	}
 }

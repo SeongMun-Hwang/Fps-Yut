@@ -13,6 +13,7 @@ public class move_Pillar : MonoBehaviour
     public Rigidbody[] rbs;
     bool[] pillar = { false, false, false, false };
     bool launch;
+    int _selectedPillar = 0;
     public GameObject player;
     public GameObject[] obstacle;
     public Renderer[] rend;
@@ -108,39 +109,13 @@ public class move_Pillar : MonoBehaviour
         //{
             if (!launch && !hasLaunched)
             {
-                if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    ResetPillarAndColor();
-                    pillar[0] = true;
-                    StartCoroutine(MoveToTargetY(rend[0].transform, targetY, 1f));
-                    rend[0].material.color = Color.red;
-                }
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    ResetPillarAndColor();
-                    pillar[1] = true;
-                    StartCoroutine(MoveToTargetY(rend[1].transform, targetY, 1f));
-                    rend[1].material.color = Color.red;
-                }
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    ResetPillarAndColor();
-                    pillar[2] = true;
-                    StartCoroutine(MoveToTargetY(rend[2].transform, targetY, 1f));
-                    rend[2].material.color = Color.red;
-                }
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    ResetPillarAndColor();
-                    pillar[3] = true;
-                    StartCoroutine(MoveToTargetY(rend[3].transform, targetY, 1f));
-                    rend[3].material.color = Color.red;
-                }
+                selectpillar();
             }
             if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
             {
-                playerCollidedWithPillar = false;
-                launch = true;
+                C_AttackWall attackPacket = new C_AttackWall();
+                Managers.Network.Send(attackPacket);
+                attackWall();
             }
         //}
     }
@@ -197,6 +172,73 @@ public class move_Pillar : MonoBehaviour
 
     }
    
+    void selectpillar()
+    {
+        int selectpillar = 0;
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            selectpillar = 1;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            selectpillar = 2;
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            selectpillar = 3;
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            selectpillar = 4;
+        }
+        movepillar(selectpillar);
+        if (_selectedPillar != selectpillar)
+        {
+            _selectedPillar = selectpillar;
+            C_SelectWall wallPacket = new C_SelectWall();
+            wallPacket.Selectwall = selectpillar;
+            Managers.Network.Send(wallPacket);
+        }
+    }
+
+    public void movepillar(int selpil)
+    {
+        if (selpil == 1)
+        {
+            ResetPillarAndColor();
+            pillar[0] = true;
+            StartCoroutine(MoveToTargetY(rend[0].transform, targetY, 1f));
+            rend[0].material.color = Color.red;
+        }
+        if (selpil == 2)
+        {
+            ResetPillarAndColor();
+            pillar[1] = true;
+            StartCoroutine(MoveToTargetY(rend[1].transform, targetY, 1f));
+            rend[1].material.color = Color.red;
+        }
+        if (selpil == 3)
+        {
+            ResetPillarAndColor();
+            pillar[2] = true;
+            StartCoroutine(MoveToTargetY(rend[2].transform, targetY, 1f));
+            rend[2].material.color = Color.red;
+        }
+        if (selpil == 4)
+        {
+            ResetPillarAndColor();
+            pillar[3] = true;
+            StartCoroutine(MoveToTargetY(rend[3].transform, targetY, 1f));
+            rend[3].material.color = Color.red;
+        }
+    }
+
+    public void attackWall()
+    {
+        playerCollidedWithPillar = false;
+        launch = true;
+    }
+
     //공격 후 5초 뒤 기둥 위치 리셋, count 증가
     IEnumerator ResetPillarPositionsAfterDelay()
     {

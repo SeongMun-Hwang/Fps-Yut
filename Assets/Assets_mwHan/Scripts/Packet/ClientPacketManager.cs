@@ -50,7 +50,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SPlayerAttacked, MakePacket<S_PlayerAttacked>);
 		_handler.Add((ushort)MsgId.SPlayerAttacked, PacketHandler.S_PlayerAttackedHandler);		
 		_onRecv.Add((ushort)MsgId.SDie, MakePacket<S_Die>);
-		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);
+		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);		
+		_onRecv.Add((ushort)MsgId.SSelectWall, MakePacket<S_SelectWall>);
+		_handler.Add((ushort)MsgId.SSelectWall, PacketHandler.S_SelectWallHandler);		
+		_onRecv.Add((ushort)MsgId.SAttackWall, MakePacket<S_AttackWall>);
+		_handler.Add((ushort)MsgId.SAttackWall, PacketHandler.S_AttackWallHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
