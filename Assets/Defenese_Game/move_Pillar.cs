@@ -34,7 +34,6 @@ public class move_Pillar : MonoBehaviour
         public Vector3 angularVelocity;
     }
     private PillarState[] initialPillarStates;
-    private bool playerCollidedWithPillar = false; //충돌 여부 체크
 
     private GameObject[] pillars;
     void Start()
@@ -140,7 +139,6 @@ public class move_Pillar : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
             {
-                playerCollidedWithPillar = false;
                 launch = true;
             }
         //}
@@ -159,7 +157,6 @@ public class move_Pillar : MonoBehaviour
         status_text.text = "";
         count = 0;
         round = 1;
-        playerCollidedWithPillar = false;
         YutGameManager.Instance.StartMainGame();
         C_GameEndReady endreadyPacket = new C_GameEndReady();
         Managers.Network.Send(endreadyPacket);
@@ -205,8 +202,7 @@ public class move_Pillar : MonoBehaviour
         ResetPillarPosition();
 
         // pillar reset 후에 충돌이 발생하지 않았으면 count를 증가시킵니다.
-        if (!playerCollidedWithPillar)
-        {
+
             count++;
             if (count == 10)
             {
@@ -220,7 +216,7 @@ public class move_Pillar : MonoBehaviour
             {
                 UpdateRound();
             }
-        }
+        
     }
     void FixedUpdate()
     {
