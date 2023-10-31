@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
-
+using UnityEngine.UI;
 public static class Constants
 {
     public const int PlayerNumber = 2;
@@ -29,8 +29,15 @@ public class YutGameManager : MonoBehaviour
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
     public Action ActionSetPlayerNumber;
+    public bool allPlayerEnter = false;
+    //loading image
+    public GameObject loadingSpinner;
+    public float rotateSpeed = 100f;
+
     private void Awake()
     {
+        loadingSpinner.SetActive(false);
+        MainGame.SetActive(false);
         mainCamera = Camera.main;
         if (Instance == null)
         {
@@ -89,30 +96,46 @@ public class YutGameManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
-    {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
         {
-            GameObject clickedObject = hit.collider.gameObject;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-            // Check if the clicked object is in the red_team array
-            int index = Array.IndexOf(red_team, clickedObject);
-            if (index != -1)
+            if (Physics.Raycast(ray, out hit))
             {
-                SetPlayerNumber(index);
-                return; // Exit after setting the player number
-            }
+                GameObject clickedObject = hit.collider.gameObject;
 
-            // Check if the clicked object is in the blue_team array
-            index = Array.IndexOf(blue_team, clickedObject);
-            if (index != -1)
-            {
-                SetPlayerNumber(index);
+                // Check if the clicked object is in the red_team array
+                int index = Array.IndexOf(red_team, clickedObject);
+                if (index != -1)
+                {
+                    SetPlayerNumber(index);
+                    return; // Exit after setting the player number
+                }
+                // Check if the clicked object is in the blue_team array
+                index = Array.IndexOf(blue_team, clickedObject);
+                if (index != -1)
+                {
+                    SetPlayerNumber(index);
+                }
             }
         }
-    }
+        if (allPlayerEnter)
+        {
+            loadingSpinner.SetActive(false);
+            MainGame.SetActive(true);
+            ManagerText.text = " ";
+        }
+        else if(!allPlayerEnter)
+        {
+            loadingSpinner.SetActive(true);
+            MainGame.SetActive(false);
+            loadingSpinner.GetComponent<Image>().transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
+            ManagerText.text = "플레이어 대기중";
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            allPlayerEnter = true;
+        }
     }
     //get
     public int GetTurn()
@@ -148,7 +171,7 @@ public class YutGameManager : MonoBehaviour
     public void SetPlayerNumber(int newPlayerNumber)
     {
         player_number = newPlayerNumber;
-        ManagerText.text = (player_number+1) + " 번 플레이어 선택!";
+        ManagerText.text = (player_number + 1) + " 번 플레이어 선택!";
         ActionSetPlayerNumber.Invoke();
     }
 

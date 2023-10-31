@@ -44,6 +44,7 @@ public class stone : MonoBehaviour
     user[] users;
     horse horses;
     int fightenemy = -1;
+
     private void Update()
     {
         users = YutGameManager.Instance.GetUsers();
