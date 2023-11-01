@@ -537,7 +537,7 @@ public class stone : MonoBehaviour
 
         if (winner == turn)
         {
-            chance += (users[enemy].horses[fightenemy].BindedHorse.Count + 1);
+            chance += 1;
             Yut.text = chance + " ¹øÀÇ ±âÈ¸¸¦ Ãß°¡ È¹µæ!";
             Debug.Log("fightenemy : " + fightenemy);
             reset_player(users[enemy].horses[fightenemy]);

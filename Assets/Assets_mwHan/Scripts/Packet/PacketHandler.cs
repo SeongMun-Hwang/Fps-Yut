@@ -42,6 +42,7 @@ class PacketHandler
 		S_StartGame startGameHandler = packet as S_StartGame;
 		YutGameManager yutmanagerscript = Object.FindObjectOfType<YutGameManager>();
 
+		yutmanagerscript.allPlayerEnter = true;
 	}
 
 	public static void S_SpawnHandler(PacketSession session, IMessage packet)
@@ -181,6 +182,25 @@ class PacketHandler
         }
 	}
 
+	public static void S_UpdateRoundHandler(PacketSession session, IMessage packet)
+    {
+		S_UpdateRound boxPacket = packet as S_UpdateRound;
+		move_Pillar mp = Object.FindObjectOfType<move_Pillar>();
+
+		if (mp != null)
+		{
+			List<PosinfoInt> boxpositions = new List<PosinfoInt>();
+			foreach(PosinfoInt boxpos in boxPacket.BoxPos)
+            {
+				boxpositions.Add(boxpos);
+            }
+
+			mp.HandleUpdateRound(boxpositions);
+			return;
+		}
+
+	}
+
 	public static void S_SelectWallHandler(PacketSession session, IMessage packet)
     {
 		S_SelectWall wallPacket = packet as S_SelectWall;
@@ -203,4 +223,28 @@ class PacketHandler
 			return;
 		}
 	}
+
+	public static void S_DefMoveHandler(PacketSession session, IMessage packet)
+    {
+		S_DefMove movePacket = packet as S_DefMove;
+		move_Player mp = Object.FindObjectOfType<move_Player>();
+
+		if (mp != null)
+		{
+			mp.calcmovement(movePacket.Posinfo.PosX, movePacket.Posinfo.PosZ);
+			return;
+		}
+	}
+
+	public static void S_PlayerCollisionHandler(PacketSession session, IMessage packet)
+    {
+		move_Pillar mp = Object.FindObjectOfType<move_Pillar>();
+
+		if (mp != null)
+		{
+			mp.handleplayercol();
+			return;
+		}
+	}
+
 }

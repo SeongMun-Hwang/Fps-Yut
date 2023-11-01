@@ -16,17 +16,17 @@ public class ChangeScene : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-            SceneManager.LoadScene("start_Menu");
-        if (Input.GetKeyDown(KeyCode.F2))
-            SceneManager.LoadScene("YutPlay");
-        if (Input.GetKeyDown(KeyCode.F3))
-            SceneManager.LoadScene("Fpsfight");
-        if (Input.GetKeyDown(KeyCode.F4))
-            SceneManager.LoadScene("Defense_Game");
-        if (Input.GetKeyDown(KeyCode.F5))
-            SceneManager.LoadScene("setting");        
-        if (Input.GetKeyDown(KeyCode.F6))
-            SceneManager.LoadScene("roomscene");
+        //if (Input.GetKeyDown(KeyCode.F1))
+        //    SceneManager.LoadScene("start_Menu");
+        //if (Input.GetKeyDown(KeyCode.F2))
+        //    SceneManager.LoadScene("YutPlay");
+        //if (Input.GetKeyDown(KeyCode.F3))
+        //    SceneManager.LoadScene("Fpsfight");
+        //if (Input.GetKeyDown(KeyCode.F4))
+        //    SceneManager.LoadScene("Defense_Game");
+        //if (Input.GetKeyDown(KeyCode.F5))
+        //    SceneManager.LoadScene("setting");        
+        //if (Input.GetKeyDown(KeyCode.F6))
+        //    SceneManager.LoadScene("roomscene");
     }
 }

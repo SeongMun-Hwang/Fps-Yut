@@ -51,10 +51,16 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SPlayerAttacked, PacketHandler.S_PlayerAttackedHandler);		
 		_onRecv.Add((ushort)MsgId.SDie, MakePacket<S_Die>);
 		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);		
+		_onRecv.Add((ushort)MsgId.SUpdateRound, MakePacket<S_UpdateRound>);
+		_handler.Add((ushort)MsgId.SUpdateRound, PacketHandler.S_UpdateRoundHandler);		
 		_onRecv.Add((ushort)MsgId.SSelectWall, MakePacket<S_SelectWall>);
 		_handler.Add((ushort)MsgId.SSelectWall, PacketHandler.S_SelectWallHandler);		
 		_onRecv.Add((ushort)MsgId.SAttackWall, MakePacket<S_AttackWall>);
-		_handler.Add((ushort)MsgId.SAttackWall, PacketHandler.S_AttackWallHandler);
+		_handler.Add((ushort)MsgId.SAttackWall, PacketHandler.S_AttackWallHandler);		
+		_onRecv.Add((ushort)MsgId.SDefMove, MakePacket<S_DefMove>);
+		_handler.Add((ushort)MsgId.SDefMove, PacketHandler.S_DefMoveHandler);		
+		_onRecv.Add((ushort)MsgId.SPlayerCollision, MakePacket<S_PlayerCollision>);
+		_handler.Add((ushort)MsgId.SPlayerCollision, PacketHandler.S_PlayerCollisionHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
