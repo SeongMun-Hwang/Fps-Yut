@@ -10,19 +10,14 @@ public class setting : MonoBehaviour
 {
     public stone stone;
     public TMP_Dropdown resolutionDropdown;
-    public Slider volumeSlider;
-    public AudioSource[] audioSources;
-    public AudioClip[] myClips;
+    public Slider effectSoundsSlider;
+    public AudioSource[] effectSounds;
     private int EffectSoundIndex=0;
     private void Start()
     {
-        for (int i = 0; i < myClips.Length; i++)
-        {
-            audioSources[i].clip = myClips[i];
-        }
         resolutionDropdown.onValueChanged.AddListener(ChangeResolution);
-        volumeSlider.onValueChanged.AddListener(SetVolume); // 슬라이더 값 변경 시 볼륨 조절
-        volumeSlider.value = audioSources[0].volume;
+        effectSoundsSlider.onValueChanged.AddListener(SetVolume); // 슬라이더 값 변경 시 볼륨 조절
+        effectSoundsSlider.value = effectSounds[0].volume;
     }
 
     public void SetResolution_full()
@@ -72,16 +67,17 @@ public class setting : MonoBehaviour
     }
     public void SetVolume(float volume)
     {
-        for(int i = 0; i < myClips.Length; i++)
+        Debug.Log("Setting volume to: " + volume);
+        for (int i = 0; i < effectSounds.Length; i++)
         {
-            audioSources[i].volume = volume;
+            effectSounds[i].volume = volume;
         }
     }
+
     public void testSound()
     {
-        Debug.Log(EffectSoundIndex);
-        audioSources[EffectSoundIndex].Play();
-        if (EffectSoundIndex == 4) { EffectSoundIndex = 0; }
-        else { EffectSoundIndex++; }
+        int RandomSound = UnityEngine.Random.Range(0, 5);
+        effectSounds[RandomSound].mute = false;
+        effectSounds[RandomSound].Play();
     }
 }

@@ -26,6 +26,7 @@ public class YutGameManager : MonoBehaviour
     public GameObject MainGame;
     public GameObject HammerGame;
     public GameObject DefenseGame;
+    public GameObject Setting;
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
     public Action ActionSetPlayerNumber;
@@ -137,6 +138,10 @@ public class YutGameManager : MonoBehaviour
             ManagerText.text = "Ω√¿€!";
             allPlayerEnter = true;
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            StartSetting();
+        }
     }
     //get
     public int GetTurn()
@@ -211,6 +216,7 @@ public class YutGameManager : MonoBehaviour
         MainGame.SetActive(true);
         if (DefenseGame.activeSelf) { DefenseGame.SetActive(false); }
         if (HammerGame.activeSelf) { HammerGame.SetActive(false); }
+        if (Setting.activeSelf) { Setting.SetActive(false); }
         Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
         mainCamera.transform.position = new Vector3(-4.11f, 17.02f, -4.5f);
         transform.LookAt(v);
@@ -230,7 +236,17 @@ public class YutGameManager : MonoBehaviour
         HammerGame.SetActive(true);
         StartCoroutine(MinigameDelay());
     }
-
+    public void StartSetting()
+    {
+        if (Setting.activeSelf)
+        {
+            Setting.SetActive(false);
+        }
+        else
+        {
+            Setting.SetActive(true);
+        }
+    }
     private IEnumerator MinigameDelay()
     {
         yield return new WaitForSeconds(3.0f);
