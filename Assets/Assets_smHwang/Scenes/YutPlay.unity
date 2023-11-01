@@ -897,7 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d80cdc461ef2243a305721dca9782b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stone: {fileID: 0}
+  stone: {fileID: 963194231}
   resolutionDropdown: {fileID: 1955051824}
   effectSoundsSlider: {fileID: 2101728293}
   effectSounds:
@@ -906,7 +906,6 @@ MonoBehaviour:
   - {fileID: 1064893143}
   - {fileID: 1156450254}
   - {fileID: 1700472332}
-  myClips: []
 --- !u!4 &91166226
 Transform:
   m_ObjectHideFlags: 0
@@ -921,7 +920,6 @@ Transform:
   m_Children:
   - {fileID: 1087720804}
   - {fileID: 2072970610}
-  - {fileID: 939767525}
   m_Father: {fileID: 572905274}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1655,7 +1653,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -2691,7 +2689,7 @@ Transform:
   - {fileID: 31742836}
   - {fileID: 752327616}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &331408665
 GameObject:
@@ -4979,7 +4977,7 @@ RectTransform:
   - {fileID: 1518585865}
   - {fileID: 91166226}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5337,7 +5335,7 @@ Transform:
   - {fileID: 735921273}
   - {fileID: 851007179}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &637219034
 GameObject:
@@ -6958,6 +6956,7 @@ MonoBehaviour:
   - {fileID: 550592915}
   throwButton: {fileID: 2005326708}
   gaugeImage: {fileID: 2005326709}
+  setting: {fileID: 91166225}
 --- !u!4 &735921273
 Transform:
   m_ObjectHideFlags: 0
@@ -7893,7 +7892,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -8931,7 +8930,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 939767524}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -845.80084, y: -332.14157, z: 4.334164}
+  m_LocalPosition: {x: 7.132599, y: 1.1590576, z: 4.334164}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8940,7 +8939,7 @@ Transform:
   - {fileID: 1064893142}
   - {fileID: 1156450253}
   - {fileID: 1700472331}
-  m_Father: {fileID: 91166226}
+  m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &940998786
@@ -9584,12 +9583,6 @@ MonoBehaviour:
   SettingScript: {fileID: 0}
   Yut: {fileID: 1776707962}
   currentRoute: {fileID: 196885769}
-  yutSound:
-  - {fileID: 739863744}
-  - {fileID: 643647087}
-  - {fileID: 805761114}
-  - {fileID: 1409385109}
-  - {fileID: 1733140602}
   isMoving: 0
   isYutThrown: 0
   objectPrefab:
@@ -10525,7 +10518,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -11243,7 +11236,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -11886,7 +11879,7 @@ Transform:
   - {fileID: 902555864}
   - {fileID: 1680670150}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1277726246
 GameObject:
@@ -15537,7 +15530,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
