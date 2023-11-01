@@ -23,7 +23,6 @@ public class stone : MonoBehaviour
 
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
-    public AudioSource[] yutSound;
 
     private async Task DelayAsync(float seconds)
     {
@@ -51,14 +50,6 @@ public class stone : MonoBehaviour
         horses = YutGameManager.Instance.GetNowHorse();
         MoveScript.GetData(YutGameManager.Instance.GetTurn(), YutGameManager.Instance.GetPlayerNumber(), YutGameManager.Instance.GetUsers());
         if (isYutThrown) { choose_Player(); }
-    }
-    void Start()
-    {
-
-        for (int i = 0; i < 5; i++)
-        {
-            yutSound[i].mute = true;
-        }
     }
     //윷던지기 랜덤 함수 - 버튼에 연결
     public void throwYut()
@@ -100,10 +91,6 @@ public class stone : MonoBehaviour
                 throw_nak();
                 break;
         }
-        int RandomSound = UnityEngine.Random.Range(0, 5);
-        yutSound[RandomSound].mute = false;
-        yutSound[RandomSound].Play();
-
         ShowDestination.Invoke();
     }
 

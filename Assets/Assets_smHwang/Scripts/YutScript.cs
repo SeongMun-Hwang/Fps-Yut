@@ -14,7 +14,7 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private const float maxForce = 100f; // 최대 힘
     private bool isOverThrowButton = false;
     private bool isIncreasing = true;
-
+    public setting setting;
     void Start()
     {
         UpdateGaugeFill();
@@ -98,5 +98,6 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             float dirY = Random.Range(0, 500);
             float dirZ = Random.Range(0, 500);
         }
+        setting.testSound();
     }
 }
