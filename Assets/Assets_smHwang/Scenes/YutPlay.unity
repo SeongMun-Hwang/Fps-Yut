@@ -5196,6 +5196,13 @@ MonoBehaviour:
   - {fileID: 997762952}
   DirectionalLight: {fileID: 705507994}
   textMeshProPrefab: {fileID: 851007178}
+  developerButton:
+  - {fileID: 528562538}
+  - {fileID: 394003758}
+  - {fileID: 1814744402}
+  - {fileID: 232517410}
+  - {fileID: 666031935}
+  - {fileID: 1966424259}
 --- !u!114 &658787161
 MonoBehaviour:
   m_ObjectHideFlags: 0

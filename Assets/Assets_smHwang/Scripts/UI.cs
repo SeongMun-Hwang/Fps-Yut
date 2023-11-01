@@ -39,7 +39,8 @@ public class UI : MonoBehaviour
     //조명
     public Light DirectionalLight;
     public GameObject textMeshProPrefab;
-
+    //개발자 버튼
+    public List<GameObject> developerButton = new List<GameObject>();
     private void ChangeTurnUI()
     {
         choose_step = 0;
@@ -98,6 +99,14 @@ public class UI : MonoBehaviour
         if (stone.isMoving)
         {
             DestroyDestination();
+        }
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            foreach(GameObject i in developerButton)
+            {
+                if (i.activeSelf) { i.SetActive(false); }
+                else { i.SetActive(true); }
+            }
         }
     }
     public void StartText(int turn)

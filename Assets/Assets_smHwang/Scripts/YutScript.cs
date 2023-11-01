@@ -97,7 +97,6 @@ public class YutScript : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             float dirX = Random.Range(0, 500);
             float dirY = Random.Range(0, 500);
             float dirZ = Random.Range(0, 500);
-            rb[i].AddTorque(dirX, dirY, dirZ);
         }
     }
 }
