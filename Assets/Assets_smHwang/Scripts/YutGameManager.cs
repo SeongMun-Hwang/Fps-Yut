@@ -27,6 +27,7 @@ public class YutGameManager : MonoBehaviour
     public GameObject HammerGame;
     public GameObject DefenseGame;
     public GameObject Setting;
+    public GameObject MainCanvas;
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
     public Action ActionSetPlayerNumber;
@@ -124,7 +125,6 @@ public class YutGameManager : MonoBehaviour
         {
             loadingSpinner.SetActive(false);
             MainGame.SetActive(true);
-            ManagerText.text = " ";
         }
         else if(!allPlayerEnter)
         {
@@ -214,6 +214,7 @@ public class YutGameManager : MonoBehaviour
     {
         stone.isFight = false;
         MainGame.SetActive(true);
+        MainCanvas.SetActive(true);
         if (DefenseGame.activeSelf) { DefenseGame.SetActive(false); }
         if (HammerGame.activeSelf) { HammerGame.SetActive(false); }
         if (Setting.activeSelf) { Setting.SetActive(false); }
@@ -226,6 +227,7 @@ public class YutGameManager : MonoBehaviour
         Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
         MainGame.SetActive(false);
         DefenseGame.SetActive(true);
+        MainCanvas.SetActive(false);
         mainCamera.transform.position = new Vector3(0.0f, 94.3f, -37.6f);
         transform.LookAt(v);
         StartCoroutine(MinigameDelay());
@@ -234,6 +236,7 @@ public class YutGameManager : MonoBehaviour
     {
         MainGame.SetActive(false);
         HammerGame.SetActive(true);
+        MainCanvas.SetActive(false);
         StartCoroutine(MinigameDelay());
     }
     public void StartSetting()

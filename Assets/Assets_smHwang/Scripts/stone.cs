@@ -607,11 +607,11 @@ public class stone : MonoBehaviour
                         isFight = true;
 
                         Debug.Log("defensegame");
-                        UIScript.Yut.text = "지나가려면\n 승리하세요!";
+                        Yut.text = "지나가려면\n 승리하세요!";
 
                         yield return new WaitForSeconds(1.0f);
                         StartCoroutine(LoadDefenseGameSceneAfterDelay(5f));
-                        SceneManager.LoadScene("Defense_Game");
+                        //SceneManager.LoadScene("Defense_Game");
                         YutGameManager.Instance.StartDefenseGame();
                     }
                 }
