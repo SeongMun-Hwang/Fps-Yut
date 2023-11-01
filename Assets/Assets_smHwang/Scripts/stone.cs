@@ -44,7 +44,7 @@ public class stone : MonoBehaviour
     user[] users;
     horse horses;
     int fightenemy = -1;
-
+    bool myturn = true;
     private void Update()
     {
         users = YutGameManager.Instance.GetUsers();
@@ -268,61 +268,64 @@ public class stone : MonoBehaviour
     space : 윷던지기*/
     void choose_Player()
     {
-        if (!isMoving && !isFight) //말이 움직이지 않고
+        if (myturn)
         {
-            if (isYutThrown) //윷을 다 던졌으면
+            if (!isMoving && !isFight) //말이 움직이지 않고
             {
-                ShowDestination.Invoke(); //이동 가능 위치 표시(UI.cs의 DestinationUI)
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1)) //1
-            {
-                UIScript.DestroyDestination();
-                shownDestination = false;
-                one();
-                Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
-                Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2)) //2
-            {
-                UIScript.DestroyDestination();
-                shownDestination = false;
-                two();
-                Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
-                Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3)) //3
-            {
-                UIScript.DestroyDestination();
-                shownDestination = false;
-                three();
-                Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
-                Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha4)) //4
-            {
-                UIScript.DestroyDestination();
-                shownDestination = false;
-                four();
-                Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
-                Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
-            }
-            //엔터 입력 시 Move 코루틴 시작
-            else if (Input.GetKeyDown(KeyCode.Return))
-            {
-                Debug.Log("enter move" + YutGameManager.Instance.GetPlayerNumber());
-                move_Player();
-                //StartCoroutine(Move(UIScript.GetStep()));
-            }
-            //스페이스, 윷 던지기
-            else if (Input.GetKeyDown(KeyCode.Space))
-            {
-                throwYut();
-            }
-            //bool showDestination이 false이면 목적지 재계산후 출력. showDestinaiton은 말 선택을 바꿀때마다 false
-            if (!shownDestination)
-            {
-                ShowDestination.Invoke(); //이동 가능 위치 표시(UI.cs의 DestinationUI)
-                shownDestination = true;
+                if (isYutThrown) //윷을 다 던졌으면
+                {
+                    ShowDestination.Invoke(); //이동 가능 위치 표시(UI.cs의 DestinationUI)
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha1)) //1
+                {
+                    UIScript.DestroyDestination();
+                    shownDestination = false;
+                    one();
+                    Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
+                    Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2)) //2
+                {
+                    UIScript.DestroyDestination();
+                    shownDestination = false;
+                    two();
+                    Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
+                    Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3)) //3
+                {
+                    UIScript.DestroyDestination();
+                    shownDestination = false;
+                    three();
+                    Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
+                    Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4)) //4
+                {
+                    UIScript.DestroyDestination();
+                    shownDestination = false;
+                    four();
+                    Debug.Log("choose" + YutGameManager.Instance.GetPlayerNumber());
+                    Yut.text = (YutGameManager.Instance.GetPlayerNumber() + 1) + " 번째 말 선택!";
+                }
+                //엔터 입력 시 Move 코루틴 시작
+                else if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    Debug.Log("enter move" + YutGameManager.Instance.GetPlayerNumber());
+                    move_Player();
+                    //StartCoroutine(Move(UIScript.GetStep()));
+                }
+                //스페이스, 윷 던지기
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    throwYut();
+                }
+                //bool showDestination이 false이면 목적지 재계산후 출력. showDestinaiton은 말 선택을 바꿀때마다 false
+                if (!shownDestination)
+                {
+                    ShowDestination.Invoke(); //이동 가능 위치 표시(UI.cs의 DestinationUI)
+                    shownDestination = true;
+                }
             }
         }
     }
