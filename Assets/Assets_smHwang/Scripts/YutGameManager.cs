@@ -132,8 +132,9 @@ public class YutGameManager : MonoBehaviour
             loadingSpinner.GetComponent<Image>().transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
             ManagerText.text = "플레이어 대기중";
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && allPlayerEnter == false)
         {
+            ManagerText.text = "시작!";
             allPlayerEnter = true;
         }
     }
