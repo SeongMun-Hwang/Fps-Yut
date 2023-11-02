@@ -434,6 +434,7 @@ public class stone : MonoBehaviour
                     yield return new WaitForSeconds(1f);
                     LeftStep = 0;
                     isMoving = false;
+                    UIScript.steps.Remove(-1);
                     ChangeTurn();
                     yield break;
                 }

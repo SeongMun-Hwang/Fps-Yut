@@ -200,10 +200,12 @@ public class MyPlayerController : PlayerController
         yield return new WaitForSeconds(WaitTime);
         //SceneManager.LoadScene("YutPlay");
         Debug.Log("Die222");
-        YutGameManager.Instance.StartMainGame();
 
         C_GameEndReady endreadyPacket = new C_GameEndReady();
         Managers.Network.Send(endreadyPacket);
+
+        YutGameManager.Instance.StartMainGame();
+
     }
 }
 
