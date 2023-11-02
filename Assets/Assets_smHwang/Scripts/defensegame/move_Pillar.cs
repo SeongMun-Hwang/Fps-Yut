@@ -20,7 +20,7 @@ public class move_Pillar : MonoBehaviour
     private bool hasLaunched = false;
     public TextMeshProUGUI status_text;
     int count = 0;
-    int round = 1;
+    int round = 0;
     public float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
     public Vector3 prevPosition = Vector3.zero;
     float originalY = 7.5f; // 원래 Y 좌표
@@ -78,7 +78,6 @@ public class move_Pillar : MonoBehaviour
             isStopped[i] = false;
         }
         //장애물 위치 랜덤 생성
-        UpdateRound();
         //CreateObstacle();
     }
     bool IsAdjacentDiagonally(Vector3 pos1, Vector3 pos2)
@@ -125,6 +124,10 @@ public class move_Pillar : MonoBehaviour
     {
         ResetPillarAndColor();
         ResetPillarPosition();
+        
+        C_GameEndReady endreadyPacket = new C_GameEndReady();
+        Managers.Network.Send(endreadyPacket);
+
         yield return new WaitForSeconds(2f);
         stone.isFight = false;
         //SceneManager.LoadScene("YutPlay");
@@ -137,8 +140,6 @@ public class move_Pillar : MonoBehaviour
         playerCollidedWithPillar = false;
 
         YutGameManager.Instance.StartMainGame();
-        C_GameEndReady endreadyPacket = new C_GameEndReady();
-        Managers.Network.Send(endreadyPacket);
     }
 
     //라운드 표시 함수
@@ -251,7 +252,7 @@ public class move_Pillar : MonoBehaviour
 
     public void handleplayercol()
     {
-        status_text.text = "패배!";
+        status_text.text = "막힘!";
         stone.winner = stone.enemy;
 
         StartCoroutine(delay());
@@ -270,7 +271,7 @@ public class move_Pillar : MonoBehaviour
             if (count == 3)
             {
                 stone.winner = YutGameManager.Instance.GetTurn();
-                status_text.text = "승리!";
+                status_text.text = "지나감!";
                 count = 0;
 
                 C_DefgameWin winPacket = new C_DefgameWin();
