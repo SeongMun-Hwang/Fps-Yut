@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -45,6 +46,11 @@ public class YutText : MonoBehaviour
                     // 필요한 경우, 기본 텍스트나 에러 메시지를 여기에 추가
                     break;
             }
+
+            C_ThreedYutThrow throwPacket = new C_ThreedYutThrow();
+            throwPacket.Result = result;
+            throwPacket.Isbackdo = isbackdo;
+            //Managers.Network.Send(throwPacket);
         }
     }
 }
