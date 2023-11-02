@@ -173,7 +173,14 @@ public class MyPlayerController : PlayerController
     public void GameEnd(int p, bool timeset)
     {
         _gameendtxt = diedImage.GetComponentInChildren<TextMeshProUGUI>();
-        _gameendtxt.text = string.Format("Game End\n Player {0} Win", p == 0 ? 1 : 0);
+        if (p == 0)
+        {
+            _gameendtxt.text = string.Format("Game End\n Player 0 Win");
+        }
+        else
+        {
+            _gameendtxt.text = string.Format("Game End\n Player 1 Win");
+        }
         diedImage.gameObject.SetActive(true);
 
         if (p == YutGameManager.Instance.GetTurn())

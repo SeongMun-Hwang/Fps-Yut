@@ -456,6 +456,7 @@ public class stone : MonoBehaviour
                     yield return null;
                 }
                 isFight = false;
+
                 if (winner == enemy)
                 {
                     LeftStep = 0;
@@ -469,7 +470,6 @@ public class stone : MonoBehaviour
                     }
                     yield break;
                 }
-                
                 else
                 {
                     if (NormalRoute != -1) // 특수 위치
@@ -599,8 +599,8 @@ public class stone : MonoBehaviour
             if (horses.routePosition == users[enemy].horses[i].nowPosition)
             {
                 //업은 말이 같거나 작으면
-                if (horses.BindedHorse.Count <= users[enemy].horses[i].BindedHorse.Count)
-                {
+                //if (horses.BindedHorse.Count <= users[enemy].horses[i].BindedHorse.Count)
+                //{
                     //이동 가능하면
                     if (LeftStep > 1)
                     {
@@ -614,7 +614,7 @@ public class stone : MonoBehaviour
                         //SceneManager.LoadScene("Defense_Game");
                         YutGameManager.Instance.StartDefenseGame();
                     }
-                }
+                //}
             }
         }
     }
@@ -624,6 +624,10 @@ public class stone : MonoBehaviour
     }
     public void ChangeTurn()
     {
+        if (UIScript.steps.Count != 0)
+        {
+            return;
+        }
         if (YutGameManager.Instance.GetTurn() == 0)
         {
             YutGameManager.Instance.SetTurn(1);
