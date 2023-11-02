@@ -62,6 +62,10 @@ public class UI : MonoBehaviour
     }
     private void Start()
     {
+        foreach (GameObject i in developerButton)
+        {
+            i.SetActive(false);
+        }
         //액션에 따른 동작 지정
         stone.OnChangeTurnAction = ChangeTurnUI;
         stone.ShowDestination = DestinationUI;
@@ -102,7 +106,7 @@ public class UI : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            foreach(GameObject i in developerButton)
+            foreach (GameObject i in developerButton)
             {
                 if (i.activeSelf) { i.SetActive(false); }
                 else { i.SetActive(true); }
@@ -244,7 +248,7 @@ public class UI : MonoBehaviour
         if (buttonIndex >= 0 && buttonIndex < steps.Count)
         {
             choose_step = buttonIndex;
-            Debug.Log("buttonindex : "+buttonIndex);
+            Debug.Log("buttonindex : " + buttonIndex);
             Debug.Log("steps:" + steps[buttonIndex]);
             if (buttonIndex >= 0 && buttonIndex < steps_button.Length)
             {
@@ -429,7 +433,7 @@ public class UI : MonoBehaviour
     }
     public IEnumerator TurnOnFire()
     {
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             Fire[i].Play();
         }

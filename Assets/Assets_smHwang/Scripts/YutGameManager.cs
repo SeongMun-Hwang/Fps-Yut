@@ -28,6 +28,7 @@ public class YutGameManager : MonoBehaviour
     public GameObject DefenseGame;
     public GameObject Setting;
     public GameObject MainCanvas;
+    public GameObject Rule;
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
     public Action ActionSetPlayerNumber;
@@ -39,6 +40,7 @@ public class YutGameManager : MonoBehaviour
     private void Awake()
     {
         loadingSpinner.SetActive(false);
+        Rule.SetActive(false);
         MainGame.SetActive(false);
         mainCamera = Camera.main;
         if (Instance == null)
@@ -141,6 +143,10 @@ public class YutGameManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
             StartSetting();
+        }
+        else if (Input.GetKeyDown(KeyCode.F1))
+        {
+            StartNotice();
         }
     }
     //get
@@ -248,6 +254,17 @@ public class YutGameManager : MonoBehaviour
         else
         {
             Setting.SetActive(true);
+        }
+    }
+    public void StartNotice()
+    {
+        if (Rule.activeSelf)
+        {
+            Rule.SetActive(false);
+        }
+        else
+        {
+            Rule.SetActive(true);
         }
     }
     private IEnumerator MinigameDelay()
