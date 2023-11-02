@@ -11,13 +11,16 @@ public class setting : MonoBehaviour
     public stone stone;
     public TMP_Dropdown resolutionDropdown;
     public Slider effectSoundsSlider;
+    public Slider backGroundSlider;
     public AudioSource[] effectSounds;
-    private int EffectSoundIndex=0;
+    public AudioSource backgroundSounds;
     private void Start()
     {
         resolutionDropdown.onValueChanged.AddListener(ChangeResolution);
-        effectSoundsSlider.onValueChanged.AddListener(SetVolume); // 슬라이더 값 변경 시 볼륨 조절
+        effectSoundsSlider.onValueChanged.AddListener(SetEffectSounds); // 슬라이더 값 변경 시 볼륨 조절
         effectSoundsSlider.value = effectSounds[0].volume;
+        backGroundSlider.onValueChanged.AddListener(SetBackgroundSounds); // 슬라이더 값 변경 시 볼륨 조절
+        backGroundSlider.value = backgroundSounds.volume;
     }
 
     public void SetResolution_full()
@@ -65,7 +68,7 @@ public class setting : MonoBehaviour
                 break;
         }
     }
-    public void SetVolume(float volume)
+    public void SetEffectSounds(float volume)
     {
         Debug.Log("Setting volume to: " + volume);
         for (int i = 0; i < effectSounds.Length; i++)
@@ -73,11 +76,20 @@ public class setting : MonoBehaviour
             effectSounds[i].volume = volume;
         }
     }
-
+    public void SetBackgroundSounds(float volume)
+    {
+        backgroundSounds.volume = volume;
+    }
     public void testSound()
     {
         int RandomSound = UnityEngine.Random.Range(0, 5);
         effectSounds[RandomSound].mute = false;
         effectSounds[RandomSound].Play();
+    }
+    public void TurnOnBackGroundMusic()
+    {
+        backgroundSounds.mute = false;
+        backgroundSounds.Play();
+        backgroundSounds.loop = true;
     }
 }

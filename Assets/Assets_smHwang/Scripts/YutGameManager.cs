@@ -36,9 +36,14 @@ public class YutGameManager : MonoBehaviour
     //loading image
     public GameObject loadingSpinner;
     public float rotateSpeed = 100f;
+    public setting setting;
 
+    private void Start()
+    {
+    }
     private void Awake()
     {
+        setting.TurnOnBackGroundMusic();
         loadingSpinner.SetActive(false);
         Rule.SetActive(false);
         MainGame.SetActive(false);
