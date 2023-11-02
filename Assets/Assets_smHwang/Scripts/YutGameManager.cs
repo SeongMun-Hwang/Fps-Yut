@@ -190,17 +190,9 @@ public class YutGameManager : MonoBehaviour
     //·£´ı ÅÏ ÁöÁ¤
     private void AssignTurns()
     {
-        int[] turnValues = new int[Constants.PlayerNumber];
         for (int i = 0; i < Constants.PlayerNumber; i++)
         {
-            turnValues[i] = i;
-        }
-
-        Shuffle(turnValues);
-
-        for (int i = 0; i < Constants.PlayerNumber; i++)
-        {
-            users[i].turn = turnValues[i];
+            users[i].turn = i;
         }
     }
     //ÅÏ ·£´ıÇÏ°Ô ¼ÅÇÃ

@@ -155,6 +155,7 @@ public class move_Pillar : MonoBehaviour
         player.transform.position = playerInitialPosition;
         CreateObstacle(boxpos);
         status_text.text = "¶ó¿îµå " + round + "!";
+        Debug.Log(round);
     }
 
     void ResetPillarAndColor()

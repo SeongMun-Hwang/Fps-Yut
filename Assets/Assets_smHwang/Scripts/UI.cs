@@ -85,7 +85,7 @@ public class UI : MonoBehaviour
     }
     private void Update()
     {
-        timer();
+        //timer();
         GoalCounter(YutGameManager.Instance.GetHorse());
         ChooseMove();
         if (steps.Count > 1 && stone.isYutThrown == true)
