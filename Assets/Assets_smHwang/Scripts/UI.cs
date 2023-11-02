@@ -56,6 +56,7 @@ public class UI : MonoBehaviour
     }
     private void _UpdateSteps()
     {
+        Debug.Log("choose_step : " + choose_step);
         steps.RemoveAt(choose_step);
         steps_button_Text[choose_step].text = "";
         UpdateYutChoice();
@@ -267,10 +268,7 @@ public class UI : MonoBehaviour
         {
             steps_button_Text[steps.Count].text = "";
         }
-        if (choose_step == steps.Count)
-        {
-            choose_step--;
-        }
+
         foreach (int i in steps)
         {
             Debug.Log(i);

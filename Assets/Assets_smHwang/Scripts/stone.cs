@@ -522,7 +522,7 @@ public class stone : MonoBehaviour
         Debug.Log(turn + "의 턴 " + player_number + "번째 말의 현재 위치 : " + nowUser.nowPosition + " 이전 위치 : " + nowUser.lastPosition);
         nowUser.lastPosition = nowUser.nowPosition; //이전위치==현재위치
         BindHorse(); //말 묶기
-        if (nowUser.nowPosition == 22) { nowUser.nowPosition = 27; } //센터 두 개 통일
+        //if (nowUser.nowPosition == 22) { nowUser.nowPosition = 27; } //센터 두 개 통일
         SynchronizeBindedHorses(player_number); //묶인 말들 정보 통일
         /***********************fpsfight**************************/
         StartCoroutine(FpsfightTrigger());
@@ -628,20 +628,24 @@ public class stone : MonoBehaviour
         {
             return;
         }
-        if (YutGameManager.Instance.GetTurn() == 0)
+        else
         {
-            YutGameManager.Instance.SetTurn(1);
-            isYutThrown = false;
+            if (YutGameManager.Instance.GetTurn() == 0)
+            {
+                YutGameManager.Instance.SetTurn(1);
+                isYutThrown = false;
+            }
+            else if (YutGameManager.Instance.GetTurn() == 1)
+            {
+                YutGameManager.Instance.SetTurn(0);
+                isYutThrown = false;
+            }
+            YutGameManager.Instance.SetPlayerNumber(0);
+            Yut.text = "player " + (YutGameManager.Instance.GetTurn() + 1) + " turn!";
+            //changeTurn액션(UI.cs의 ChangeTurnUI)
+            OnChangeTurnAction.Invoke();
         }
-        else if (YutGameManager.Instance.GetTurn() == 1)
-        {
-            YutGameManager.Instance.SetTurn(0);
-            isYutThrown = false;
-        }
-        YutGameManager.Instance.SetPlayerNumber(0);
-        Yut.text = "player " + (YutGameManager.Instance.GetTurn() + 1) + " turn!";
-        //changeTurn액션(UI.cs의 ChangeTurnUI)
-        OnChangeTurnAction.Invoke();
+
     }
     //말 업기
     private void BindHorse()
