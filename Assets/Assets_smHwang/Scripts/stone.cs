@@ -23,7 +23,7 @@ public class stone : MonoBehaviour
 
     public TextMeshProUGUI Yut;
     public Yut_Field currentRoute;
-
+    public setting setting;
     private async Task DelayAsync(float seconds)
     {
         await Task.Delay(TimeSpan.FromSeconds(seconds));
@@ -54,6 +54,7 @@ public class stone : MonoBehaviour
     //윷던지기 랜덤 함수 - 버튼에 연결
     public void throwYut()
     {
+            setting.testSound();
         if (!isYutThrown)
         {
             C_ThrowYut throwYutPacket = new C_ThrowYut();
