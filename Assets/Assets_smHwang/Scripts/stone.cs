@@ -54,11 +54,11 @@ public class stone : MonoBehaviour
     //윷던지기 랜덤 함수 - 버튼에 연결
     public void throwYut()
     {
-            setting.testSound();
+        setting.testSound();
         if (!isYutThrown)
         {
-            C_ThrowYut throwYutPacket = new C_ThrowYut();
-            Managers.Network.Send(throwYutPacket);
+            //C_ThrowYut throwYutPacket = new C_ThrowYut();
+            //Managers.Network.Send(throwYutPacket);
         }
     }
 
@@ -319,31 +319,6 @@ public class stone : MonoBehaviour
     }
     //버튼에 연결돼있음 날리면 안됨
     public void move_Player()
-    {
-        if (isYutThrown)
-        {
-            horse horses = YutGameManager.Instance.GetNowHorse();
-
-            C_YutMove yutmovePacket = new C_YutMove();
-            yutmovePacket.UseResult = UIScript.choose_step;
-            yutmovePacket.MovedYut = YutGameManager.Instance.GetPlayerNumber();
-            yutmovePacket.MovedPos = horses.FinalPosition[UIScript.choose_step];
-            Managers.Network.Send(yutmovePacket);
-
-            Debug.Log("step : " + yutmovePacket.UseResult);
-            Debug.Log("Horse num :  " + yutmovePacket.MovedYut);
-            Debug.Log("destination : " + yutmovePacket.MovedPos);
-
-            //if (isYutThrown)
-            //{
-            //    Debug.Log("move");
-            //    StartCoroutine(Move(UIScript.GetStep()));
-            //}
-            handleMovePlayer();
-        }
-    }
-
-    public void handleMovePlayer()
     {
         if (isYutThrown)
         {

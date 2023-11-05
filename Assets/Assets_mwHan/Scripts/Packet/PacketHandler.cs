@@ -82,7 +82,7 @@ class PacketHandler
 		uiScript.choose_step = yutmovePacket.UseResult;
 		yutmanagerscript.player_number = yutmovePacket.MovedYut;
 
-		stoneScript.handleMovePlayer();
+		//stoneScript.handleMovePlayer();
 	}
 
 		public static void S_HorseCatchHandler(PacketSession session, IMessage packet)
