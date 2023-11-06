@@ -57,8 +57,39 @@ public class stone : MonoBehaviour
         setting.testSound();
         if (!isYutThrown)
         {
-            //C_ThrowYut throwYutPacket = new C_ThrowYut();
-            //Managers.Network.Send(throwYutPacket);
+            int[] yut = new int[4]; //À· 4°³
+            //À· 4°³ ·£´ýÀ¸·Î 0,1 ±¼·Á¼­ °ª ´õÇÔ -> sum
+            for (int i = 0; i < 4; i++)
+            {
+                yut[i] = UnityEngine.Random.Range(0, 2);
+                sum += yut[i];
+            }
+            switch (sum)
+            {
+                case 0:
+                    throw_mo();
+                    break;
+                case 1:
+                    if (yut[3] == 1) //¸¶Áö¸· À·À» ¹éµµ À·À¸·Î ÁöÁ¤
+                    {
+                        throw_back_do();
+                        break;
+                    }
+                    throw_do();
+                    break;
+                case 2:
+                    throw_gae();
+                    break;
+                case 3:
+                    throw_girl();
+                    break;
+                case 4:
+                    throw_yut();
+                    break;
+            }
+            sum = 0;
+            ShowDestination.Invoke();
+
         }
     }
 
