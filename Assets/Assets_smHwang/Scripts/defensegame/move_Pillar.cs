@@ -79,6 +79,7 @@ public class move_Pillar : MonoBehaviour
         }
         //장애물 위치 랜덤 생성
         //CreateObstacle();
+        UpdateRound();
     }
     bool IsAdjacentDiagonally(Vector3 pos1, Vector3 pos2)
     {
@@ -100,8 +101,6 @@ public class move_Pillar : MonoBehaviour
             {
                 //Debug.Log("플레이어와 기둥이 충돌했습니다.");
 
-                C_PlayerCollision colPacket = new C_PlayerCollision();
-                Managers.Network.Send(colPacket);
             }
         }
         //if (stone.enemy == YutGameManager.Instance.GetNowUsers().turn)
@@ -112,8 +111,6 @@ public class move_Pillar : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
             {
-                C_AttackWall attackPacket = new C_AttackWall();
-                Managers.Network.Send(attackPacket);
                 attackWall();
             }
         //}
@@ -124,9 +121,6 @@ public class move_Pillar : MonoBehaviour
     {
         ResetPillarAndColor();
         ResetPillarPosition();
-        
-        C_GameEndReady endreadyPacket = new C_GameEndReady();
-        Managers.Network.Send(endreadyPacket);
 
         yield return new WaitForSeconds(2f);
         stone.isFight = false;
