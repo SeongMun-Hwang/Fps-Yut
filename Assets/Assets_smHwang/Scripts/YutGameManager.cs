@@ -32,7 +32,7 @@ public class YutGameManager : MonoBehaviour
     private Camera mainCamera;
     public TextMeshProUGUI ManagerText;
     public Action ActionSetPlayerNumber;
-    public bool allPlayerEnter = false;
+    public bool allPlayerEnter = true;
     //loading image
     public GameObject loadingSpinner;
     public float rotateSpeed = 100f;
