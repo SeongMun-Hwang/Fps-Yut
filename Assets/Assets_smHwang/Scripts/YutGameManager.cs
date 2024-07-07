@@ -222,8 +222,8 @@ public class YutGameManager : MonoBehaviour
         if (HammerGame.activeSelf) { HammerGame.SetActive(false); }
         if (Setting.activeSelf) { Setting.SetActive(false); }
         Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
-        mainCamera.transform.position = new Vector3(-4.11f, 17.02f, -4.5f);
-        transform.LookAt(v);
+        //mainCamera.transform.position = new Vector3(-4.11f, 17.02f, -4.5f);
+        //transform.LookAt(v);
     }
     public void StartDefenseGame()
     {
