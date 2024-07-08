@@ -37,7 +37,9 @@ public class YutGameManager : MonoBehaviour
     public GameObject loadingSpinner;
     public float rotateSpeed = 100f;
     public setting setting;
-
+    //
+    public Vector3 v = new Vector3(60f, 90f, 0f);
+    public Vector3 initialPosition = new Vector3(-4.6f, 9.8f, 4.5f);
     private void Start()
     {
     }
@@ -221,18 +223,17 @@ public class YutGameManager : MonoBehaviour
         if (DefenseGame.activeSelf) { DefenseGame.SetActive(false); }
         if (HammerGame.activeSelf) { HammerGame.SetActive(false); }
         if (Setting.activeSelf) { Setting.SetActive(false); }
-        Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
-        //mainCamera.transform.position = new Vector3(-4.11f, 17.02f, -4.5f);
-        //transform.LookAt(v);
+        mainCamera.transform.position = initialPosition;
+        transform.eulerAngles = v;
     }
     public void StartDefenseGame()
     {
-        Vector3 v = new Vector3(0.0f, 0.5f, -5.48f);
         MainGame.SetActive(false);
         DefenseGame.SetActive(true);
         MainCanvas.SetActive(false);
         mainCamera.transform.position = new Vector3(0.0f, 94.3f, -37.6f);
-        transform.LookAt(v);
+        Vector3 a = new Vector3(0.0f, 0.5f, -5.48f);
+        transform.LookAt(a);
         StartCoroutine(MinigameDelay());
     }
     public void StartHammerGame()
