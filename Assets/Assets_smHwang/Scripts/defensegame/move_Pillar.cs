@@ -20,7 +20,7 @@ public class move_Pillar : MonoBehaviour
     private bool hasLaunched = false;
     public TextMeshProUGUI status_text;
     int count = 0;
-    int round = 0;
+    int round = 1;
     public float[] positions = new float[] { -22.5f, -7.5f, 7.5f, 22.5f };
     public Vector3 prevPosition = Vector3.zero;
     float originalY = 7.5f; // 원래 Y 좌표
@@ -78,8 +78,7 @@ public class move_Pillar : MonoBehaviour
             isStopped[i] = false;
         }
         //장애물 위치 랜덤 생성
-        //CreateObstacle();
-        UpdateRound();
+        CreateObstacle();
     }
     bool IsAdjacentDiagonally(Vector3 pos1, Vector3 pos2)
     {
@@ -100,28 +99,29 @@ public class move_Pillar : MonoBehaviour
             if (adjustedBounds.Intersects(player.GetComponent<Collider>().bounds))
             {
                 //Debug.Log("플레이어와 기둥이 충돌했습니다.");
-
+                // 여기에 충돌 시 수행될 로직을 추가합니다.
+                status_text.text = "패배!";
+                stone.winner = stone.enemy;
+                StartCoroutine(delay());
             }
         }
         //if (stone.enemy == YutGameManager.Instance.GetNowUsers().turn)
         //{
-            if (!launch && !hasLaunched)
-            {
-                selectpillar();
-            }
-            if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
-            {
-                attackWall();
-            }
+        if (!launch && !hasLaunched)
+        {
+            selectpillar();
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && pillar.Contains(true))
+        {
+            attackWall();
+        }
         //}
     }
-
     //2초 대기 후 씬 이동
     IEnumerator delay()
     {
         ResetPillarAndColor();
         ResetPillarPosition();
-
         yield return new WaitForSeconds(2f);
         stone.isFight = false;
         //SceneManager.LoadScene("YutPlay");
@@ -130,27 +130,18 @@ public class move_Pillar : MonoBehaviour
         Debug.Log("nowuser : " + YutGameManager.Instance.GetTurn());
         status_text.text = "";
         count = 0;
-        round = 0;
+        round = 1;
         playerCollidedWithPillar = false;
-
         YutGameManager.Instance.StartMainGame();
     }
-
     //라운드 표시 함수
     void UpdateRound()
-    {
-        C_UpdateRound urPacket = new C_UpdateRound();
-        Managers.Network.Send(urPacket);
-    }
-
-    public void HandleUpdateRound(List<PosinfoInt> boxpos)
     {
         round++;
         previousPositions.Clear();
         player.transform.position = playerInitialPosition;
-        CreateObstacle(boxpos);
+        CreateObstacle();
         status_text.text = "라운드 " + round + "!";
-        Debug.Log(round);
     }
 
     void ResetPillarAndColor()
@@ -176,7 +167,7 @@ public class move_Pillar : MonoBehaviour
         if (pillar[3] && !isStopped[3]) pillar_Up();
 
     }
-   
+
     void selectpillar()
     {
         int selectpillar = 0;
@@ -200,9 +191,6 @@ public class move_Pillar : MonoBehaviour
         if (_selectedPillar != selectpillar)
         {
             _selectedPillar = selectpillar;
-            C_SelectWall wallPacket = new C_SelectWall();
-            wallPacket.Selectwall = selectpillar;
-            Managers.Network.Send(wallPacket);
         }
     }
 
@@ -244,14 +232,6 @@ public class move_Pillar : MonoBehaviour
         launch = true;
     }
 
-    public void handleplayercol()
-    {
-        status_text.text = "막힘!";
-        stone.winner = stone.enemy;
-
-        StartCoroutine(delay());
-    }
-
     //공격 후 5초 뒤 기둥 위치 리셋, count 증가
     IEnumerator ResetPillarPositionsAfterDelay()
     {
@@ -262,16 +242,12 @@ public class move_Pillar : MonoBehaviour
         if (!playerCollidedWithPillar)
         {
             count++;
-            if (count == 3)
+            if (count == 10)
             {
                 stone.winner = YutGameManager.Instance.GetTurn();
-                status_text.text = "지나감!";
+                status_text.text = "승리!";
                 count = 0;
-
-                C_DefgameWin winPacket = new C_DefgameWin();
-                winPacket.Winplayer = YutGameManager.Instance.GetTurn();
-                Managers.Network.Send(winPacket);
-
+                CreateObstacle();
                 StartCoroutine(delay());
             }
             else
@@ -323,19 +299,21 @@ public class move_Pillar : MonoBehaviour
             rbs[i].velocity = new Vector3(rbs[i].velocity.x, rbs[i].velocity.y, speed);
         }
     }
-    public void CreateObstacle(List<PosinfoInt> boxpos)
+    public void CreateObstacle()
     {
-        int i = 0;
         foreach (GameObject ob in obstacle)
         {
             Vector3 newPosition;
+            do
+            {
                 // x축 랜덤
-            float posX = positions[boxpos[i].PosX];
+                float posX = positions[Random.Range(0, positions.Length)];
 
-            // z축 랜덤
-            float posZ = positions[boxpos[i].PosZ];
-            newPosition = new Vector3(posX, ob.transform.position.y, posZ);
-            i++;
+                // z축 랜덤
+                float posZ = positions[Random.Range(0, positions.Length)];
+                newPosition = new Vector3(posX, ob.transform.position.y, posZ);
+
+            } while (IsPositionInvalid(newPosition, previousPositions));
 
             ob.transform.position = newPosition;
             previousPositions.Add(newPosition); // 새 위치를 리스트에 추가

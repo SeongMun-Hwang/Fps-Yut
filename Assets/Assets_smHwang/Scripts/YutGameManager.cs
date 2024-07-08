@@ -267,8 +267,5 @@ public class YutGameManager : MonoBehaviour
     private IEnumerator MinigameDelay()
     {
         yield return new WaitForSeconds(3.0f);
-
-        C_GameReady readyPacket = new C_GameReady();
-        Managers.Network.Send(readyPacket);
     }
 }
