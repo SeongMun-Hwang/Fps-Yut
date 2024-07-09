@@ -242,7 +242,7 @@ public class move_Pillar : MonoBehaviour
         if (!playerCollidedWithPillar)
         {
             count++;
-            if (count == 10)
+            if (count == 3)
             {
                 stone.winner = YutGameManager.Instance.GetTurn();
                 status_text.text = "½Â¸®!";
