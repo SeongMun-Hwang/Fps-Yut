@@ -976,12 +976,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 852388432194219762}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c0f78e4acfe21a4594760304164796e, type: 3}
+  m_Script: {fileID: 11500000, guid: a7ecc08c2dac1da4a893b7f287bec961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heartsParent: {fileID: 852388430954861294}
-  heartContainerPrefab: {fileID: 1000013667988280, guid: 677e3f20f0ab76a45bd59d5b73b0b446, type: 3}
-  player: {fileID: 4265124151416648635}
+  heartsParent: {fileID: 0}
+  heartContainerPrefab: {fileID: 0}
+  player: {fileID: 0}
 --- !u!1 &852388432538207243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,9 +1192,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d2fb34dbe8f514b8c7e3ada4d420bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 852388432834721099}
-  owner: {fileID: 4265124151416648635}
   Hammer: {fileID: 4265124150349342665}
+  canAttack: 1
   AttackCooldown: 1
   IsAttacking: 0
   meleeArea: {fileID: 4265124150349342669}
@@ -1202,6 +1201,7 @@ MonoBehaviour:
   KnockbackForce: 15
   KnockbackForceY: 3
   KnockbackTime: 2
+  playerController: {fileID: 852388432834721099}
   playerHitDuration: 3
 --- !u!1 &4265124150603971743
 GameObject:
@@ -1661,17 +1661,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4265124151416648635}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac9a2abfcfb700e4f98aaa99787ad307, type: 3}
+  m_Script: {fileID: 11500000, guid: a1dfd559209a2cc47b856e9297632076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  theCamera: {fileID: 4265124151091773524}
-  cameraRotationLimit: 80
+  health: 0
+  maxHealth: 0
+  manager: {fileID: 0}
+  walkSpeed: 0
+  runSpeed: 0
+  jumpForce: 0
   isKnockedBack: 0
+  lookSensitivity: 0
+  cameraRotationLimit: 0
+  theCamera: {fileID: 0}
   isdead: 0
-  doAttack: 0
-  canattack: 1
-  _playtime: 0
-  lookSensitivity: 2
 --- !u!1 &4265124151561643603
 GameObject:
   m_ObjectHideFlags: 0
